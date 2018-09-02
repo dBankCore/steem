@@ -20,11 +20,11 @@ Clears old votes from memory that are no longer required for consensus.
 
 ### BUILD_STEEM_TESTNET=[OFF/ON]
 
-Builds steem for use in a private testnet. Also required for building unit tests.
+Builds dpayd for use in a private testnet. Also required for building unit tests.
 
 ### SKIP_BY_TX_ID=[OFF/ON]
 
-By default this is off. Enabling will prevent the account history plugin querying transactions 
+By default this is off. Enabling will prevent the account history plugin querying transactions
 by id, but saving around 65% of CPU time when reindexing. Enabling this option is a
 huge gain if you do not need this functionality.
 
@@ -33,12 +33,12 @@ huge gain if you do not need this functionality.
 We ship a Dockerfile.  This builds both common node type binaries.
 
     git clone https://github.com/dpays/dpay
-    cd steem
+    cd dpay
     docker build -t dpays/dpay .
 
 ## Building on Ubuntu 16.04
 
-For Ubuntu 16.04 users, after installing the right packages with `apt` Steem
+For Ubuntu 16.04 users, after installing the right packages with `apt` dPay
 will build out of the box without further effort:
 
     # Required packages
@@ -81,7 +81,7 @@ will build out of the box without further effort:
         perl
 
     git clone https://github.com/dpays/dpay
-    cd steem
+    cd dpay
     git checkout stable
     git submodule update --init --recursive
     mkdir build
@@ -144,10 +144,10 @@ Here is how to build and install Boost 1.60 into your user's home directory
     ./bootstrap.sh "--prefix=$BOOST_ROOT"
     ./b2 install
 
-Then the instructions are the same as for steem:
+Then the instructions are the same as for dpay:
 
     git clone https://github.com/dpays/dpay
-    cd steem
+    cd dpay
     git checkout stable
     git submodule update --init --recursive
     mkdir build && cd build
@@ -173,7 +173,7 @@ Install Homebrew by following the instructions here: http://brew.sh/
     brew doctor
     brew update
 
-### Install steem dependencies:
+### Install dPay dependencies:
 
     brew install \
         autoconf \
@@ -186,11 +186,11 @@ Install Homebrew by following the instructions here: http://brew.sh/
         snappy \
         zlib \
         python3
-        
+
     pip3 install --user jinja2
-    
+
 Note: brew recently updated to boost 1.61.0, which is not yet supported by
-steem. Until then, this will allow you to install boost 1.60.0.
+dpay. Until then, this will allow you to install boost 1.60.0.
 
 *Optional.* To use TCMalloc in LevelDB:
 
@@ -204,7 +204,7 @@ steem. Until then, this will allow you to install boost 1.60.0.
 ### Clone the Repository
 
     git clone https://github.com/dpays/dpay.git
-    cd steem
+    cd dpay
 
 ### Compile
 

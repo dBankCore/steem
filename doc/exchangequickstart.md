@@ -18,12 +18,12 @@ curl -fsSL get.docker.com -o get-docker.sh
 sh get-docker.sh
 ```
 
-### Clone the steem repo
+### Clone the dPay repo
 
-Pull in the steem repo from the official source on github and then change into the directory that's created for it.
+Pull in the dPay repo from the official source on github and then change into the directory that's created for it.
 ```
 git clone https://github.com/dpays/dpay
-cd steem
+cd dpay
 ```
 
 ### Build the image from source with docker
@@ -69,7 +69,7 @@ For re-usability, you can create directories to store blockchain and wallet data
 
 ```
 mkdir blockchain
-mkdir steemwallet
+mkdir dpaywallet
 ```
 
 ### Run the container
@@ -77,7 +77,7 @@ mkdir steemwallet
 The below command will start a daemonized instance opening ports for p2p and RPC  while linking the directories we created for blockchain and wallet data inside the container. Fill in `TRACK_ACCOUNT` with the name of your exchange account that you want to follow. The `-v` flags are how you map directories outside of the container to the inside, you list the path to the directories you created earlier before the `:` for each `-v` flag. The restart policy ensures that the container will automatically restart even if your system is restarted.
 
 ```
-docker run -d --name dpayd-exchange --env TRACK_ACCOUNT=nameofaccount -p 2001:2001 -p 8090:8090 -v /path/to/steemwallet:/var/steemwallet -v /path/to/blockchain:/var/lib/dpayd/blockchain --restart always dpays/dpay
+docker run -d --name dpayd-exchange --env TRACK_ACCOUNT=nameofaccount -p 2001:2001 -p 8090:8090 -v /path/to/dpaywallet:/var/dpaywallet -v /path/to/blockchain:/var/lib/dpayd/blockchain --restart always dpays/dpay
 ```
 
 You can see that the container is running with the `docker ps` command.
@@ -91,5 +91,5 @@ Initial syncing will take between 6 and 48 hours depending on your equipment, fa
 The command below will run the cli_wallet from inside the running container while mapping the `wallet.json` to the directory you created for it on the host.
 
 ```
-docker exec -it dpayd-exchange /usr/local/dpayd-default/bin/cli_wallet -w /var/steemwallet/wallet.json
+docker exec -it dpayd-exchange /usr/local/dpayd-default/bin/cli_wallet -w /var/dpaywallet/wallet.json
 ```
