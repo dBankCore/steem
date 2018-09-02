@@ -6,7 +6,7 @@
 
 #define STEEM_STATSD_PLUGIN_NAME "statsd"
 
-namespace steem { namespace plugins { namespace statsd {
+namespace dpay { namespace plugins { namespace statsd {
 
 using namespace appbase;
 
@@ -44,4 +44,4 @@ class statsd_plugin : public appbase::plugin< statsd_plugin >
       std::unique_ptr< detail::statsd_plugin_impl > my;
 };
 
-} } } // steem::plugins::statsd
+} } } // dpay::plugins::statsd

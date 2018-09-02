@@ -3,7 +3,7 @@
 #include <steem/chain/database.hpp>
 #include <fstream>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
    namespace u_types
    {

@@ -12,7 +12,7 @@
 
 #include <steem/utilities/key_conversion.hpp>
 
-namespace steem { namespace plugins { namespace debug_node {
+namespace dpay { namespace plugins { namespace debug_node {
 
 namespace detail {
 
@@ -171,4 +171,4 @@ DEFINE_LOCKLESS_APIS( debug_node_api,
    (debug_get_json_schema)
 )
 
-} } } // steem::plugins::debug_node
+} } } // dpay::plugins::debug_node

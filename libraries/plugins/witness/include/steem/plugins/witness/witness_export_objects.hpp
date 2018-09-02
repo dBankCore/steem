@@ -3,9 +3,9 @@
 #include <steem/plugins/block_data_export/exportable_block_data.hpp>
 #include <steem/plugins/witness/witness_objects.hpp>
 
-namespace steem { namespace plugins { namespace witness {
+namespace dpay { namespace plugins { namespace witness {
 
-using steem::plugins::block_data_export::exportable_block_data;
+using dpay::plugins::block_data_export::exportable_block_data;
 
 struct exp_bandwidth_update_object
 {
@@ -49,7 +49,7 @@ class exp_witness_data_object
 
 } } }
 
-FC_REFLECT( steem::plugins::witness::exp_bandwidth_update_object,
+FC_REFLECT( dpay::plugins::witness::exp_bandwidth_update_object,
    (account)
    (type)
    (average_bandwidth)
@@ -58,14 +58,14 @@ FC_REFLECT( steem::plugins::witness::exp_bandwidth_update_object,
    (tx_size)
    )
 
-FC_REFLECT( steem::plugins::witness::exp_reserve_ratio_object,
+FC_REFLECT( dpay::plugins::witness::exp_reserve_ratio_object,
    (average_block_size)
    (current_reserve_ratio)
    (max_virtual_bandwidth)
    (block_size)
    )
 
-FC_REFLECT( steem::plugins::witness::exp_witness_data_object,
+FC_REFLECT( dpay::plugins::witness::exp_witness_data_object,
    (bandwidth_updates)
    (reserve_ratio)
    )

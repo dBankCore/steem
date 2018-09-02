@@ -4,11 +4,11 @@
 #include <steem/chain/evaluator.hpp>
 
 
-namespace steem { namespace plugins { namespace follow {
+namespace dpay { namespace plugins { namespace follow {
 
 using namespace std;
-using steem::protocol::account_name_type;
-using steem::protocol::base_operation;
+using dpay::protocol::account_name_type;
+using dpay::protocol::base_operation;
 
 class follow_plugin;
 
@@ -42,11 +42,11 @@ typedef fc::static_variant<
 STEEM_DEFINE_PLUGIN_EVALUATOR( follow_plugin, follow_plugin_operation, follow );
 STEEM_DEFINE_PLUGIN_EVALUATOR( follow_plugin, follow_plugin_operation, reblog );
 
-} } } // steem::plugins::follow
+} } } // dpay::plugins::follow
 
-FC_REFLECT( steem::plugins::follow::follow_operation, (follower)(following)(what) )
-FC_REFLECT( steem::plugins::follow::reblog_operation, (account)(author)(permlink) )
+FC_REFLECT( dpay::plugins::follow::follow_operation, (follower)(following)(what) )
+FC_REFLECT( dpay::plugins::follow::reblog_operation, (account)(author)(permlink) )
 
-STEEM_DECLARE_OPERATION_TYPE( steem::plugins::follow::follow_plugin_operation )
+STEEM_DECLARE_OPERATION_TYPE( dpay::plugins::follow::follow_plugin_operation )
 
-FC_REFLECT_TYPENAME( steem::plugins::follow::follow_plugin_operation )
+FC_REFLECT_TYPENAME( dpay::plugins::follow::follow_plugin_operation )

@@ -7,15 +7,15 @@
 #include <string>
 #include <vector>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 struct signed_block;
 } }
 
-namespace steem { namespace plugin { namespace block_info {
+namespace dpay { namespace plugin { namespace block_info {
 
-using steem::app::application;
+using dpay::app::application;
 
-class block_info_plugin : public steem::app::plugin
+class block_info_plugin : public dpay::app::plugin
 {
    public:
       block_info_plugin( application* app );

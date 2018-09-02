@@ -7,7 +7,7 @@
 #define STEEM_RC_API_PLUGIN_NAME "rc_api"
 
 
-namespace steem { namespace plugins { namespace rc {
+namespace dpay { namespace plugins { namespace rc {
 
 using namespace appbase;
 
@@ -15,8 +15,8 @@ class rc_api_plugin : public appbase::plugin< rc_api_plugin >
 {
 public:
    APPBASE_PLUGIN_REQUIRES(
-      (steem::plugins::rc::rc_plugin)
-      (steem::plugins::json_rpc::json_rpc_plugin)
+      (dpay::plugins::rc::rc_plugin)
+      (dpay::plugins::json_rpc::json_rpc_plugin)
    )
 
    rc_api_plugin();
@@ -33,4 +33,4 @@ public:
    std::shared_ptr< class rc_api > api;
 };
 
-} } } // steem::plugins::rc
+} } } // dpay::plugins::rc

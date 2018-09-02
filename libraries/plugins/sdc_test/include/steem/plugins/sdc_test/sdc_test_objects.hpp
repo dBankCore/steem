@@ -3,10 +3,10 @@
 
 #include <boost/multi_index/composite_key.hpp>
 
-namespace steem { namespace plugins { namespace sdc_test {
+namespace dpay { namespace plugins { namespace sdc_test {
 
 using namespace std;
-using namespace steem::chain;
+using namespace dpay::chain;
 
 #ifndef STEEM_SDC_TEST_SPACE_ID
 #define STEEM_SDC_TEST_SPACE_ID 13
@@ -57,9 +57,9 @@ typedef multi_index_container<
    allocator< sdc_token_object >
 > sdc_token_index;
 
-} } } // steem::plugins::sdc_test
+} } } // dpay::plugins::sdc_test
 
-FC_REFLECT( steem::plugins::sdc_test::sdc_token_object,
+FC_REFLECT( dpay::plugins::sdc_test::sdc_token_object,
    (id)
    (control_account)
    (decimal_places)
@@ -69,4 +69,4 @@ FC_REFLECT( steem::plugins::sdc_test::sdc_token_object,
    (announced_launch_time)
    (launch_expiration_time)
    )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::sdc_test::sdc_token_object, steem::plugins::sdc_test::sdc_token_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::sdc_test::sdc_token_object, dpay::plugins::sdc_test::sdc_token_index )

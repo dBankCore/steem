@@ -13,7 +13,7 @@
 #define STEEM_BLOCKCHAIN_VERSION              ( version(0, 21, 0) )
 
 #define STEEM_INIT_PRIVATE_KEY                (fc::ecc::private_key::regenerate(fc::sha256::hash(std::string("init_key"))))
-#define STEEM_INIT_PUBLIC_KEY_STR             (std::string( steem::protocol::public_key_type(STEEM_INIT_PRIVATE_KEY.get_public_key()) ))
+#define STEEM_INIT_PUBLIC_KEY_STR             (std::string( dpay::protocol::public_key_type(STEEM_INIT_PRIVATE_KEY.get_public_key()) ))
 #define STEEM_CHAIN_ID (fc::sha256::hash("dpaytestnet"))
 #define STEEM_ADDRESS_PREFIX                  "TEX"
 
@@ -73,9 +73,9 @@
 
 #endif
 
-#define VESTS_SYMBOL  (steem::protocol::asset_symbol_type::from_asset_num( STEEM_ASSET_NUM_VESTS ) )
-#define STEEM_SYMBOL  (steem::protocol::asset_symbol_type::from_asset_num( STEEM_ASSET_NUM_STEEM ) )
-#define SBD_SYMBOL    (steem::protocol::asset_symbol_type::from_asset_num( STEEM_ASSET_NUM_SBD ) )
+#define VESTS_SYMBOL  (dpay::protocol::asset_symbol_type::from_asset_num( STEEM_ASSET_NUM_VESTS ) )
+#define BEX_SYMBOL  (dpay::protocol::asset_symbol_type::from_asset_num( STEEM_ASSET_NUM_STEEM ) )
+#define BBD_SYMBOL    (dpay::protocol::asset_symbol_type::from_asset_num( STEEM_ASSET_NUM_SBD ) )
 
 #define STEEM_BLOCKCHAIN_HARDFORK_VERSION     ( hardfork_version( STEEM_BLOCKCHAIN_VERSION ) )
 
@@ -149,7 +149,7 @@
 #define STEEM_CREATE_ACCOUNT_DELEGATION_RATIO    5
 #define STEEM_CREATE_ACCOUNT_DELEGATION_TIME     fc::days(30)
 
-#define STEEM_MINING_REWARD                   asset( 1000, STEEM_SYMBOL )
+#define STEEM_MINING_REWARD                   asset( 1000, BEX_SYMBOL )
 #define STEEM_EQUIHASH_N                      140
 #define STEEM_EQUIHASH_K                      6
 
@@ -157,14 +157,14 @@
 #define STEEM_MIN_LIQUIDITY_REWARD_PERIOD_SEC (fc::seconds(60)) // 1 minute required on books to receive volume
 #define STEEM_LIQUIDITY_REWARD_PERIOD_SEC     (60*60)
 #define STEEM_LIQUIDITY_REWARD_BLOCKS         (STEEM_LIQUIDITY_REWARD_PERIOD_SEC/STEEM_BLOCK_INTERVAL)
-#define STEEM_MIN_LIQUIDITY_REWARD            (asset( 1000*STEEM_LIQUIDITY_REWARD_BLOCKS, STEEM_SYMBOL )) // Minumum reward to be paid out to liquidity providers
+#define STEEM_MIN_LIQUIDITY_REWARD            (asset( 1000*STEEM_LIQUIDITY_REWARD_BLOCKS, BEX_SYMBOL )) // Minumum reward to be paid out to liquidity providers
 #define STEEM_MIN_CONTENT_REWARD              STEEM_MINING_REWARD
 #define STEEM_MIN_CURATE_REWARD               STEEM_MINING_REWARD
 #define STEEM_MIN_PRODUCER_REWARD             STEEM_MINING_REWARD
 #define STEEM_MIN_POW_REWARD                  STEEM_MINING_REWARD
 
-#define STEEM_ACTIVE_CHALLENGE_FEE            asset( 2000, STEEM_SYMBOL )
-#define STEEM_OWNER_CHALLENGE_FEE             asset( 30000, STEEM_SYMBOL )
+#define STEEM_ACTIVE_CHALLENGE_FEE            asset( 2000, BEX_SYMBOL )
+#define STEEM_OWNER_CHALLENGE_FEE             asset( 30000, BEX_SYMBOL )
 #define STEEM_ACTIVE_CHALLENGE_COOLDOWN       fc::days(1)
 #define STEEM_OWNER_CHALLENGE_COOLDOWN        fc::days(1)
 
@@ -210,7 +210,7 @@
 #define STEEM_PRODUCER_APR_PERCENT             750
 #define STEEM_POW_APR_PERCENT                  750
 
-#define STEEM_MIN_PAYOUT_SBD                  (asset(20,SBD_SYMBOL))
+#define STEEM_MIN_PAYOUT_SBD                  (asset(20,BBD_SYMBOL))
 
 #define STEEM_SBD_STOP_PERCENT_HF14           (5*STEEM_1_PERCENT ) // Stop printing SBD at 5% Market Cap
 #define STEEM_SBD_STOP_PERCENT_HF20           (10*STEEM_1_PERCENT ) // Stop printing SBD at 10% Market Cap

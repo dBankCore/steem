@@ -4,12 +4,12 @@
 #include <steem/chain/steem_object_types.hpp>
 #include <steem/chain/database.hpp>
 
-namespace steem { namespace plugins{ namespace follow {
+namespace dpay { namespace plugins{ namespace follow {
 
-using namespace steem::chain;
-using steem::chain::database;
+using namespace dpay::chain;
+using dpay::chain::database;
  
-using steem::protocol::account_name_type;
+using dpay::protocol::account_name_type;
 
 class performance_impl;
 
@@ -133,4 +133,4 @@ class performance
       }
 };
 
-} } } //steem::follow
+} } } //dpay::follow

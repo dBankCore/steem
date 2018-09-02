@@ -16,9 +16,9 @@
 
 #include <memory>
 
-namespace steem { namespace plugins { namespace reputation {
+namespace dpay { namespace plugins { namespace reputation {
 
-using namespace steem::protocol;
+using namespace dpay::protocol;
 
 namespace detail {
 
@@ -26,7 +26,7 @@ class reputation_plugin_impl
 {
    public:
       reputation_plugin_impl( reputation_plugin& _plugin ) :
-         _db( appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db() ),
+         _db( appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db() ),
          _self( _plugin ) {}
       ~reputation_plugin_impl() {}
 
@@ -216,4 +216,4 @@ void reputation_plugin::plugin_shutdown()
    chain::util::disconnect_signal( my->_post_apply_operation_conn );
 }
 
-} } } // steem::plugins::reputation
+} } } // dpay::plugins::reputation

@@ -3,7 +3,7 @@
 #include <steem/protocol/authority.hpp>
 #include <steem/protocol/types.hpp>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 typedef std::function<authority(const string&)> authority_getter;
 
@@ -40,4 +40,4 @@ struct sign_state
          bool check_authority_impl( const authority& au, uint32_t depth, uint32_t* account_auth_count );
 };
 
-} } // steem::protocol
+} } // dpay::protocol

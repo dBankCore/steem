@@ -10,7 +10,7 @@
 
 #include <utility>
 
-namespace steem { namespace chain { namespace util {
+namespace dpay { namespace chain { namespace util {
 
 template <typename TCntr>
 struct emplace_ret_value
@@ -107,11 +107,11 @@ class advanced_benchmark_dumper
       void dump();
 };
 
-} } } // steem::chain::util
+} } } // dpay::chain::util
 
-FC_REFLECT( steem::chain::util::advanced_benchmark_dumper::item, (op_name)(time) )
-FC_REFLECT( steem::chain::util::advanced_benchmark_dumper::ritem, (op_name)(time) )
+FC_REFLECT( dpay::chain::util::advanced_benchmark_dumper::item, (op_name)(time) )
+FC_REFLECT( dpay::chain::util::advanced_benchmark_dumper::ritem, (op_name)(time) )
 
-FC_REFLECT( steem::chain::util::advanced_benchmark_dumper::total_info< std::set< steem::chain::util::advanced_benchmark_dumper::item > >, (total_time)(items) )
-FC_REFLECT( steem::chain::util::advanced_benchmark_dumper::total_info< std::multiset< steem::chain::util::advanced_benchmark_dumper::ritem > >, (total_time)(items) )
+FC_REFLECT( dpay::chain::util::advanced_benchmark_dumper::total_info< std::set< dpay::chain::util::advanced_benchmark_dumper::item > >, (total_time)(items) )
+FC_REFLECT( dpay::chain::util::advanced_benchmark_dumper::total_info< std::multiset< dpay::chain::util::advanced_benchmark_dumper::ritem > >, (total_time)(items) )
 

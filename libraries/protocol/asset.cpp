@@ -15,7 +15,7 @@ index : field
    7  : \0
 */
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 std::string asset_symbol_type::to_string()const
 {
@@ -380,10 +380,10 @@ DEFINE_PRICE_COMPARISON_OPERATOR( >= )
       } FC_CAPTURE_AND_RETHROW( (base)(quote) ) }
 
 
-} } // steem::protocol
+} } // dpay::protocol
 
 namespace fc {
-   void to_variant( const steem::protocol::asset& var, fc::variant& vo )
+   void to_variant( const dpay::protocol::asset& var, fc::variant& vo )
    {
       try
       {
@@ -394,7 +394,7 @@ namespace fc {
       } FC_CAPTURE_AND_RETHROW()
    }
 
-   void from_variant( const fc::variant& var, steem::protocol::asset& vo )
+   void from_variant( const fc::variant& var, dpay::protocol::asset& vo )
    {
       try
       {
@@ -408,7 +408,7 @@ namespace fc {
 
          FC_ASSERT( v_object.contains( "precision" ), "Precision field doesn't exist." );
          FC_ASSERT( v_object.contains( "nai" ), "NAI field doesn't exist." );
-         vo.symbol = steem::protocol::asset_symbol_type::from_nai_string( v_object[ "nai" ].as< std::string >().c_str(), v_object[ "precision" ].as< uint8_t >() );
+         vo.symbol = dpay::protocol::asset_symbol_type::from_nai_string( v_object[ "nai" ].as< std::string >().c_str(), v_object[ "precision" ].as< uint8_t >() );
       } FC_CAPTURE_AND_RETHROW()
    }
 }

@@ -4,15 +4,15 @@
 
 #include <fc/reflect/reflect.hpp>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 struct signed_transaction;
-} } // steem::protocol
+} } // dpay::protocol
 
-namespace steem { namespace plugins { namespace rc {
+namespace dpay { namespace plugins { namespace rc {
 
-using steem::protocol::account_name_type;
-using steem::protocol::signed_transaction;
+using dpay::protocol::account_name_type;
+using dpay::protocol::signed_transaction;
 
 account_name_type get_resource_user( const signed_transaction& tx );
 
-} } } // steem::plugins::rc
+} } } // dpay::plugins::rc

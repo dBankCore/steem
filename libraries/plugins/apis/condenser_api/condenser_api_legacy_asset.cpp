@@ -1,6 +1,6 @@
 #include <steem/plugins/condenser_api/condenser_api_legacy_asset.hpp>
 
-namespace steem { namespace plugins { namespace condenser_api {
+namespace dpay { namespace plugins { namespace condenser_api {
 
 uint32_t string_to_asset_num( const char* p, uint8_t decimals )
 {
@@ -42,11 +42,11 @@ uint32_t string_to_asset_num( const char* p, uint8_t decimals )
          }
          switch( name_u64 )
          {
-            case STEEM_SYMBOL_U64:
+            case BEX_SYMBOL_U64:
                FC_ASSERT( decimals == 3, "Incorrect decimal places" );
                asset_num = STEEM_ASSET_NUM_STEEM;
                break;
-            case SBD_SYMBOL_U64:
+            case BBD_SYMBOL_U64:
                FC_ASSERT( decimals == 3, "Incorrect decimal places" );
                asset_num = STEEM_ASSET_NUM_SBD;
                break;

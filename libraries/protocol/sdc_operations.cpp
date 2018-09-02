@@ -3,7 +3,7 @@
 #include <steem/protocol/validation.hpp>
 #ifdef STEEM_ENABLE_SDC
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 void common_symbol_validation( const asset_symbol_type& symbol )
 {
@@ -29,7 +29,7 @@ void sdc_create_operation::validate()const
    sdc_base_operation::validate();
    FC_ASSERT( sdc_creation_fee.amount >= 0, "fee cannot be negative" );
    FC_ASSERT( sdc_creation_fee.amount <= STEEM_MAX_SHARE_SUPPLY, "Fee must be smaller than STEEM_MAX_SHARE_SUPPLY" );
-   FC_ASSERT( is_asset_type( sdc_creation_fee, STEEM_SYMBOL ) || is_asset_type( sdc_creation_fee, SBD_SYMBOL ), "Fee must be BEX or BBD" );
+   FC_ASSERT( is_asset_type( sdc_creation_fee, BEX_SYMBOL ) || is_asset_type( sdc_creation_fee, BBD_SYMBOL ), "Fee must be BEX or BBD" );
    FC_ASSERT( symbol.decimals() == precision, "Mismatch between redundantly provided precision ${prec1} vs ${prec2}",
       ("prec1",symbol.decimals())("prec2",precision) );
 }
@@ -280,7 +280,7 @@ void sdc_refund_operation::validate()const
 {
    sdc_executor_base_operation::validate();
    FC_ASSERT( is_valid_account_name( contributor ) );
-   FC_ASSERT( amount.symbol == STEEM_SYMBOL );
+   FC_ASSERT( amount.symbol == BEX_SYMBOL );
 }
 
 void sdc_cap_reveal_operation::validate()const

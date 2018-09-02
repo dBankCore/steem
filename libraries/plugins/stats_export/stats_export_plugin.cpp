@@ -14,20 +14,20 @@
 #include <iostream>
 #include <sstream>
 
-namespace steem { namespace plugins { namespace stats_export {
+namespace dpay { namespace plugins { namespace stats_export {
 
-using steem::chain::block_notification;
-using steem::chain::database;
-using steem::chain::dynamic_global_property_object;
+using dpay::chain::block_notification;
+using dpay::chain::database;
+using dpay::chain::dynamic_global_property_object;
 
-using steem::protocol::account_name_type;
-using steem::protocol::authority;
-using steem::protocol::signed_transaction;
+using dpay::protocol::account_name_type;
+using dpay::protocol::authority;
+using dpay::protocol::signed_transaction;
 
-using steem::plugins::block_data_export::block_data_export_plugin;
-using steem::plugins::block_data_export::exportable_block_data;
+using dpay::plugins::block_data_export::block_data_export_plugin;
+using dpay::plugins::block_data_export::exportable_block_data;
 
-using steem::plugins::chain::chain_plugin;
+using dpay::plugins::chain::chain_plugin;
 
 namespace detail {
 
@@ -56,10 +56,10 @@ class api_stats_export_data_object
 
 } } } }
 
-FC_REFLECT( steem::plugins::stats_export::detail::api_stats_transaction_data_object, (user)(size) )
-FC_REFLECT( steem::plugins::stats_export::detail::api_stats_export_data_object, (global_properties)(transaction_stats)(free_memory) )
+FC_REFLECT( dpay::plugins::stats_export::detail::api_stats_transaction_data_object, (user)(size) )
+FC_REFLECT( dpay::plugins::stats_export::detail::api_stats_export_data_object, (global_properties)(transaction_stats)(free_memory) )
 
-namespace steem { namespace plugins { namespace stats_export { namespace detail {
+namespace dpay { namespace plugins { namespace stats_export { namespace detail {
 
 class stats_export_plugin_impl
 {
@@ -153,4 +153,4 @@ void stats_export_plugin::plugin_shutdown()
    chain::util::disconnect_signal( my->_post_apply_block_conn );
 }
 
-} } } // steem::plugins::stats_export
+} } } // dpay::plugins::stats_export

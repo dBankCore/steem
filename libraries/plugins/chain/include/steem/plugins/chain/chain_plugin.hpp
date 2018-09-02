@@ -6,13 +6,13 @@
 
 #define STEEM_CHAIN_PLUGIN_NAME "chain"
 
-namespace steem { namespace plugins { namespace chain {
+namespace dpay { namespace plugins { namespace chain {
 
 namespace detail { class chain_plugin_impl; }
 
 using std::unique_ptr;
 using namespace appbase;
-using namespace steem::chain;
+using namespace dpay::chain;
 
 namespace bfs = boost::filesystem;
 
@@ -33,9 +33,9 @@ public:
    virtual void plugin_startup() override;
    virtual void plugin_shutdown() override;
 
-   bool accept_block( const steem::chain::signed_block& block, bool currently_syncing, uint32_t skip );
-   void accept_transaction( const steem::chain::signed_transaction& trx );
-   steem::chain::signed_block generate_block(
+   bool accept_block( const dpay::chain::signed_block& block, bool currently_syncing, uint32_t skip );
+   void accept_transaction( const dpay::chain::signed_transaction& trx );
+   dpay::chain::signed_block generate_block(
       const fc::time_point_sec when,
       const account_name_type& witness_owner,
       const fc::ecc::private_key& block_signing_private_key,
@@ -55,9 +55,9 @@ public:
     */
    int16_t set_write_lock_hold_time( int16_t new_time );
 
-   bool block_is_on_preferred_chain( const steem::chain::block_id_type& block_id );
+   bool block_is_on_preferred_chain( const dpay::chain::block_id_type& block_id );
 
-   void check_time_in_block( const steem::chain::signed_block& block );
+   void check_time_in_block( const dpay::chain::signed_block& block );
 
    template< typename MultiIndexType >
    bool has_index() const
@@ -107,4 +107,4 @@ private:
    std::unique_ptr< detail::chain_plugin_impl > my;
 };
 
-} } } // steem::plugins::chain
+} } } // dpay::plugins::chain

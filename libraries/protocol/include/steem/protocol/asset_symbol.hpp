@@ -30,20 +30,20 @@
 #ifdef IS_TEST_NET
 
 #define VESTS_SYMBOL_U64  (uint64_t('V') | (uint64_t('E') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('S') << 32))
-#define STEEM_SYMBOL_U64  (uint64_t('T') | (uint64_t('E') << 8) | (uint64_t('X') << 16))
-#define SBD_SYMBOL_U64    (uint64_t('T') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
+#define BEX_SYMBOL_U64  (uint64_t('T') | (uint64_t('E') << 8) | (uint64_t('X') << 16))
+#define BBD_SYMBOL_U64    (uint64_t('T') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
 
 #else
 
 #define VESTS_SYMBOL_U64  (uint64_t('V') | (uint64_t('E') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('S') << 32))
-#define STEEM_SYMBOL_U64  (uint64_t('B') | (uint64_t('E') << 8) | (uint64_t('X') << 16))
-#define SBD_SYMBOL_U64    (uint64_t('B') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
+#define BEX_SYMBOL_U64  (uint64_t('B') | (uint64_t('E') << 8) | (uint64_t('X') << 16))
+#define BBD_SYMBOL_U64    (uint64_t('B') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
 
 #endif
 
 #define VESTS_SYMBOL_SER  (uint64_t(6) | (VESTS_SYMBOL_U64 << 8)) ///< VESTS|VESTS with 6 digits of precision
-#define STEEM_SYMBOL_SER  (uint64_t(3) | (STEEM_SYMBOL_U64 << 8)) ///< BEX|TESTS with 3 digits of precision
-#define SBD_SYMBOL_SER    (uint64_t(3) |   (SBD_SYMBOL_U64 << 8)) ///< BBD|TBD with 3 digits of precision
+#define BEX_SYMBOL_SER  (uint64_t(3) | (BEX_SYMBOL_U64 << 8)) ///< BEX|TESTS with 3 digits of precision
+#define BBD_SYMBOL_SER    (uint64_t(3) |   (BBD_SYMBOL_U64 << 8)) ///< BBD|TBD with 3 digits of precision
 
 #define STEEM_ASSET_MAX_DECIMALS 12
 
@@ -51,7 +51,7 @@
 #define SDC_ASSET_NUM_CONTROL_MASK     0x10
 #define SDC_ASSET_NUM_VESTING_MASK     0x20
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 class asset_symbol_type
 {
@@ -123,9 +123,9 @@ class asset_symbol_type
       uint32_t asset_num = 0;
 };
 
-} } // steem::protocol
+} } // dpay::protocol
 
-FC_REFLECT(steem::protocol::asset_symbol_type, (asset_num))
+FC_REFLECT(dpay::protocol::asset_symbol_type, (asset_num))
 
 namespace fc { namespace raw {
 
@@ -140,20 +140,20 @@ namespace fc { namespace raw {
 // NAI internal storage of legacy assets
 
 template< typename Stream >
-inline void pack( Stream& s, const steem::protocol::asset_symbol_type& sym )
+inline void pack( Stream& s, const dpay::protocol::asset_symbol_type& sym )
 {
    switch( sym.space() )
    {
-      case steem::protocol::asset_symbol_type::legacy_space:
+      case dpay::protocol::asset_symbol_type::legacy_space:
       {
          uint64_t ser = 0;
          switch( sym.asset_num )
          {
             case STEEM_ASSET_NUM_STEEM:
-               ser = STEEM_SYMBOL_SER;
+               ser = BEX_SYMBOL_SER;
                break;
             case STEEM_ASSET_NUM_SBD:
-               ser = SBD_SYMBOL_SER;
+               ser = BBD_SYMBOL_SER;
                break;
             case STEEM_ASSET_NUM_VESTS:
                ser = VESTS_SYMBOL_SER;
@@ -164,7 +164,7 @@ inline void pack( Stream& s, const steem::protocol::asset_symbol_type& sym )
          pack( s, ser );
          break;
       }
-      case steem::protocol::asset_symbol_type::sdc_nai_space:
+      case dpay::protocol::asset_symbol_type::sdc_nai_space:
          pack( s, sym.asset_num );
          break;
       default:
@@ -173,21 +173,21 @@ inline void pack( Stream& s, const steem::protocol::asset_symbol_type& sym )
 }
 
 template< typename Stream >
-inline void unpack( Stream& s, steem::protocol::asset_symbol_type& sym )
+inline void unpack( Stream& s, dpay::protocol::asset_symbol_type& sym )
 {
    uint64_t ser = 0;
    s.read( (char*) &ser, 4 );
 
    switch( ser )
    {
-      case STEEM_SYMBOL_SER & 0xFFFFFFFF:
+      case BEX_SYMBOL_SER & 0xFFFFFFFF:
          s.read( ((char*) &ser)+4, 4 );
-         FC_ASSERT( ser == STEEM_SYMBOL_SER, "invalid asset bits" );
+         FC_ASSERT( ser == BEX_SYMBOL_SER, "invalid asset bits" );
          sym.asset_num = STEEM_ASSET_NUM_STEEM;
          break;
-      case SBD_SYMBOL_SER & 0xFFFFFFFF:
+      case BBD_SYMBOL_SER & 0xFFFFFFFF:
          s.read( ((char*) &ser)+4, 4 );
-         FC_ASSERT( ser == SBD_SYMBOL_SER, "invalid asset bits" );
+         FC_ASSERT( ser == BBD_SYMBOL_SER, "invalid asset bits" );
          sym.asset_num = STEEM_ASSET_NUM_SBD;
          break;
       case VESTS_SYMBOL_SER & 0xFFFFFFFF:
@@ -203,7 +203,7 @@ inline void unpack( Stream& s, steem::protocol::asset_symbol_type& sym )
 
 } // fc::raw
 
-inline void to_variant( const steem::protocol::asset_symbol_type& sym, fc::variant& var )
+inline void to_variant( const dpay::protocol::asset_symbol_type& sym, fc::variant& var )
 {
    try
    {
@@ -213,14 +213,14 @@ inline void to_variant( const steem::protocol::asset_symbol_type& sym, fc::varia
    } FC_CAPTURE_AND_RETHROW()
 }
 
-inline void from_variant( const fc::variant& var, steem::protocol::asset_symbol_type& sym )
+inline void from_variant( const fc::variant& var, dpay::protocol::asset_symbol_type& sym )
 {
    try
    {
       auto v = var.as< std::vector< variant > >();
       FC_ASSERT( v.size() == 2, "Expected tuple of length 2." );
 
-      sym = steem::protocol::asset_symbol_type::from_nai_string( v[1].as< std::string >().c_str(), v[0].as< uint8_t >() );
+      sym = dpay::protocol::asset_symbol_type::from_nai_string( v[1].as< std::string >().c_str(), v[0].as< uint8_t >() );
    } FC_CAPTURE_AND_RETHROW()
 }
 

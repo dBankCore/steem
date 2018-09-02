@@ -7,7 +7,7 @@
 #define STEEM_FOLLOW_API_PLUGIN_NAME "follow_api"
 
 
-namespace steem { namespace plugins { namespace follow {
+namespace dpay { namespace plugins { namespace follow {
 
 using namespace appbase;
 
@@ -15,8 +15,8 @@ class follow_api_plugin : public appbase::plugin< follow_api_plugin >
 {
 public:
    APPBASE_PLUGIN_REQUIRES(
-      (steem::plugins::follow::follow_plugin)
-      (steem::plugins::json_rpc::json_rpc_plugin)
+      (dpay::plugins::follow::follow_plugin)
+      (dpay::plugins::json_rpc::json_rpc_plugin)
    )
 
    follow_api_plugin();
@@ -33,4 +33,4 @@ public:
    std::shared_ptr< class follow_api > api;
 };
 
-} } } // steem::plugins::follow
+} } } // dpay::plugins::follow

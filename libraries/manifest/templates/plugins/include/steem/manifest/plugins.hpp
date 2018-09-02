@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace steem { namespace plugins {
+namespace dpay { namespace plugins {
 
 void register_plugins();
 

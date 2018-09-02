@@ -6,7 +6,7 @@
 #include <fc/exception/exception.hpp>
 #include <fc/io/raw.hpp>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
     public_key_type::public_key_type():key_data(){};
 
@@ -182,38 +182,38 @@ namespace steem { namespace protocol {
          return fc::sha256();
    }
 
-} } // steem::protocol
+} } // dpay::protocol
 
 namespace fc
 {
     using namespace std;
-    void to_variant( const steem::protocol::public_key_type& var,  fc::variant& vo )
+    void to_variant( const dpay::protocol::public_key_type& var,  fc::variant& vo )
     {
         vo = std::string( var );
     }
 
-    void from_variant( const fc::variant& var,  steem::protocol::public_key_type& vo )
+    void from_variant( const fc::variant& var,  dpay::protocol::public_key_type& vo )
     {
-        vo = steem::protocol::public_key_type( var.as_string() );
+        vo = dpay::protocol::public_key_type( var.as_string() );
     }
 
-    void to_variant( const steem::protocol::extended_public_key_type& var, fc::variant& vo )
+    void to_variant( const dpay::protocol::extended_public_key_type& var, fc::variant& vo )
     {
        vo = std::string( var );
     }
 
-    void from_variant( const fc::variant& var, steem::protocol::extended_public_key_type& vo )
+    void from_variant( const fc::variant& var, dpay::protocol::extended_public_key_type& vo )
     {
-       vo = steem::protocol::extended_public_key_type( var.as_string() );
+       vo = dpay::protocol::extended_public_key_type( var.as_string() );
     }
 
-    void to_variant( const steem::protocol::extended_private_key_type& var, fc::variant& vo )
+    void to_variant( const dpay::protocol::extended_private_key_type& var, fc::variant& vo )
     {
        vo = std::string( var );
     }
 
-    void from_variant( const fc::variant& var, steem::protocol::extended_private_key_type& vo )
+    void from_variant( const fc::variant& var, dpay::protocol::extended_private_key_type& vo )
     {
-       vo = steem::protocol::extended_private_key_type( var.as_string() );
+       vo = dpay::protocol::extended_private_key_type( var.as_string() );
     }
 } // fc

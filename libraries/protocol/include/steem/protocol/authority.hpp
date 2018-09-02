@@ -2,7 +2,7 @@
 #include <steem/protocol/types.hpp>
 #include <fc/interprocess/container.hpp>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
    struct authority
    {
@@ -98,10 +98,10 @@ bool is_valid_account_name( const string& name );
 
 bool operator == ( const authority& a, const authority& b );
 
-} } // namespace steem::protocol
+} } // namespace dpay::protocol
 
 
-FC_REFLECT_TYPENAME( steem::protocol::authority::account_authority_map)
-FC_REFLECT_TYPENAME( steem::protocol::authority::key_authority_map)
-FC_REFLECT( steem::protocol::authority, (weight_threshold)(account_auths)(key_auths) )
-FC_REFLECT_ENUM( steem::protocol::authority::classification, (owner)(active)(key)(posting) )
+FC_REFLECT_TYPENAME( dpay::protocol::authority::account_authority_map)
+FC_REFLECT_TYPENAME( dpay::protocol::authority::key_authority_map)
+FC_REFLECT( dpay::protocol::authority, (weight_threshold)(account_auths)(key_auths) )
+FC_REFLECT_ENUM( dpay::protocol::authority::classification, (owner)(active)(key)(posting) )

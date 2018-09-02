@@ -6,13 +6,13 @@
 
 #include "../db_fixture/database_fixture.hpp"
 
-using namespace steem::chain;
-using namespace steem::chain::test;
+using namespace dpay::chain;
+using namespace dpay::chain::test;
 /*
-namespace steem { namespace plugin_tests {
+namespace dpay { namespace plugin_tests {
 
-using namespace steem::app;
-using namespace steem::chain;
+using namespace dpay::app;
+using namespace dpay::chain;
 
 struct test_a_operation : base_operation
 {
@@ -75,16 +75,16 @@ test_plugin::test_plugin( application* app ) : plugin( app )
    database().set_custom_operation_interpreter( plugin_name(), _evaluator_registry );
 }
 
-} } // steem::plugin_tests
+} } // dpay::plugin_tests
 
-STEEM_DEFINE_PLUGIN( test, steem::plugin_tests::test_plugin )
+STEEM_DEFINE_PLUGIN( test, dpay::plugin_tests::test_plugin )
 
-FC_REFLECT( steem::plugin_tests::test_a_operation, (account) )
-FC_REFLECT( steem::plugin_tests::test_b_operation, (account) )
+FC_REFLECT( dpay::plugin_tests::test_a_operation, (account) )
+FC_REFLECT( dpay::plugin_tests::test_b_operation, (account) )
 
-STEEM_DECLARE_OPERATION_TYPE( steem::plugin_tests::test_op );
-FC_REFLECT_TYPENAME( steem::plugin_tests::test_op );
-STEEM_DEFINE_OPERATION_TYPE( steem::plugin_tests::test_op );
+STEEM_DECLARE_OPERATION_TYPE( dpay::plugin_tests::test_op );
+FC_REFLECT_TYPENAME( dpay::plugin_tests::test_op );
+STEEM_DEFINE_OPERATION_TYPE( dpay::plugin_tests::test_op );
 */
 
 BOOST_FIXTURE_TEST_SUITE( plugin_ops, clean_database_fixture );

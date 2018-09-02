@@ -6,7 +6,7 @@
 
 #include <fc/time.hpp>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
    struct base_operation
    {
@@ -39,7 +39,7 @@ namespace steem { namespace protocol {
    typedef flat_set<future_extensions> extensions_type;
 
 
-} } // steem::protocol
+} } // dpay::protocol
 
-FC_REFLECT_TYPENAME( steem::protocol::block_header_extensions )
-FC_REFLECT_TYPENAME( steem::protocol::future_extensions )
+FC_REFLECT_TYPENAME( dpay::protocol::block_header_extensions )
+FC_REFLECT_TYPENAME( dpay::protocol::future_extensions )

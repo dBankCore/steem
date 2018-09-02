@@ -7,7 +7,7 @@
 #define STEEM_MARKET_HISTORY_API_PLUGIN_NAME "market_history_api"
 
 
-namespace steem { namespace plugins { namespace market_history {
+namespace dpay { namespace plugins { namespace market_history {
 
 using namespace appbase;
 
@@ -15,8 +15,8 @@ class market_history_api_plugin : public appbase::plugin< market_history_api_plu
 {
 public:
    APPBASE_PLUGIN_REQUIRES(
-      (steem::plugins::market_history::market_history_plugin)
-      (steem::plugins::json_rpc::json_rpc_plugin)
+      (dpay::plugins::market_history::market_history_plugin)
+      (dpay::plugins::json_rpc::json_rpc_plugin)
    )
 
    market_history_api_plugin();
@@ -33,4 +33,4 @@ public:
    std::shared_ptr< class market_history_api > api;
 };
 
-} } } // steem::plugins::market_history
+} } } // dpay::plugins::market_history

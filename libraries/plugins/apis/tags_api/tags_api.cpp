@@ -8,14 +8,14 @@
 #include <steem/chain/util/reward.hpp>
 #include <steem/chain/util/uint256.hpp>
 
-namespace steem { namespace plugins { namespace tags {
+namespace dpay { namespace plugins { namespace tags {
 
 namespace detail {
 
 class tags_api_impl
 {
    public:
-      tags_api_impl() : _db( appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db() ) {}
+      tags_api_impl() : _db( appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db() ) {}
 
       DECLARE_API_IMPL(
          (get_trending_tags)
@@ -63,7 +63,7 @@ class tags_api_impl
       chain::comment_id_type get_parent( const discussion_query& q );
 
       chain::database& _db;
-      std::shared_ptr< steem::plugins::follow::follow_api > _follow_api;
+      std::shared_ptr< dpay::plugins::follow::follow_api > _follow_api;
 };
 
 DEFINE_API_IMPL( tags_api_impl, get_trending_tags )
@@ -539,7 +539,7 @@ void tags_api_impl::set_pending_payout( discussion& d )
    const auto& cidx = _db.get_index< tags::tag_index, tags::by_comment>();
    auto itr = cidx.lower_bound( d.id );
    if( itr != cidx.end() && itr->comment == d.id )  {
-      d.promoted = asset( itr->promoted_balance, SBD_SYMBOL );
+      d.promoted = asset( itr->promoted_balance, BBD_SYMBOL );
    }
 
    const auto& props = _db.get_dynamic_global_properties();
@@ -671,7 +671,7 @@ discussion_query_result tags_api_impl::get_discussions( const discussion_query& 
       try
       {
          result.discussions.push_back( lookup_discussion( tidx_itr->comment, truncate_body ) );
-         result.discussions.back().promoted = asset(tidx_itr->promoted_balance, SBD_SYMBOL );
+         result.discussions.back().promoted = asset(tidx_itr->promoted_balance, BBD_SYMBOL );
 
          if( filter( result.discussions.back() ) )
          {
@@ -744,10 +744,10 @@ void tags_api::set_pending_payout( discussion& d )
 
 void tags_api::api_startup()
 {
-   auto follow_api_plugin = appbase::app().find_plugin< steem::plugins::follow::follow_api_plugin >();
+   auto follow_api_plugin = appbase::app().find_plugin< dpay::plugins::follow::follow_api_plugin >();
 
    if( follow_api_plugin != nullptr )
       my->_follow_api = follow_api_plugin->api;
 }
 
-} } } // steem::plugins::tags
+} } } // dpay::plugins::tags

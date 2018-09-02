@@ -22,9 +22,9 @@
 
 #define RC_DEFAULT_EXEC_COST 100000
 
-namespace steem { namespace plugins { namespace rc {
+namespace dpay { namespace plugins { namespace rc {
 
-using namespace steem::protocol;
+using namespace dpay::protocol;
 
 struct state_object_size_info
 {
@@ -527,4 +527,4 @@ void count_resources(
       + vtor.state_bytes_count;
 }
 
-} } } // steem::plugins::rc
+} } } // dpay::plugins::rc

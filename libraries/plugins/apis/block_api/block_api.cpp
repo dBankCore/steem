@@ -5,7 +5,7 @@
 
 #include <steem/protocol/get_config.hpp>
 
-namespace steem { namespace plugins { namespace block_api {
+namespace dpay { namespace plugins { namespace block_api {
 
 class block_api_impl
 {
@@ -36,7 +36,7 @@ block_api::block_api()
 block_api::~block_api() {}
 
 block_api_impl::block_api_impl()
-   : _db( appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db() ) {}
+   : _db( appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db() ) {}
 
 block_api_impl::~block_api_impl() {}
 
@@ -73,4 +73,4 @@ DEFINE_READ_APIS( block_api,
    (get_block)
 )
 
-} } } // steem::plugins::block_api
+} } } // dpay::plugins::block_api

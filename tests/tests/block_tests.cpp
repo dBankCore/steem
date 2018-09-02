@@ -38,9 +38,9 @@
 
 #include "../db_fixture/database_fixture.hpp"
 
-using namespace steem;
-using namespace steem::chain;
-using namespace steem::protocol;
+using namespace dpay;
+using namespace dpay::chain;
+using namespace dpay::protocol;
 
 #define TEST_SHARED_MEM_SIZE (1024 * 1024 * 8)
 
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE( generate_empty_blocks )
 {
    try {
       fc::time_point_sec now( STEEM_TESTING_GENESIS_TIMESTAMP );
-      fc::temp_directory data_dir( steem::utilities::temp_directory_path() );
+      fc::temp_directory data_dir( dpay::utilities::temp_directory_path() );
       signed_block b;
 
       // TODO:  Don't generate this here
@@ -128,7 +128,7 @@ BOOST_AUTO_TEST_CASE( generate_empty_blocks )
 BOOST_AUTO_TEST_CASE( undo_block )
 {
    try {
-      fc::temp_directory data_dir( steem::utilities::temp_directory_path() );
+      fc::temp_directory data_dir( dpay::utilities::temp_directory_path() );
       {
          database db;
          db._log_hardforks = false;
@@ -177,8 +177,8 @@ BOOST_AUTO_TEST_CASE( undo_block )
 BOOST_AUTO_TEST_CASE( fork_blocks )
 {
    try {
-      fc::temp_directory data_dir1( steem::utilities::temp_directory_path() );
-      fc::temp_directory data_dir2( steem::utilities::temp_directory_path() );
+      fc::temp_directory data_dir1( dpay::utilities::temp_directory_path() );
+      fc::temp_directory data_dir2( dpay::utilities::temp_directory_path() );
 
       //TODO This test needs 6-7 ish witnesses prior to fork
 
@@ -244,8 +244,8 @@ BOOST_AUTO_TEST_CASE( fork_blocks )
 BOOST_AUTO_TEST_CASE( switch_forks_undo_create )
 {
    try {
-      fc::temp_directory dir1( steem::utilities::temp_directory_path() ),
-                         dir2( steem::utilities::temp_directory_path() );
+      fc::temp_directory dir1( dpay::utilities::temp_directory_path() ),
+                         dir2( dpay::utilities::temp_directory_path() );
       database db1,
                db2;
       db1._log_hardforks = false;
@@ -303,8 +303,8 @@ BOOST_AUTO_TEST_CASE( switch_forks_undo_create )
 BOOST_AUTO_TEST_CASE( duplicate_transactions )
 {
    try {
-      fc::temp_directory dir1( steem::utilities::temp_directory_path() ),
-                         dir2( steem::utilities::temp_directory_path() );
+      fc::temp_directory dir1( dpay::utilities::temp_directory_path() ),
+                         dir2( dpay::utilities::temp_directory_path() );
       database db1,
                db2;
       db1._log_hardforks = false;
@@ -333,7 +333,7 @@ BOOST_AUTO_TEST_CASE( duplicate_transactions )
       transfer_operation t;
       t.from = STEEM_INIT_MINER_NAME;
       t.to = "alice";
-      t.amount = asset(500,STEEM_SYMBOL);
+      t.amount = asset(500,BEX_SYMBOL);
       trx.operations.push_back(t);
       trx.set_expiration( db1.head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
       trx.sign( init_account_priv_key, db1.get_chain_id(), fc::ecc::fc_canonical );
@@ -346,8 +346,8 @@ BOOST_AUTO_TEST_CASE( duplicate_transactions )
 
       STEEM_CHECK_THROW(PUSH_TX( db1, trx, skip_sigs ), fc::exception);
       STEEM_CHECK_THROW(PUSH_TX( db2, trx, skip_sigs ), fc::exception);
-      BOOST_CHECK_EQUAL(db1.get_balance( "alice", STEEM_SYMBOL ).amount.value, 500);
-      BOOST_CHECK_EQUAL(db2.get_balance( "alice", STEEM_SYMBOL ).amount.value, 500);
+      BOOST_CHECK_EQUAL(db1.get_balance( "alice", BEX_SYMBOL ).amount.value, 500);
+      BOOST_CHECK_EQUAL(db2.get_balance( "alice", BEX_SYMBOL ).amount.value, 500);
    } catch (fc::exception& e) {
       edump((e.to_detail_string()));
       throw;
@@ -357,7 +357,7 @@ BOOST_AUTO_TEST_CASE( duplicate_transactions )
 BOOST_AUTO_TEST_CASE( tapos )
 {
    try {
-      fc::temp_directory dir1( steem::utilities::temp_directory_path() );
+      fc::temp_directory dir1( dpay::utilities::temp_directory_path() );
       database db1;
       db1._log_hardforks = false;
       open_test_database( db1, dir1.path() );
@@ -392,7 +392,7 @@ BOOST_AUTO_TEST_CASE( tapos )
       transfer_operation t;
       t.from = STEEM_INIT_MINER_NAME;
       t.to = "alice";
-      t.amount = asset(50,STEEM_SYMBOL);
+      t.amount = asset(50,BEX_SYMBOL);
       trx.operations.push_back(t);
       trx.set_expiration( db1.head_block_time() + fc::seconds(2) );
       trx.sign( init_account_priv_key, db1.get_chain_id(), fc::ecc::fc_canonical );
@@ -420,11 +420,11 @@ BOOST_FIXTURE_TEST_CASE( optional_tapos, clean_database_fixture )
 
       BOOST_TEST_MESSAGE( "Create transaction" );
 
-      transfer( STEEM_INIT_MINER_NAME, "alice", asset( 1000000, STEEM_SYMBOL ) );
+      transfer( STEEM_INIT_MINER_NAME, "alice", asset( 1000000, BEX_SYMBOL ) );
       transfer_operation op;
       op.from = "alice";
       op.to = "bob";
-      op.amount = asset(1000,STEEM_SYMBOL);
+      op.amount = asset(1000,BEX_SYMBOL);
       signed_transaction tx;
       tx.operations.push_back( op );
 
@@ -487,7 +487,7 @@ BOOST_FIXTURE_TEST_CASE( double_sign_check, clean_database_fixture )
    transfer_operation t;
    t.from = STEEM_INIT_MINER_NAME;
    t.to = "bob";
-   t.amount = asset(amount,STEEM_SYMBOL);
+   t.amount = asset(amount,BEX_SYMBOL);
    trx.operations.push_back(t);
    trx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
    trx.validate();
@@ -497,7 +497,7 @@ BOOST_FIXTURE_TEST_CASE( double_sign_check, clean_database_fixture )
    trx.operations.clear();
    t.from = "bob";
    t.to = STEEM_INIT_MINER_NAME;
-   t.amount = asset(amount,STEEM_SYMBOL);
+   t.amount = asset(amount,BEX_SYMBOL);
    trx.operations.push_back(t);
    trx.validate();
 
@@ -544,7 +544,7 @@ BOOST_FIXTURE_TEST_CASE( pop_block_twice, clean_database_fixture )
 
       db->get_account( STEEM_INIT_MINER_NAME );
       // transfer from committee account to Sam account
-      transfer( STEEM_INIT_MINER_NAME, "sam", asset( 100000, STEEM_SYMBOL ) );
+      transfer( STEEM_INIT_MINER_NAME, "sam", asset( 100000, BEX_SYMBOL ) );
 
       generate_block(skip_flags);
 
@@ -735,16 +735,16 @@ BOOST_FIXTURE_TEST_CASE( hardfork_test, database_fixture )
          if( arg == "--show-test-names" )
             std::cout << "running test " << boost::unit_test::framework::current_test_case().p_name << std::endl;
       }
-      appbase::app().register_plugin< steem::plugins::account_history::account_history_plugin >();
-      db_plugin = &appbase::app().register_plugin< steem::plugins::debug_node::debug_node_plugin >();
+      appbase::app().register_plugin< dpay::plugins::account_history::account_history_plugin >();
+      db_plugin = &appbase::app().register_plugin< dpay::plugins::debug_node::debug_node_plugin >();
       init_account_pub_key = init_account_priv_key.get_public_key();
 
       appbase::app().initialize<
-         steem::plugins::account_history::account_history_plugin,
-         steem::plugins::debug_node::debug_node_plugin
+         dpay::plugins::account_history::account_history_plugin,
+         dpay::plugins::debug_node::debug_node_plugin
       >( argc, argv );
 
-      db = &appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db();
+      db = &appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db();
       BOOST_REQUIRE( db );
 
 
@@ -828,7 +828,7 @@ BOOST_FIXTURE_TEST_CASE( generate_block_size, clean_database_fixture )
       transfer_operation op;
       op.from = STEEM_INIT_MINER_NAME;
       op.to = STEEM_TEMP_ACCOUNT;
-      op.amount = asset( 1000, STEEM_SYMBOL );
+      op.amount = asset( 1000, BEX_SYMBOL );
 
       // tx minus op is 79 bytes
       // op is 33 bytes (32 for op + 1 byte static variant tag)

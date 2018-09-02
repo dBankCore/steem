@@ -3,10 +3,10 @@
 
 #include <boost/multi_index/composite_key.hpp>
 
-namespace steem { namespace plugins { namespace reputation {
+namespace dpay { namespace plugins { namespace reputation {
 
 using namespace std;
-using namespace steem::chain;
+using namespace dpay::chain;
 
 using chainbase::t_vector;
 
@@ -53,8 +53,8 @@ typedef multi_index_container<
 > reputation_index;
 
 
-} } } // steem::plugins::reputation
+} } } // dpay::plugins::reputation
 
 
-FC_REFLECT( steem::plugins::reputation::reputation_object, (id)(account)(reputation) )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::reputation::reputation_object, steem::plugins::reputation::reputation_index )
+FC_REFLECT( dpay::plugins::reputation::reputation_object, (id)(account)(reputation) )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::reputation::reputation_object, dpay::plugins::reputation::reputation_index )

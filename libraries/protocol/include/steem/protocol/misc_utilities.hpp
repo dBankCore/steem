@@ -1,6 +1,6 @@
 #pragma once
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 // TODO:  Rename these curves to match naming in manual.md
 enum curve_id
@@ -11,11 +11,11 @@ enum curve_id
    square_root
 };
 
-} } // steem::utilities
+} } // dpay::utilities
 
 
 FC_REFLECT_ENUM(
-   steem::protocol::curve_id,
+   dpay::protocol::curve_id,
    (quadratic)
    (quadratic_curation)
    (linear)

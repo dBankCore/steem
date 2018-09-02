@@ -353,7 +353,7 @@ namespace graphene { namespace net {
 
       fc::variant_object get_call_statistics();
 
-      steem::protocol::chain_id_type get_chain_id() const override;
+      dpay::protocol::chain_id_type get_chain_id() const override;
       bool has_item( const net::item_id& id ) override;
       void handle_message( const message& ) override;
       bool handle_block( const graphene::net::block_message& block_message, bool sync_mode, std::vector<fc::uint160_t>& contained_transaction_message_ids ) override;
@@ -1917,7 +1917,7 @@ namespace graphene { namespace net {
       if (user_data.contains("last_known_fork_block_number"))
         originating_peer->last_known_fork_block_number = user_data["last_known_fork_block_number"].as<uint32_t>();
       if (user_data.contains("chain_id"))
-        originating_peer->chain_id = user_data["chain_id"].as<steem::protocol::chain_id_type>();
+        originating_peer->chain_id = user_data["chain_id"].as<dpay::protocol::chain_id_type>();
     }
 
     void node_impl::on_hello_message( peer_connection* originating_peer, const hello_message& hello_message_received )
@@ -5239,16 +5239,16 @@ namespace graphene { namespace net {
 
     void node_impl::send_message_timing_to_statsd( peer_connection* originating_peer, const message& received_message, const message_hash_type& message_hash )
     {
-      if( steem::plugins::statsd::util::statsd_enabled() )
+      if( dpay::plugins::statsd::util::statsd_enabled() )
       {
         auto iter = originating_peer->items_requested_from_peer.find( item_id( received_message.msg_type, message_hash ) );
         if( iter != originating_peer->items_requested_from_peer.end() )
         {
-          steem::plugins::statsd::util::get_statsd().timing(
+          dpay::plugins::statsd::util::get_statsd().timing(
             "p2p",
             "latency",
             fc::variant( core_message_type_enum( received_message.msg_type ) ).as_string(),
-            steem::plugins::statsd::util::timing_helper( fc::time_point::now() - iter->second ),
+            dpay::plugins::statsd::util::timing_helper( fc::time_point::now() - iter->second ),
             0.1f
           );
         }
@@ -5591,7 +5591,7 @@ namespace graphene { namespace net {
 */
 #endif
 
-    steem::protocol::chain_id_type statistics_gathering_node_delegate_wrapper::get_chain_id() const
+    dpay::protocol::chain_id_type statistics_gathering_node_delegate_wrapper::get_chain_id() const
     {
       INVOKE_AND_COLLECT_STATISTICS(get_chain_id);
     }

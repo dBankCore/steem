@@ -5,7 +5,7 @@
 
 #ifdef STEEM_ENABLE_SDC
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
 enum class sdc_phase : uint8_t
 {
@@ -106,21 +106,21 @@ public:
 
    /// sdc_setup_emissions
    time_point_sec       schedule_time = STEEM_GENESIS_TIME;
-   steem::protocol::
+   dpay::protocol::
    sdc_emissions_unit   emissions_unit;
    uint32_t             interval_seconds = 0;
    uint32_t             interval_count = 0;
    time_point_sec       lep_time = STEEM_GENESIS_TIME;
    time_point_sec       rep_time = STEEM_GENESIS_TIME;
-   asset                lep_abs_amount = asset( 0, STEEM_SYMBOL );
-   asset                rep_abs_amount = asset( 0, STEEM_SYMBOL );
+   asset                lep_abs_amount = asset( 0, BEX_SYMBOL );
+   asset                rep_abs_amount = asset( 0, BEX_SYMBOL );
    uint32_t             lep_rel_amount_numerator = 0;
    uint32_t             rep_rel_amount_numerator = 0;
    uint8_t              rel_amount_denom_bits = 0;
 
    ///parameters for 'sdc_setup_operation'
    int64_t                       max_supply = 0;
-   steem::protocol::
+   dpay::protocol::
    sdc_capped_generation_policy  capped_generation_policy;
    time_point_sec                generation_begin_time;
    time_point_sec                generation_end_time;
@@ -229,9 +229,9 @@ typedef multi_index_container <
    allocator< sdc_event_token_object >
 > sdc_event_token_index;
 
-} } // namespace steem::chain
+} } // namespace dpay::chain
 
-FC_REFLECT_ENUM( steem::chain::sdc_phase,
+FC_REFLECT_ENUM( dpay::chain::sdc_phase,
                   (account_elevated)
                   (setup_completed)
                   (contribution_begin_time_completed)
@@ -241,13 +241,13 @@ FC_REFLECT_ENUM( steem::chain::sdc_phase,
                   (launch_success)
 )
 
-FC_REFLECT( steem::chain::sdc_token_object::sdc_market_maker_state,
+FC_REFLECT( dpay::chain::sdc_token_object::sdc_market_maker_state,
    (steem_balance)
    (token_balance)
    (reserve_ratio)
 )
 
-FC_REFLECT( steem::chain::sdc_token_object,
+FC_REFLECT( dpay::chain::sdc_token_object,
    (id)
    (liquid_symbol)
    (control_account)
@@ -281,7 +281,7 @@ FC_REFLECT( steem::chain::sdc_token_object,
    (steem_units_hard_cap)
 )
 
-FC_REFLECT( steem::chain::sdc_event_token_object,
+FC_REFLECT( dpay::chain::sdc_event_token_object,
    (id)
    (parent)
    (phase)
@@ -291,7 +291,7 @@ FC_REFLECT( steem::chain::sdc_event_token_object,
    (launch_expiration_time)
 )
 
-CHAINBASE_SET_INDEX_TYPE( steem::chain::sdc_token_object, steem::chain::sdc_token_index )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::sdc_event_token_object, steem::chain::sdc_event_token_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::sdc_token_object, dpay::chain::sdc_token_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::sdc_event_token_object, dpay::chain::sdc_event_token_index )
 
 #endif

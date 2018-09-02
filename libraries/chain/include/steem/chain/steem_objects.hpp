@@ -10,11 +10,11 @@
 #include <boost/multiprecision/cpp_int.hpp>
 
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
-   using steem::protocol::asset;
-   using steem::protocol::price;
-   using steem::protocol::asset_symbol_type;
+   using dpay::protocol::asset;
+   using dpay::protocol::price;
+   using dpay::protocol::asset_symbol_type;
    using chainbase::t_deque;
 
    typedef protocol::fixed_string< 16 > reward_fund_name_type;
@@ -267,7 +267,7 @@ namespace steem { namespace chain {
 
          reward_fund_id_type     id;
          reward_fund_name_type   name;
-         asset                   reward_balance = asset( 0, STEEM_SYMBOL );
+         asset                   reward_balance = asset( 0, BEX_SYMBOL );
          fc::uint128_t           recent_claims = 0;
          time_point_sec          last_update;
          uint128_t               content_constant = 0;
@@ -458,47 +458,47 @@ namespace steem { namespace chain {
       allocator< reward_fund_object >
    > reward_fund_index;
 
-} } // steem::chain
+} } // dpay::chain
 
 #include <steem/chain/comment_object.hpp>
 #include <steem/chain/account_object.hpp>
 
-FC_REFLECT( steem::chain::limit_order_object,
+FC_REFLECT( dpay::chain::limit_order_object,
              (id)(created)(expiration)(seller)(orderid)(for_sale)(sell_price) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::limit_order_object, steem::chain::limit_order_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::limit_order_object, dpay::chain::limit_order_index )
 
-FC_REFLECT( steem::chain::feed_history_object,
+FC_REFLECT( dpay::chain::feed_history_object,
              (id)(current_median_history)(price_history) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::feed_history_object, steem::chain::feed_history_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::feed_history_object, dpay::chain::feed_history_index )
 
-FC_REFLECT( steem::chain::convert_request_object,
+FC_REFLECT( dpay::chain::convert_request_object,
              (id)(owner)(requestid)(amount)(conversion_date) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::convert_request_object, steem::chain::convert_request_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::convert_request_object, dpay::chain::convert_request_index )
 
-FC_REFLECT( steem::chain::liquidity_reward_balance_object,
+FC_REFLECT( dpay::chain::liquidity_reward_balance_object,
              (id)(owner)(steem_volume)(sbd_volume)(weight)(last_update) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::liquidity_reward_balance_object, steem::chain::liquidity_reward_balance_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::liquidity_reward_balance_object, dpay::chain::liquidity_reward_balance_index )
 
-FC_REFLECT( steem::chain::withdraw_vesting_route_object,
+FC_REFLECT( dpay::chain::withdraw_vesting_route_object,
              (id)(from_account)(to_account)(percent)(auto_vest) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::withdraw_vesting_route_object, steem::chain::withdraw_vesting_route_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::withdraw_vesting_route_object, dpay::chain::withdraw_vesting_route_index )
 
-FC_REFLECT( steem::chain::savings_withdraw_object,
+FC_REFLECT( dpay::chain::savings_withdraw_object,
              (id)(from)(to)(memo)(request_id)(amount)(complete) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::savings_withdraw_object, steem::chain::savings_withdraw_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::savings_withdraw_object, dpay::chain::savings_withdraw_index )
 
-FC_REFLECT( steem::chain::escrow_object,
+FC_REFLECT( dpay::chain::escrow_object,
              (id)(escrow_id)(from)(to)(agent)
              (ratification_deadline)(escrow_expiration)
              (sbd_balance)(steem_balance)(pending_fee)
              (to_approved)(agent_approved)(disputed) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::escrow_object, steem::chain::escrow_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::escrow_object, dpay::chain::escrow_index )
 
-FC_REFLECT( steem::chain::decline_voting_rights_request_object,
+FC_REFLECT( dpay::chain::decline_voting_rights_request_object,
              (id)(account)(effective_date) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::decline_voting_rights_request_object, steem::chain::decline_voting_rights_request_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::decline_voting_rights_request_object, dpay::chain::decline_voting_rights_request_index )
 
-FC_REFLECT( steem::chain::reward_fund_object,
+FC_REFLECT( dpay::chain::reward_fund_object,
             (id)
             (name)
             (reward_balance)
@@ -510,4 +510,4 @@ FC_REFLECT( steem::chain::reward_fund_object,
             (author_reward_curve)
             (curation_reward_curve)
          )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::reward_fund_object, steem::chain::reward_fund_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::reward_fund_object, dpay::chain::reward_fund_index )

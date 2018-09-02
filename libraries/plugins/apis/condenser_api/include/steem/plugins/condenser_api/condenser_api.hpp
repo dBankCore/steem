@@ -18,7 +18,7 @@
 #include <fc/vector.hpp>
 #include <fc/api.hpp>
 
-namespace steem { namespace plugins { namespace condenser_api {
+namespace dpay { namespace plugins { namespace condenser_api {
 
 using std::vector;
 using fc::variant;
@@ -1114,24 +1114,24 @@ public:
       std::unique_ptr< detail::condenser_api_impl > my;
 };
 
-} } } // steem::plugins::condenser_api
+} } } // dpay::plugins::condenser_api
 
-FC_REFLECT( steem::plugins::condenser_api::discussion_index,
+FC_REFLECT( dpay::plugins::condenser_api::discussion_index,
             (category)(trending)(payout)(payout_comments)(trending30)(updated)(created)(responses)(active)(votes)(maturing)(best)(hot)(promoted)(cashout) )
 
-FC_REFLECT( steem::plugins::condenser_api::api_tag_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_tag_object,
             (name)(total_payouts)(net_votes)(top_posts)(comments)(trending) )
 
-FC_REFLECT( steem::plugins::condenser_api::state,
+FC_REFLECT( dpay::plugins::condenser_api::state,
             (current_route)(props)(tag_idx)(tags)(content)(accounts)(witnesses)(discussion_idx)(witness_schedule)(feed_price)(error) )
 
-FC_REFLECT( steem::plugins::condenser_api::api_limit_order_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_limit_order_object,
             (id)(created)(expiration)(seller)(orderid)(for_sale)(sell_price)(real_price)(rewarded) )
 
-FC_REFLECT( steem::plugins::condenser_api::api_operation_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_operation_object,
              (trx_id)(block)(trx_in_block)(op_in_trx)(virtual_op)(timestamp)(op) )
 
-FC_REFLECT( steem::plugins::condenser_api::api_account_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_account_object,
              (id)(name)(owner)(active)(posting)(memo_key)(json_metadata)(proxy)(last_owner_update)(last_account_update)
              (created)(mined)
              (recovery_account)(last_account_recovery)(reset_account)
@@ -1148,11 +1148,11 @@ FC_REFLECT( steem::plugins::condenser_api::api_account_object,
              (last_post)(last_root_post)(last_vote_time)
           )
 
-FC_REFLECT_DERIVED( steem::plugins::condenser_api::extended_account, (steem::plugins::condenser_api::api_account_object),
+FC_REFLECT_DERIVED( dpay::plugins::condenser_api::extended_account, (dpay::plugins::condenser_api::api_account_object),
             (average_bandwidth)(lifetime_bandwidth)(last_bandwidth_update)(average_market_bandwidth)(lifetime_market_bandwidth)(last_market_bandwidth_update)
             (vesting_balance)(reputation)(transfer_history)(market_history)(post_history)(vote_history)(other_history)(witness_votes)(tags_usage)(guest_bloggers)(open_orders)(comments)(feed)(blog)(recent_replies)(recommended) )
 
-FC_REFLECT( steem::plugins::condenser_api::api_comment_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_comment_object,
              (id)(author)(permlink)
              (category)(parent_author)(parent_permlink)
              (title)(body)(json_metadata)(last_update)(created)(active)(last_payout)
@@ -1165,7 +1165,7 @@ FC_REFLECT( steem::plugins::condenser_api::api_comment_object,
              (beneficiaries)
           )
 
-FC_REFLECT( steem::plugins::condenser_api::extended_dynamic_global_properties,
+FC_REFLECT( dpay::plugins::condenser_api::extended_dynamic_global_properties,
             (head_block_number)(head_block_id)(time)
             (current_witness)(total_pow)(num_pow_witnesses)
             (virtual_supply)(current_supply)(confidential_supply)(current_sbd_supply)(confidential_sbd_supply)
@@ -1175,7 +1175,7 @@ FC_REFLECT( steem::plugins::condenser_api::extended_dynamic_global_properties,
             (maximum_block_size)(current_aslot)(recent_slots_filled)(participation_count)(last_irreversible_block_num)(vote_power_reserve_rate)
             (average_block_size)(current_reserve_ratio)(max_virtual_bandwidth) )
 
-FC_REFLECT( steem::plugins::condenser_api::api_witness_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_witness_object,
              (id)
              (owner)
              (created)
@@ -1188,7 +1188,7 @@ FC_REFLECT( steem::plugins::condenser_api::api_witness_object,
              (hardfork_version_vote)(hardfork_time_vote)
           )
 
-FC_REFLECT( steem::plugins::condenser_api::api_witness_schedule_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_witness_schedule_object,
              (id)
              (current_virtual_time)
              (next_shuffle_block_num)
@@ -1206,13 +1206,13 @@ FC_REFLECT( steem::plugins::condenser_api::api_witness_schedule_object,
              (hardfork_required_witnesses)
           )
 
-FC_REFLECT( steem::plugins::condenser_api::api_feed_history_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_feed_history_object,
              (id)
              (current_median_history)
              (price_history)
           )
 
-FC_REFLECT( steem::plugins::condenser_api::api_reward_fund_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_reward_fund_object,
             (id)
             (name)
             (reward_balance)
@@ -1225,13 +1225,13 @@ FC_REFLECT( steem::plugins::condenser_api::api_reward_fund_object,
             (curation_reward_curve)
          )
 
-FC_REFLECT( steem::plugins::condenser_api::api_escrow_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_escrow_object,
              (id)(escrow_id)(from)(to)(agent)
              (ratification_deadline)(escrow_expiration)
              (sbd_balance)(steem_balance)(pending_fee)
              (to_approved)(agent_approved)(disputed) )
 
-FC_REFLECT( steem::plugins::condenser_api::api_savings_withdraw_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_savings_withdraw_object,
              (id)
              (from)
              (to)
@@ -1241,54 +1241,54 @@ FC_REFLECT( steem::plugins::condenser_api::api_savings_withdraw_object,
              (complete)
           )
 
-FC_REFLECT( steem::plugins::condenser_api::api_vesting_delegation_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_vesting_delegation_object,
             (id)(delegator)(delegatee)(vesting_shares)(min_delegation_time) )
 
-FC_REFLECT( steem::plugins::condenser_api::api_vesting_delegation_expiration_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_vesting_delegation_expiration_object,
             (id)(delegator)(vesting_shares)(expiration) )
 
-FC_REFLECT( steem::plugins::condenser_api::api_convert_request_object,
+FC_REFLECT( dpay::plugins::condenser_api::api_convert_request_object,
              (id)(owner)(requestid)(amount)(conversion_date) )
 
-FC_REFLECT_DERIVED( steem::plugins::condenser_api::discussion, (steem::plugins::condenser_api::api_comment_object),
+FC_REFLECT_DERIVED( dpay::plugins::condenser_api::discussion, (dpay::plugins::condenser_api::api_comment_object),
              (url)(root_title)(pending_payout_value)(total_pending_payout_value)
              (active_votes)(replies)(author_reputation)(promoted)
              (body_length)(reblogged_by)(first_reblogged_by)(first_reblogged_on)
           )
 
-FC_REFLECT( steem::plugins::condenser_api::scheduled_hardfork,
+FC_REFLECT( dpay::plugins::condenser_api::scheduled_hardfork,
             (hf_version)(live_time) )
 
-FC_REFLECT( steem::plugins::condenser_api::account_vote,
+FC_REFLECT( dpay::plugins::condenser_api::account_vote,
             (authorperm)(weight)(rshares)(percent)(time) )
 
-FC_REFLECT( steem::plugins::condenser_api::tag_index, (trending) )
+FC_REFLECT( dpay::plugins::condenser_api::tag_index, (trending) )
 
-FC_REFLECT_ENUM( steem::plugins::condenser_api::withdraw_route_type, (incoming)(outgoing)(all) )
+FC_REFLECT_ENUM( dpay::plugins::condenser_api::withdraw_route_type, (incoming)(outgoing)(all) )
 
-FC_REFLECT( steem::plugins::condenser_api::get_version_return,
+FC_REFLECT( dpay::plugins::condenser_api::get_version_return,
             (blockchain_version)(steem_revision)(fc_revision) )
 
-FC_REFLECT( steem::plugins::condenser_api::broadcast_transaction_synchronous_return,
+FC_REFLECT( dpay::plugins::condenser_api::broadcast_transaction_synchronous_return,
             (id)(block_num)(trx_num)(expired) )
 
-FC_REFLECT( steem::plugins::condenser_api::comment_feed_entry,
+FC_REFLECT( dpay::plugins::condenser_api::comment_feed_entry,
             (comment)(reblog_by)(reblog_on)(entry_id) )
 
-FC_REFLECT( steem::plugins::condenser_api::comment_blog_entry,
+FC_REFLECT( dpay::plugins::condenser_api::comment_blog_entry,
             (comment)(blog)(reblog_on)(entry_id) )
 
-FC_REFLECT( steem::plugins::condenser_api::ticker,
+FC_REFLECT( dpay::plugins::condenser_api::ticker,
             (latest)(lowest_ask)(highest_bid)(percent_change)(steem_volume)(sbd_volume) )
 
-FC_REFLECT( steem::plugins::condenser_api::volume,
+FC_REFLECT( dpay::plugins::condenser_api::volume,
             (steem_volume)(sbd_volume) )
 
-FC_REFLECT( steem::plugins::condenser_api::order,
+FC_REFLECT( dpay::plugins::condenser_api::order,
             (order_price)(real_price)(steem)(sbd)(created) )
 
-FC_REFLECT( steem::plugins::condenser_api::order_book,
+FC_REFLECT( dpay::plugins::condenser_api::order_book,
             (bids)(asks) )
 
-FC_REFLECT( steem::plugins::condenser_api::market_trade,
+FC_REFLECT( dpay::plugins::condenser_api::market_trade,
             (date)(current_pays)(open_pays) )

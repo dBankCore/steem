@@ -8,7 +8,7 @@
 #include <fc/variant.hpp>
 #include <fc/vector.hpp>
 
-namespace steem { namespace plugins { namespace witness {
+namespace dpay { namespace plugins { namespace witness {
 
 namespace detail
 {
@@ -46,10 +46,10 @@ class witness_api
       std::unique_ptr< detail::witness_api_impl > my;
 };
 
-} } } // steem::plugins::witness
+} } } // dpay::plugins::witness
 
-FC_REFLECT( steem::plugins::witness::get_account_bandwidth_args,
+FC_REFLECT( dpay::plugins::witness::get_account_bandwidth_args,
             (account)(type) )
 
-FC_REFLECT( steem::plugins::witness::get_account_bandwidth_return,
+FC_REFLECT( dpay::plugins::witness::get_account_bandwidth_return,
             (bandwidth) )

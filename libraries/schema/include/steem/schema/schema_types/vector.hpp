@@ -6,7 +6,7 @@
 
 #include <vector>
 
-namespace steem { namespace schema { namespace detail {
+namespace dpay { namespace schema { namespace detail {
 
 //////////////////////////////////////////////
 // vector                                   //

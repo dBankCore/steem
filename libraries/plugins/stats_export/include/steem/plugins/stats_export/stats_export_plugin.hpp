@@ -4,7 +4,7 @@
 #include <steem/plugins/chain/chain_plugin.hpp>
 #include <steem/plugins/block_data_export/block_data_export_plugin.hpp>
 
-namespace steem { namespace plugins { namespace stats_export {
+namespace dpay { namespace plugins { namespace stats_export {
 
 namespace detail { class stats_export_plugin_impl; }
 
@@ -19,8 +19,8 @@ class stats_export_plugin : public appbase::plugin< stats_export_plugin >
       virtual ~stats_export_plugin();
 
       APPBASE_PLUGIN_REQUIRES(
-         (steem::plugins::block_data_export::block_data_export_plugin)
-         (steem::plugins::chain::chain_plugin)
+         (dpay::plugins::block_data_export::block_data_export_plugin)
+         (dpay::plugins::chain::chain_plugin)
       )
 
       static const std::string& name() { static std::string name = STEEM_STATS_EXPORT_PLUGIN_NAME; return name; }
@@ -34,4 +34,4 @@ class stats_export_plugin : public appbase::plugin< stats_export_plugin >
       std::unique_ptr< detail::stats_export_plugin_impl > my;
 };
 
-} } } // steem::plugins::stats_export
+} } } // dpay::plugins::stats_export

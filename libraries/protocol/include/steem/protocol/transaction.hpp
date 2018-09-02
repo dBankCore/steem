@@ -5,7 +5,7 @@
 
 #include <numeric>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 using fc::ecc::canonical_signature_type;
 
@@ -116,8 +116,8 @@ using fc::ecc::canonical_signature_type;
 
    /// @} transactions group
 
-} } // steem::protocol
+} } // dpay::protocol
 
-FC_REFLECT( steem::protocol::transaction, (ref_block_num)(ref_block_prefix)(expiration)(operations)(extensions) )
-FC_REFLECT_DERIVED( steem::protocol::signed_transaction, (steem::protocol::transaction), (signatures) )
-FC_REFLECT_DERIVED( steem::protocol::annotated_signed_transaction, (steem::protocol::signed_transaction), (transaction_id)(block_num)(transaction_num) );
+FC_REFLECT( dpay::protocol::transaction, (ref_block_num)(ref_block_prefix)(expiration)(operations)(extensions) )
+FC_REFLECT_DERIVED( dpay::protocol::signed_transaction, (dpay::protocol::transaction), (signatures) )
+FC_REFLECT_DERIVED( dpay::protocol::annotated_signed_transaction, (dpay::protocol::signed_transaction), (transaction_id)(block_num)(transaction_num) );

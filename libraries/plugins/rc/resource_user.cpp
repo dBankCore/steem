@@ -3,9 +3,9 @@
 
 #include <steem/protocol/transaction.hpp>
 
-namespace steem { namespace plugins { namespace rc {
+namespace dpay { namespace plugins { namespace rc {
 
-using namespace steem::protocol;
+using namespace dpay::protocol;
 
 account_name_type get_resource_user( const signed_transaction& tx )
 {
@@ -27,4 +27,4 @@ account_name_type get_resource_user( const signed_transaction& tx )
    return account_name_type();
 }
 
-} } } // steem::plugins::rc
+} } } // dpay::plugins::rc

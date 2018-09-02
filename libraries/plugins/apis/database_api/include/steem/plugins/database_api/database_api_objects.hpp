@@ -10,9 +10,9 @@
 #include <steem/chain/witness_objects.hpp>
 #include <steem/chain/database.hpp>
 
-namespace steem { namespace plugins { namespace database_api {
+namespace dpay { namespace plugins { namespace database_api {
 
-using namespace steem::chain;
+using namespace dpay::chain;
 
 typedef change_recovery_account_request_object api_change_recovery_account_request_object;
 typedef block_summary_object                   api_block_summary_object;
@@ -529,9 +529,9 @@ struct order_book
    vector< order >      bids;
 };
 
-} } } // steem::plugins::database_api
+} } } // dpay::plugins::database_api
 
-FC_REFLECT( steem::plugins::database_api::api_comment_object,
+FC_REFLECT( dpay::plugins::database_api::api_comment_object,
              (id)(author)(permlink)
              (category)(parent_author)(parent_permlink)
              (title)(body)(json_metadata)(last_update)(created)(active)(last_payout)
@@ -544,11 +544,11 @@ FC_REFLECT( steem::plugins::database_api::api_comment_object,
              (beneficiaries)
           )
 
-FC_REFLECT( steem::plugins::database_api::api_comment_vote_object,
+FC_REFLECT( dpay::plugins::database_api::api_comment_vote_object,
              (id)(voter)(author)(permlink)(weight)(rshares)(vote_percent)(last_update)(num_changes)
           )
 
-FC_REFLECT( steem::plugins::database_api::api_account_object,
+FC_REFLECT( dpay::plugins::database_api::api_account_object,
              (id)(name)(owner)(active)(posting)(memo_key)(json_metadata)(proxy)(last_owner_update)(last_account_update)
              (created)(mined)
              (recovery_account)(last_account_recovery)(reset_account)
@@ -566,21 +566,21 @@ FC_REFLECT( steem::plugins::database_api::api_account_object,
              (is_sdc)
           )
 
-FC_REFLECT( steem::plugins::database_api::api_owner_authority_history_object,
+FC_REFLECT( dpay::plugins::database_api::api_owner_authority_history_object,
              (id)
              (account)
              (previous_owner_authority)
              (last_valid_time)
           )
 
-FC_REFLECT( steem::plugins::database_api::api_account_recovery_request_object,
+FC_REFLECT( dpay::plugins::database_api::api_account_recovery_request_object,
              (id)
              (account_to_recover)
              (new_owner_authority)
              (expires)
           )
 
-FC_REFLECT( steem::plugins::database_api::api_savings_withdraw_object,
+FC_REFLECT( dpay::plugins::database_api::api_savings_withdraw_object,
              (id)
              (from)
              (to)
@@ -590,13 +590,13 @@ FC_REFLECT( steem::plugins::database_api::api_savings_withdraw_object,
              (complete)
           )
 
-FC_REFLECT( steem::plugins::database_api::api_feed_history_object,
+FC_REFLECT( dpay::plugins::database_api::api_feed_history_object,
              (id)
              (current_median_history)
              (price_history)
           )
 
-FC_REFLECT( steem::plugins::database_api::api_witness_object,
+FC_REFLECT( dpay::plugins::database_api::api_witness_object,
              (id)
              (owner)
              (created)
@@ -609,7 +609,7 @@ FC_REFLECT( steem::plugins::database_api::api_witness_object,
              (hardfork_version_vote)(hardfork_time_vote)
           )
 
-FC_REFLECT( steem::plugins::database_api::api_witness_schedule_object,
+FC_REFLECT( dpay::plugins::database_api::api_witness_schedule_object,
              (id)
              (current_virtual_time)
              (next_shuffle_block_num)
@@ -627,13 +627,13 @@ FC_REFLECT( steem::plugins::database_api::api_witness_schedule_object,
              (hardfork_required_witnesses)
           )
 
-FC_REFLECT_DERIVED( steem::plugins::database_api::api_signed_block_object, (steem::protocol::signed_block),
+FC_REFLECT_DERIVED( dpay::plugins::database_api::api_signed_block_object, (dpay::protocol::signed_block),
                      (block_id)
                      (signing_key)
                      (transaction_ids)
                   )
 
-FC_REFLECT( steem::plugins::database_api::api_hardfork_property_object,
+FC_REFLECT( dpay::plugins::database_api::api_hardfork_property_object,
             (id)
             (processed_hardforks)
             (last_hardfork)
@@ -642,6 +642,6 @@ FC_REFLECT( steem::plugins::database_api::api_hardfork_property_object,
             (next_hardfork_time)
           )
 
-FC_REFLECT( steem::plugins::database_api::order, (order_price)(real_price)(steem)(sbd)(created) );
+FC_REFLECT( dpay::plugins::database_api::order, (order_price)(real_price)(steem)(sbd)(created) );
 
-FC_REFLECT( steem::plugins::database_api::order_book, (asks)(bids) );
+FC_REFLECT( dpay::plugins::database_api::order_book, (asks)(bids) );

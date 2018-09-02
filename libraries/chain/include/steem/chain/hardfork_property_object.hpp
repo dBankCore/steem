@@ -4,7 +4,7 @@
 
 #include <steem/chain/steem_object_types.hpp>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
    using chainbase::t_vector;
 
@@ -37,9 +37,9 @@ namespace steem { namespace chain {
       allocator< hardfork_property_object >
    > hardfork_property_index;
 
-} } // steem::chain
+} } // dpay::chain
 
-FC_REFLECT( steem::chain::hardfork_property_object,
+FC_REFLECT( dpay::chain::hardfork_property_object,
    (id)(processed_hardforks)(last_hardfork)(current_hardfork_version)
    (next_hardfork)(next_hardfork_time) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::hardfork_property_object, steem::chain::hardfork_property_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::hardfork_property_object, dpay::chain::hardfork_property_index )

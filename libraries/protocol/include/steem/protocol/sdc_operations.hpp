@@ -13,7 +13,7 @@
 #define SDC_MIN_SATURATION_STEEM_UNITS 1000
 #define SDC_MIN_SOFT_CAP_STEEM_UNITS   1000
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 /**
  * Base of all sdc operations issued by token creator, holding what's needed by all of them.
@@ -273,27 +273,27 @@ struct sdc_set_runtime_parameters_operation : public sdc_base_operation
 } }
 
 FC_REFLECT(
-   steem::protocol::sdc_base_operation,
+   dpay::protocol::sdc_base_operation,
    (control_account)
    (symbol)
 )
 
 FC_REFLECT(
-   steem::protocol::sdc_executor_base_operation,
+   dpay::protocol::sdc_executor_base_operation,
    (executor)
    (symbol)
 )
 
 FC_REFLECT_DERIVED(
-   steem::protocol::sdc_create_operation,
-   (steem::protocol::sdc_base_operation),
+   dpay::protocol::sdc_create_operation,
+   (dpay::protocol::sdc_base_operation),
    (sdc_creation_fee)
    (extensions)
 )
 
 FC_REFLECT_DERIVED(
-   steem::protocol::sdc_setup_operation,
-   (steem::protocol::sdc_base_operation),
+   dpay::protocol::sdc_setup_operation,
+   (dpay::protocol::sdc_base_operation),
    (decimal_places)
    (max_supply)
    (initial_generation_policy)
@@ -305,33 +305,33 @@ FC_REFLECT_DERIVED(
    )
 
 FC_REFLECT(
-   steem::protocol::sdc_generation_unit,
+   dpay::protocol::sdc_generation_unit,
    (steem_unit)
    (token_unit)
    )
 
 FC_REFLECT(
-   steem::protocol::sdc_cap_commitment,
+   dpay::protocol::sdc_cap_commitment,
    (lower_bound)
    (upper_bound)
    (hash)
    )
 
 FC_REFLECT(
-   steem::protocol::sdc_revealed_cap,
+   dpay::protocol::sdc_revealed_cap,
    (amount)
    (nonce)
    )
 
 FC_REFLECT_DERIVED(
-   steem::protocol::sdc_cap_reveal_operation,
-   (steem::protocol::sdc_base_operation),
+   dpay::protocol::sdc_cap_reveal_operation,
+   (dpay::protocol::sdc_base_operation),
    (cap)
    (extensions)
    )
 
 FC_REFLECT(
-   steem::protocol::sdc_capped_generation_policy,
+   dpay::protocol::sdc_capped_generation_policy,
    (pre_soft_cap_unit)
    (post_soft_cap_unit)
    (min_steem_units_commitment)
@@ -343,8 +343,8 @@ FC_REFLECT(
    )
 
 FC_REFLECT_DERIVED(
-   steem::protocol::sdc_refund_operation,
-   (steem::protocol::sdc_executor_base_operation),
+   dpay::protocol::sdc_refund_operation,
+   (dpay::protocol::sdc_executor_base_operation),
    (contributor)
    (contribution_id)
    (amount)
@@ -352,13 +352,13 @@ FC_REFLECT_DERIVED(
    )
 
 FC_REFLECT(
-   steem::protocol::sdc_emissions_unit,
+   dpay::protocol::sdc_emissions_unit,
    (token_unit)
    )
 
 FC_REFLECT_DERIVED(
-   steem::protocol::sdc_setup_emissions_operation,
-   (steem::protocol::sdc_base_operation),
+   dpay::protocol::sdc_setup_emissions_operation,
+   (dpay::protocol::sdc_base_operation),
    (schedule_time)
    (emissions_unit)
    (interval_seconds)
@@ -374,31 +374,31 @@ FC_REFLECT_DERIVED(
    )
 
 FC_REFLECT(
-   steem::protocol::sdc_param_allow_vesting,
+   dpay::protocol::sdc_param_allow_vesting,
    (value)
    )
 
 FC_REFLECT(
-   steem::protocol::sdc_param_allow_voting,
+   dpay::protocol::sdc_param_allow_voting,
    (value)
    )
 
-FC_REFLECT_TYPENAME( steem::protocol::sdc_setup_parameter )
+FC_REFLECT_TYPENAME( dpay::protocol::sdc_setup_parameter )
 
 FC_REFLECT(
-   steem::protocol::sdc_param_windows_v1,
+   dpay::protocol::sdc_param_windows_v1,
    (cashout_window_seconds)
    (reverse_auction_window_seconds)
    )
 
 FC_REFLECT(
-   steem::protocol::sdc_param_vote_regeneration_period_seconds_v1,
+   dpay::protocol::sdc_param_vote_regeneration_period_seconds_v1,
    (vote_regeneration_period_seconds)
    (votes_per_regeneration_period)
    )
 
 FC_REFLECT(
-   steem::protocol::sdc_param_rewards_v1,
+   dpay::protocol::sdc_param_rewards_v1,
    (content_constant)
    (percent_curation_rewards)
    (percent_content_rewards)
@@ -407,19 +407,19 @@ FC_REFLECT(
    )
 
 FC_REFLECT_TYPENAME(
-   steem::protocol::sdc_runtime_parameter
+   dpay::protocol::sdc_runtime_parameter
    )
 
 FC_REFLECT_DERIVED(
-   steem::protocol::sdc_set_setup_parameters_operation,
-   (steem::protocol::sdc_base_operation),
+   dpay::protocol::sdc_set_setup_parameters_operation,
+   (dpay::protocol::sdc_base_operation),
    (setup_parameters)
    (extensions)
    )
 
 FC_REFLECT_DERIVED(
-   steem::protocol::sdc_set_runtime_parameters_operation,
-   (steem::protocol::sdc_base_operation),
+   dpay::protocol::sdc_set_runtime_parameters_operation,
+   (dpay::protocol::sdc_base_operation),
    (runtime_parameters)
    (extensions)
    )

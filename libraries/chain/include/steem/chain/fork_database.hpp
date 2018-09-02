@@ -8,12 +8,12 @@
 #include <boost/multi_index/mem_fun.hpp>
 
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
    using boost::multi_index_container;
    using namespace boost::multi_index;
 
-   using steem::protocol::signed_block;
-   using steem::protocol::block_id_type;
+   using dpay::protocol::signed_block;
+   using dpay::protocol::block_id_type;
 
    struct fork_item
    {
@@ -104,4 +104,4 @@ namespace steem { namespace chain {
          shared_ptr<fork_item>    _head;
    };
 
-} } // steem::chain
+} } // dpay::chain

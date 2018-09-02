@@ -12,9 +12,9 @@
 
 #include <iostream>
 
-using namespace steem;
-using namespace steem::chain;
-using namespace steem::protocol;
+using namespace dpay;
+using namespace dpay::chain;
+using namespace dpay::protocol;
 
 #ifndef IS_TEST_NET
 

@@ -42,7 +42,7 @@ std::string wstring_to_utf8(const std::wstring& str)
 
 #include <limits>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
    using fc::uint128_t;
 
 inline void validate_permlink_0_1( const string& permlink )
@@ -324,7 +324,7 @@ void account_create_evaluator::do_apply( const account_create_operation& o )
    if( _db.has_hardfork( STEEM_HARDFORK_0_20__2651 ) || _db.is_producing() )
    {
       FC_TODO( "Move to validate() after HF20" );
-      FC_ASSERT( o.fee <= asset( STEEM_MAX_ACCOUNT_CREATION_FEE, STEEM_SYMBOL ), "Account creation fee cannot be too large" );
+      FC_ASSERT( o.fee <= asset( STEEM_MAX_ACCOUNT_CREATION_FEE, BEX_SYMBOL ), "Account creation fee cannot be too large" );
    }
 
    if( _db.has_hardfork( STEEM_HARDFORK_0_20__1771 ) )
@@ -335,8 +335,8 @@ void account_create_evaluator::do_apply( const account_create_operation& o )
    }
    else if( !_db.has_hardfork( STEEM_HARDFORK_0_20__1761 ) && _db.has_hardfork( STEEM_HARDFORK_0_19__987 ) )
    {
-      FC_ASSERT( o.fee >= asset( wso.median_props.account_creation_fee.amount * STEEM_CREATE_ACCOUNT_WITH_STEEM_MODIFIER, STEEM_SYMBOL ), "Insufficient Fee: ${f} required, ${p} provided.",
-                 ("f", wso.median_props.account_creation_fee * asset( STEEM_CREATE_ACCOUNT_WITH_STEEM_MODIFIER, STEEM_SYMBOL ) )
+      FC_ASSERT( o.fee >= asset( wso.median_props.account_creation_fee.amount * STEEM_CREATE_ACCOUNT_WITH_STEEM_MODIFIER, BEX_SYMBOL ), "Insufficient Fee: ${f} required, ${p} provided.",
+                 ("f", wso.median_props.account_creation_fee * asset( STEEM_CREATE_ACCOUNT_WITH_STEEM_MODIFIER, BEX_SYMBOL ) )
                  ("p", o.fee) );
    }
    else if( _db.has_hardfork( STEEM_HARDFORK_0_1 ) )
@@ -398,7 +398,7 @@ void account_create_with_delegation_evaluator::do_apply( const account_create_wi
    if( _db.has_hardfork( STEEM_HARDFORK_0_20__2651 ) || _db.is_producing() )
    {
       FC_TODO( "Move to validate() after HF20" );
-      FC_ASSERT( o.fee <= asset( STEEM_MAX_ACCOUNT_CREATION_FEE, STEEM_SYMBOL ), "Account creation fee cannot be too large" );
+      FC_ASSERT( o.fee <= asset( STEEM_MAX_ACCOUNT_CREATION_FEE, BEX_SYMBOL ), "Account creation fee cannot be too large" );
    }
 
    const auto& creator = _db.get_account( o.creator );
@@ -413,9 +413,9 @@ void account_create_with_delegation_evaluator::do_apply( const account_create_wi
                ( "creator.vesting_shares", creator.vesting_shares )
                ( "creator.delegated_vesting_shares", creator.delegated_vesting_shares )( "required", o.delegation ) );
 
-   auto target_delegation = asset( wso.median_props.account_creation_fee.amount * STEEM_CREATE_ACCOUNT_WITH_STEEM_MODIFIER * STEEM_CREATE_ACCOUNT_DELEGATION_RATIO, STEEM_SYMBOL ) * props.get_vesting_share_price();
+   auto target_delegation = asset( wso.median_props.account_creation_fee.amount * STEEM_CREATE_ACCOUNT_WITH_STEEM_MODIFIER * STEEM_CREATE_ACCOUNT_DELEGATION_RATIO, BEX_SYMBOL ) * props.get_vesting_share_price();
 
-   auto current_delegation = asset( o.fee.amount * STEEM_CREATE_ACCOUNT_DELEGATION_RATIO, STEEM_SYMBOL ) * props.get_vesting_share_price() + o.delegation;
+   auto current_delegation = asset( o.fee.amount * STEEM_CREATE_ACCOUNT_DELEGATION_RATIO, BEX_SYMBOL ) * props.get_vesting_share_price() + o.delegation;
 
    FC_ASSERT( current_delegation >= target_delegation, "Inssufficient Delegation ${f} required, ${p} provided.",
                ("f", target_delegation )
@@ -628,7 +628,7 @@ struct comment_options_extension_visitor
       {
          for( const auto& a : va.votable_assets )
          {
-            if( a.first != STEEM_SYMBOL )
+            if( a.first != BEX_SYMBOL )
             {
                FC_ASSERT( remaining_asset_number > 0, "Comment votable assets number exceeds allowed limit ${ava}.",
                         ("ava", SDC_MAX_VOTABLE_ASSETS) );
@@ -916,7 +916,7 @@ void escrow_transfer_evaluator::do_apply( const escrow_transfer_operation& o )
 
       asset steem_spent = o.steem_amount;
       asset sbd_spent = o.sbd_amount;
-      if( o.fee.symbol == STEEM_SYMBOL )
+      if( o.fee.symbol == BEX_SYMBOL )
          steem_spent += o.fee;
       else
          sbd_spent += o.fee;
@@ -2271,7 +2271,7 @@ void pow2_evaluator::do_apply( const pow2_operation& o )
 void feed_publish_evaluator::do_apply( const feed_publish_operation& o )
 {
    if( _db.has_hardfork( STEEM_HARDFORK_0_20__409 ) )
-      FC_ASSERT( is_asset_type( o.exchange_rate.base, SBD_SYMBOL ) && is_asset_type( o.exchange_rate.quote, STEEM_SYMBOL ),
+      FC_ASSERT( is_asset_type( o.exchange_rate.base, BBD_SYMBOL ) && is_asset_type( o.exchange_rate.quote, BEX_SYMBOL ),
             "Price feed must be a BBD/BEX price" );
 
    const auto& witness = _db.get_witness( o.publisher );
@@ -2731,12 +2731,12 @@ void claim_reward_balance_evaluator::do_apply( const claim_reward_balance_operat
    FC_ASSERT( op.reward_vests <= acnt.reward_vesting_balance, "Cannot claim that much VESTS. Claim: ${c} Actual: ${a}",
       ("c", op.reward_vests)("a", acnt.reward_vesting_balance) );
 
-   asset reward_vesting_steem_to_move = asset( 0, STEEM_SYMBOL );
+   asset reward_vesting_steem_to_move = asset( 0, BEX_SYMBOL );
    if( op.reward_vests == acnt.reward_vesting_balance )
       reward_vesting_steem_to_move = acnt.reward_vesting_steem;
    else
       reward_vesting_steem_to_move = asset( ( ( uint128_t( op.reward_vests.amount.value ) * uint128_t( acnt.reward_vesting_steem.amount.value ) )
-         / uint128_t( acnt.reward_vesting_balance.amount.value ) ).to_uint64(), STEEM_SYMBOL );
+         / uint128_t( acnt.reward_vesting_balance.amount.value ) ).to_uint64(), BEX_SYMBOL );
 
    _db.adjust_reward_balance( acnt, -op.reward_steem );
    _db.adjust_reward_balance( acnt, -op.reward_sbd );
@@ -2798,12 +2798,12 @@ void claim_reward_balance2_evaluator::do_apply( const claim_reward_balance2_oper
             FC_ASSERT( token <= a->reward_vesting_balance, "Cannot claim that much VESTS. Claim: ${c} Actual: ${a}",
                ("c", token)("a", a->reward_vesting_balance) );
 
-            asset reward_vesting_steem_to_move = asset( 0, STEEM_SYMBOL );
+            asset reward_vesting_steem_to_move = asset( 0, BEX_SYMBOL );
             if( token == a->reward_vesting_balance )
                reward_vesting_steem_to_move = a->reward_vesting_steem;
             else
                reward_vesting_steem_to_move = asset( ( ( uint128_t( token.amount.value ) * uint128_t( a->reward_vesting_steem.amount.value ) )
-                  / uint128_t( a->reward_vesting_balance.amount.value ) ).to_uint64(), STEEM_SYMBOL );
+                  / uint128_t( a->reward_vesting_balance.amount.value ) ).to_uint64(), BEX_SYMBOL );
 
             _db.modify( *a, [&]( account_object& a )
             {
@@ -2823,11 +2823,11 @@ void claim_reward_balance2_evaluator::do_apply( const claim_reward_balance2_oper
 
             _db.adjust_proxied_witness_votes( *a, token.amount );
          }
-         else if( token.symbol == STEEM_SYMBOL || token.symbol == SBD_SYMBOL )
+         else if( token.symbol == BEX_SYMBOL || token.symbol == BBD_SYMBOL )
          {
-            FC_ASSERT( is_asset_type( token, STEEM_SYMBOL ) == false || token <= a->reward_steem_balance,
+            FC_ASSERT( is_asset_type( token, BEX_SYMBOL ) == false || token <= a->reward_steem_balance,
                        "Cannot claim that much BEX. Claim: ${c} Actual: ${a}", ("c", token)("a", a->reward_steem_balance) );
-            FC_ASSERT( is_asset_type( token, SBD_SYMBOL ) == false || token <= a->reward_sbd_balance,
+            FC_ASSERT( is_asset_type( token, BBD_SYMBOL ) == false || token <= a->reward_sbd_balance,
                        "Cannot claim that much BBD. Claim: ${c} Actual: ${a}", ("c", token)("a", a->reward_sbd_balance) );
             _db.adjust_reward_balance( *a, -token );
             _db.adjust_balance( *a, token );
@@ -2897,10 +2897,10 @@ void delegate_vesting_shares_evaluator::do_apply( const delegate_vesting_shares_
 
    // HF 20 increase fee meaning by 30x, reduce these thresholds to compensate.
    auto min_delegation = _db.has_hardfork( STEEM_HARDFORK_0_20__1761 ) ?
-      asset( wso.median_props.account_creation_fee.amount / 3, STEEM_SYMBOL ) * gpo.get_vesting_share_price() :
-      asset( wso.median_props.account_creation_fee.amount * 10, STEEM_SYMBOL ) * gpo.get_vesting_share_price();
+      asset( wso.median_props.account_creation_fee.amount / 3, BEX_SYMBOL ) * gpo.get_vesting_share_price() :
+      asset( wso.median_props.account_creation_fee.amount * 10, BEX_SYMBOL ) * gpo.get_vesting_share_price();
    auto min_update = _db.has_hardfork( STEEM_HARDFORK_0_20__1761 ) ?
-      asset( wso.median_props.account_creation_fee.amount / 30, STEEM_SYMBOL ) * gpo.get_vesting_share_price() :
+      asset( wso.median_props.account_creation_fee.amount / 30, BEX_SYMBOL ) * gpo.get_vesting_share_price() :
       wso.median_props.account_creation_fee * gpo.get_vesting_share_price();
 
    // If delegation doesn't exist, create it
@@ -3027,4 +3027,4 @@ void delegate_vesting_shares_evaluator::do_apply( const delegate_vesting_shares_
    }
 }
 
-} } // steem::chain
+} } // dpay::chain

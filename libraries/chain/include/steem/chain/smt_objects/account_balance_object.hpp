@@ -5,7 +5,7 @@
 
 #ifdef STEEM_ENABLE_SDC
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
 /**
  * Class responsible for holding regular (i.e. non-reward) balance of SDC for given account.
@@ -142,16 +142,16 @@ typedef multi_index_container <
    allocator< account_rewards_balance_object >
 > account_rewards_balance_index;
 
-} } // namespace steem::chain
+} } // namespace dpay::chain
 
-FC_REFLECT( steem::chain::account_regular_balance_object,
+FC_REFLECT( dpay::chain::account_regular_balance_object,
    (id)
    (owner)
    (liquid)
    (vesting)
 )
 
-FC_REFLECT( steem::chain::account_rewards_balance_object,
+FC_REFLECT( dpay::chain::account_rewards_balance_object,
    (id)
    (owner)
    (pending_liquid)
@@ -159,7 +159,7 @@ FC_REFLECT( steem::chain::account_rewards_balance_object,
    (pending_vesting_value)
 )
 
-CHAINBASE_SET_INDEX_TYPE( steem::chain::account_regular_balance_object, steem::chain::account_regular_balance_index )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::account_rewards_balance_object, steem::chain::account_rewards_balance_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::account_regular_balance_object, dpay::chain::account_regular_balance_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::account_rewards_balance_object, dpay::chain::account_rewards_balance_index )
 
 #endif

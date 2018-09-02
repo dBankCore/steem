@@ -2,9 +2,9 @@
 #include <fc/filesystem.hpp>
 #include <steem/protocol/block.hpp>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
-   using namespace steem::protocol;
+   using namespace dpay::protocol;
 
    namespace detail { class block_log_impl; }
 

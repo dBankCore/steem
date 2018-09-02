@@ -27,8 +27,8 @@
 
 #include <fc/filesystem.hpp>
 
-namespace steem { namespace utilities {
+namespace dpay { namespace utilities {
 
 fc::path temp_directory_path();
 
-} } // steem::utilities
+} } // dpay::utilities

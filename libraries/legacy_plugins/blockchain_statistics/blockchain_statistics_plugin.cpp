@@ -9,12 +9,12 @@
 #include <steem/chain/index.hpp>
 #include <steem/chain/operation_notification.hpp>
 
-namespace steem { namespace blockchain_statistics {
+namespace dpay { namespace blockchain_statistics {
 
 namespace detail
 {
 
-using namespace steem::protocol;
+using namespace dpay::protocol;
 
 class blockchain_statistics_plugin_impl
 {
@@ -53,7 +53,7 @@ struct operation_process
       {
          b.transfers++;
 
-         if( op.amount.symbol == STEEM_SYMBOL )
+         if( op.amount.symbol == BEX_SYMBOL )
             b.steem_transferred += op.amount.amount;
          else
             b.sbd_transferred += op.amount.amount;
@@ -191,7 +191,7 @@ struct operation_process
       _db.modify( _bucket, [&]( bucket_object& b )
       {
          b.vesting_withdrawals_processed++;
-         if( op.deposited.symbol == STEEM_SYMBOL )
+         if( op.deposited.symbol == BEX_SYMBOL )
             b.vests_withdrawn += op.withdrawn.amount;
          else
             b.vests_transferred += op.withdrawn.amount;
@@ -468,6 +468,6 @@ uint32_t blockchain_statistics_plugin::get_max_history_per_bucket() const
    return _my->_maximum_history_per_bucket_size;
 }
 
-} } // steem::blockchain_statistics
+} } // dpay::blockchain_statistics
 
-STEEM_DEFINE_PLUGIN( blockchain_statistics, steem::blockchain_statistics::blockchain_statistics_plugin );
+STEEM_DEFINE_PLUGIN( blockchain_statistics, dpay::blockchain_statistics::blockchain_statistics_plugin );

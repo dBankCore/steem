@@ -6,7 +6,7 @@
 
 #define STEEM_TEST_API_PLUGIN_NAME "test_api"
 
-namespace steem { namespace plugins { namespace test_api {
+namespace dpay { namespace plugins { namespace test_api {
 
 using namespace appbase;
 
@@ -39,9 +39,9 @@ class test_api_plugin : public appbase::plugin< test_api_plugin >
       )
 };
 
-} } } // steem::plugins::test_api
+} } } // dpay::plugins::test_api
 
-FC_REFLECT( steem::plugins::test_api::test_api_a_args, )
-FC_REFLECT( steem::plugins::test_api::test_api_b_args, )
-FC_REFLECT( steem::plugins::test_api::test_api_a_return, (value) )
-FC_REFLECT( steem::plugins::test_api::test_api_b_return, (value) )
+FC_REFLECT( dpay::plugins::test_api::test_api_a_args, )
+FC_REFLECT( dpay::plugins::test_api::test_api_b_args, )
+FC_REFLECT( dpay::plugins::test_api::test_api_a_return, (value) )
+FC_REFLECT( dpay::plugins::test_api::test_api_b_return, (value) )

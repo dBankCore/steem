@@ -11,12 +11,12 @@
 #include <fc/crypto/base58.hpp>
 #include <fc/api.hpp>
 
-namespace steem { namespace wallet {
+namespace dpay { namespace wallet {
 
 using namespace std;
 
-using namespace steem::utilities;
-using namespace steem::protocol;
+using namespace dpay::utilities;
+using namespace dpay::protocol;
 
 typedef uint16_t transaction_handle_type;
 
@@ -83,7 +83,7 @@ class wallet_api_impl;
 class wallet_api
 {
    public:
-      wallet_api( const wallet_data& initial_data, const steem::protocol::chain_id_type& _steem_chain_id, fc::api< remote_node_api > rapi );
+      wallet_api( const wallet_data& initial_data, const dpay::protocol::chain_id_type& _steem_chain_id, fc::api< remote_node_api > rapi );
       virtual ~wallet_api();
 
       bool copy_wallet_file( string destination_filename );
@@ -1075,20 +1075,20 @@ struct plain_keys {
 
 } }
 
-FC_REFLECT( steem::wallet::wallet_data,
+FC_REFLECT( dpay::wallet::wallet_data,
             (cipher_keys)
             (ws_server)
             (ws_user)
             (ws_password)
           )
 
-FC_REFLECT( steem::wallet::brain_key_info, (brain_priv_key)(wif_priv_key) (pub_key))
+FC_REFLECT( dpay::wallet::brain_key_info, (brain_priv_key)(wif_priv_key) (pub_key))
 
-FC_REFLECT( steem::wallet::plain_keys, (checksum)(keys) )
+FC_REFLECT( dpay::wallet::plain_keys, (checksum)(keys) )
 
-FC_REFLECT_ENUM( steem::wallet::authority_type, (owner)(active)(posting) )
+FC_REFLECT_ENUM( dpay::wallet::authority_type, (owner)(active)(posting) )
 
-FC_API( steem::wallet::wallet_api,
+FC_API( dpay::wallet::wallet_api,
         /// wallet api
         (help)(gethelp)
         (about)(is_new)(is_locked)(lock)(unlock)(set_password)
@@ -1171,4 +1171,4 @@ FC_API( steem::wallet::wallet_api,
         (get_transaction)
       )
 
-FC_REFLECT( steem::wallet::memo_data, (from)(to)(nonce)(check)(encrypted) )
+FC_REFLECT( dpay::wallet::memo_data, (from)(to)(nonce)(check)(encrypted) )

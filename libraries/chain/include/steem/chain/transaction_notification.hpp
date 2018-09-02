@@ -2,17 +2,17 @@
 
 #include <steem/protocol/block.hpp>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
 struct transaction_notification
 {
-   transaction_notification( const steem::protocol::signed_transaction& tx ) : transaction(tx)
+   transaction_notification( const dpay::protocol::signed_transaction& tx ) : transaction(tx)
    {
       transaction_id = tx.id();
    }
 
-   steem::protocol::transaction_id_type          transaction_id;
-   const steem::protocol::signed_transaction&    transaction;
+   dpay::protocol::transaction_id_type          transaction_id;
+   const dpay::protocol::signed_transaction&    transaction;
 };
 
 } }

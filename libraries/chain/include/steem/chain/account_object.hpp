@@ -13,9 +13,9 @@
 
 #include <numeric>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
-   using steem::protocol::authority;
+   using dpay::protocol::authority;
 
    class account_object : public object< account_object_type, account_object >
    {
@@ -50,8 +50,8 @@ namespace steem { namespace chain {
          bool              can_vote = true;
          util::manabar     voting_manabar;
 
-         asset             balance = asset( 0, STEEM_SYMBOL );  ///< total liquid shares held by this account
-         asset             savings_balance = asset( 0, STEEM_SYMBOL );  ///< total liquid shares held by this account
+         asset             balance = asset( 0, BEX_SYMBOL );  ///< total liquid shares held by this account
+         asset             savings_balance = asset( 0, BEX_SYMBOL );  ///< total liquid shares held by this account
 
          /**
           *  BBD Deposits pay interest based upon the interest rate set by witnesses. The purpose of these
@@ -67,13 +67,13 @@ namespace steem { namespace chain {
           *  @defgroup sbd_data sbd Balance Data
           */
          ///@{
-         asset             sbd_balance = asset( 0, SBD_SYMBOL ); /// total sbd balance
+         asset             sbd_balance = asset( 0, BBD_SYMBOL ); /// total sbd balance
          uint128_t         sbd_seconds; ///< total sbd * how long it has been hel
          time_point_sec    sbd_seconds_last_update; ///< the last time the sbd_seconds was updated
          time_point_sec    sbd_last_interest_payment; ///< used to pay interest at most once per month
 
 
-         asset             savings_sbd_balance = asset( 0, SBD_SYMBOL ); /// total sbd balance
+         asset             savings_sbd_balance = asset( 0, BBD_SYMBOL ); /// total sbd balance
          uint128_t         savings_sbd_seconds; ///< total sbd * how long it has been hel
          time_point_sec    savings_sbd_seconds_last_update; ///< the last time the sbd_seconds was updated
          time_point_sec    savings_sbd_last_interest_payment; ///< used to pay interest at most once per month
@@ -81,10 +81,10 @@ namespace steem { namespace chain {
          uint8_t           savings_withdraw_requests = 0;
          ///@}
 
-         asset             reward_sbd_balance = asset( 0, SBD_SYMBOL );
-         asset             reward_steem_balance = asset( 0, STEEM_SYMBOL );
+         asset             reward_sbd_balance = asset( 0, BBD_SYMBOL );
+         asset             reward_steem_balance = asset( 0, BEX_SYMBOL );
          asset             reward_vesting_balance = asset( 0, VESTS_SYMBOL );
-         asset             reward_vesting_steem = asset( 0, STEEM_SYMBOL );
+         asset             reward_vesting_steem = asset( 0, BEX_SYMBOL );
 
          share_type        curation_rewards = 0;
          share_type        posting_rewards = 0;
@@ -402,7 +402,7 @@ namespace steem { namespace chain {
    > change_recovery_account_request_index;
 } }
 
-FC_REFLECT( steem::chain::account_object,
+FC_REFLECT( dpay::chain::account_object,
              (id)(name)(memo_key)(json_metadata)(proxy)(last_account_update)
              (created)(mined)
              (recovery_account)(last_account_recovery)(reset_account)
@@ -421,32 +421,32 @@ FC_REFLECT( steem::chain::account_object,
              (pending_claimed_accounts)
           )
 
-CHAINBASE_SET_INDEX_TYPE( steem::chain::account_object, steem::chain::account_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::account_object, dpay::chain::account_index )
 
-FC_REFLECT( steem::chain::account_authority_object,
+FC_REFLECT( dpay::chain::account_authority_object,
              (id)(account)(owner)(active)(posting)(last_owner_update)
 )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::account_authority_object, steem::chain::account_authority_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::account_authority_object, dpay::chain::account_authority_index )
 
-FC_REFLECT( steem::chain::vesting_delegation_object,
+FC_REFLECT( dpay::chain::vesting_delegation_object,
             (id)(delegator)(delegatee)(vesting_shares)(min_delegation_time) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::vesting_delegation_object, steem::chain::vesting_delegation_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::vesting_delegation_object, dpay::chain::vesting_delegation_index )
 
-FC_REFLECT( steem::chain::vesting_delegation_expiration_object,
+FC_REFLECT( dpay::chain::vesting_delegation_expiration_object,
             (id)(delegator)(vesting_shares)(expiration) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::vesting_delegation_expiration_object, steem::chain::vesting_delegation_expiration_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::vesting_delegation_expiration_object, dpay::chain::vesting_delegation_expiration_index )
 
-FC_REFLECT( steem::chain::owner_authority_history_object,
+FC_REFLECT( dpay::chain::owner_authority_history_object,
              (id)(account)(previous_owner_authority)(last_valid_time)
           )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::owner_authority_history_object, steem::chain::owner_authority_history_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::owner_authority_history_object, dpay::chain::owner_authority_history_index )
 
-FC_REFLECT( steem::chain::account_recovery_request_object,
+FC_REFLECT( dpay::chain::account_recovery_request_object,
              (id)(account_to_recover)(new_owner_authority)(expires)
           )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::account_recovery_request_object, steem::chain::account_recovery_request_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::account_recovery_request_object, dpay::chain::account_recovery_request_index )
 
-FC_REFLECT( steem::chain::change_recovery_account_request_object,
+FC_REFLECT( dpay::chain::change_recovery_account_request_object,
              (id)(account_to_recover)(recovery_account)(effective_on)
           )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::change_recovery_account_request_object, steem::chain::change_recovery_account_request_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::change_recovery_account_request_object, dpay::chain::change_recovery_account_request_index )

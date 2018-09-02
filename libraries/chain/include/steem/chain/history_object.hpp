@@ -11,7 +11,7 @@
 #include <boost/multi_index/composite_key.hpp>
 
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
    class operation_object : public object< operation_object_type, operation_object >
    {
@@ -92,20 +92,20 @@ namespace steem { namespace chain {
    > account_history_index;
 } }
 
-FC_REFLECT( steem::chain::operation_object, (id)(trx_id)(block)(trx_in_block)(op_in_trx)(virtual_op)(timestamp)(serialized_op) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::operation_object, steem::chain::operation_index )
+FC_REFLECT( dpay::chain::operation_object, (id)(trx_id)(block)(trx_in_block)(op_in_trx)(virtual_op)(timestamp)(serialized_op) )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::operation_object, dpay::chain::operation_index )
 
-FC_REFLECT( steem::chain::account_history_object, (id)(account)(sequence)(op) )
+FC_REFLECT( dpay::chain::account_history_object, (id)(account)(sequence)(op) )
 
-CHAINBASE_SET_INDEX_TYPE( steem::chain::account_history_object, steem::chain::account_history_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::account_history_object, dpay::chain::account_history_index )
 
 namespace helpers
 {
    template <>
-   class index_statistic_provider<steem::chain::operation_index>
+   class index_statistic_provider<dpay::chain::operation_index>
    {
    public:
-      typedef steem::chain::operation_index IndexType;
+      typedef dpay::chain::operation_index IndexType;
 
       index_statistic_info gather_statistics(const IndexType& index, bool onlyStaticInfo) const
       {
@@ -116,7 +116,7 @@ namespace helpers
          {
             for(const auto& o : index)
                info._item_additional_allocation +=
-                  o.serialized_op.capacity()*sizeof(steem::chain::buffer_type::value_type);
+                  o.serialized_op.capacity()*sizeof(dpay::chain::buffer_type::value_type);
          }
 
          return info;
@@ -124,10 +124,10 @@ namespace helpers
    };
 
    template <>
-   class index_statistic_provider<steem::chain::account_history_index>
+   class index_statistic_provider<dpay::chain::account_history_index>
    {
    public:
-      typedef steem::chain::account_history_index IndexType;
+      typedef dpay::chain::account_history_index IndexType;
 
       index_statistic_info gather_statistics(const IndexType& index, bool onlyStaticInfo) const
       {
@@ -138,7 +138,7 @@ namespace helpers
          {
             //for(const auto& o : index)
             //   info._item_additional_allocation += o.get_ops().capacity()*
-            //      sizeof(steem::chain::account_history_object::operation_container::value_type);
+            //      sizeof(dpay::chain::account_history_object::operation_container::value_type);
          }
 
          return info;

@@ -9,16 +9,16 @@
 
 #include <boost/multi_index/composite_key.hpp>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
-   using steem::protocol::digest_type;
-   using steem::protocol::public_key_type;
-   using steem::protocol::version;
-   using steem::protocol::hardfork_version;
-   using steem::protocol::price;
-   using steem::protocol::asset;
-   using steem::protocol::asset_symbol_type;
-   using steem::chain::util::rd_dynamics_params;
+   using dpay::protocol::digest_type;
+   using dpay::protocol::public_key_type;
+   using dpay::protocol::version;
+   using dpay::protocol::hardfork_version;
+   using dpay::protocol::price;
+   using dpay::protocol::asset;
+   using dpay::protocol::asset_symbol_type;
+   using dpay::chain::util::rd_dynamics_params;
 
    /**
     * Witnesses must vote on how to set certain chain properties to ensure a smooth
@@ -34,7 +34,7 @@ namespace steem { namespace chain {
        *  ability to vote and make transactions.
        */
       asset             account_creation_fee =
-         asset( STEEM_MIN_ACCOUNT_CREATION_FEE, STEEM_SYMBOL );
+         asset( STEEM_MIN_ACCOUNT_CREATION_FEE, BEX_SYMBOL );
 
       /**
        *  This witnesses vote for the maximum_block_size which is used by the network
@@ -278,9 +278,9 @@ namespace steem { namespace chain {
 
 } }
 
-FC_REFLECT_ENUM( steem::chain::witness_object::witness_schedule_type, (elected)(timeshare)(miner)(none) )
+FC_REFLECT_ENUM( dpay::chain::witness_object::witness_schedule_type, (elected)(timeshare)(miner)(none) )
 
-FC_REFLECT( steem::chain::chain_properties,
+FC_REFLECT( dpay::chain::chain_properties,
              (account_creation_fee)
              (maximum_block_size)
              (sbd_interest_rate)
@@ -288,7 +288,7 @@ FC_REFLECT( steem::chain::chain_properties,
              (account_subsidy_decay)
           )
 
-FC_REFLECT( steem::chain::witness_object,
+FC_REFLECT( dpay::chain::witness_object,
              (id)
              (owner)
              (created)
@@ -301,12 +301,12 @@ FC_REFLECT( steem::chain::witness_object,
              (hardfork_version_vote)(hardfork_time_vote)
              (available_witness_account_subsidies)
           )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::witness_object, steem::chain::witness_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::witness_object, dpay::chain::witness_index )
 
-FC_REFLECT( steem::chain::witness_vote_object, (id)(witness)(account) )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::witness_vote_object, steem::chain::witness_vote_index )
+FC_REFLECT( dpay::chain::witness_vote_object, (id)(witness)(account) )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::witness_vote_object, dpay::chain::witness_vote_index )
 
-FC_REFLECT( steem::chain::witness_schedule_object,
+FC_REFLECT( dpay::chain::witness_schedule_object,
              (id)(current_virtual_time)(next_shuffle_block_num)(current_shuffled_witnesses)(num_scheduled_witnesses)
              (elected_weight)(timeshare_weight)(miner_weight)(witness_pay_normalization_factor)
              (median_props)(majority_version)
@@ -318,4 +318,4 @@ FC_REFLECT( steem::chain::witness_schedule_object,
              (account_subsidy_witness_rd)
              (min_witness_account_subsidy_decay)
           )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::witness_schedule_object, steem::chain::witness_schedule_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::witness_schedule_object, dpay::chain::witness_schedule_index )

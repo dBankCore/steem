@@ -2,7 +2,7 @@
 #include <steem/chain/util/reward.hpp>
 #include <steem/chain/util/uint256.hpp>
 
-namespace steem { namespace chain { namespace util {
+namespace dpay { namespace chain { namespace util {
 
 uint8_t find_msb( const uint128_t& u )
 {
@@ -94,4 +94,4 @@ uint128_t evaluate_reward_curve( const uint128_t& rshares, const protocol::curve
    return result;
 }
 
-} } } // steem::chain::util
+} } } // dpay::chain::util

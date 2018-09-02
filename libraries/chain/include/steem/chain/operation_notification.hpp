@@ -4,7 +4,7 @@
 
 #include <steem/chain/steem_object_types.hpp>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
 struct operation_notification
 {

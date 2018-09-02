@@ -24,10 +24,10 @@
 extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
 
 #define PUSH_TX \
-   steem::chain::test::_push_transaction
+   dpay::chain::test::_push_transaction
 
 #define PUSH_BLOCK \
-   steem::chain::test::_push_block
+   dpay::chain::test::_push_block
 
 // See below
 #define REQUIRE_OP_VALIDATION_SUCCESS( op, field, value ) \
@@ -138,7 +138,7 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
    asset_symbol_type name ## _symbol = get_new_sdc_symbol( decimal_places, db );
 
 #define ASSET( s ) \
-   steem::plugins::condenser_api::legacy_asset::from_string( s ).to_asset()
+   dpay::plugins::condenser_api::legacy_asset::from_string( s ).to_asset()
 
 #define FUND( account_name, amount ) \
    fund( account_name, amount ); \
@@ -178,9 +178,9 @@ TX.sign( KEY, db->get_chain_id(), fc::ecc::bip_0062 );
    STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), EXCEPTION ); \
 }
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
-using namespace steem::protocol;
+using namespace dpay::protocol;
 
 struct database_fixture {
    // the reason we use an app is to exercise the indexes of built-in
@@ -191,7 +191,7 @@ struct database_fixture {
    account_id_type committee_account;
    fc::ecc::private_key private_key = fc::ecc::private_key::generate();
    fc::ecc::private_key init_account_priv_key = fc::ecc::private_key::regenerate( fc::sha256::hash( string( "init_key" ) ) );
-   string debug_key = steem::utilities::key_to_wif( init_account_priv_key );
+   string debug_key = dpay::utilities::key_to_wif( init_account_priv_key );
    public_key_type init_account_pub_key = init_account_priv_key.get_public_key();
    uint32_t default_skip = 0 | database::skip_undo_history_check | database::skip_authority_check;
    fc::ecc::canonical_signature_type default_sig_canon = fc::ecc::fc_canonical;
@@ -337,7 +337,7 @@ using sdc_database_fixture_for_plugin = t_sdc_database_fixture< database_fixture
 struct json_rpc_database_fixture : public database_fixture
 {
    private:
-      steem::plugins::json_rpc::json_rpc_plugin* rpc_plugin;
+      dpay::plugins::json_rpc::json_rpc_plugin* rpc_plugin;
 
       fc::variant get_answer( std::string& request );
       void review_answer( fc::variant& answer, int64_t code, bool is_warning, bool is_fail, fc::optional< fc::variant > id );

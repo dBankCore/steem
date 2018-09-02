@@ -6,7 +6,7 @@
 
 #include <utility>
 
-namespace steem { namespace schema { namespace detail {
+namespace dpay { namespace schema { namespace detail {
 
 //////////////////////////////////////////////
 // pair                                     //

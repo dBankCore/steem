@@ -3,7 +3,7 @@
 
 #include <steem/plugins/chain/chain_plugin.hpp>
 
-namespace steem { namespace plugins { namespace sdc_test {
+namespace dpay { namespace plugins { namespace sdc_test {
 
 using namespace appbase;
 
@@ -15,7 +15,7 @@ class sdc_test_plugin : public appbase::plugin< sdc_test_plugin >
       sdc_test_plugin();
       virtual ~sdc_test_plugin();
 
-      APPBASE_PLUGIN_REQUIRES( (steem::plugins::chain::chain_plugin) )
+      APPBASE_PLUGIN_REQUIRES( (dpay::plugins::chain::chain_plugin) )
 
       static const std::string& name() { static std::string name = STEEM_SDC_TEST_PLUGIN_NAME; return name; }
 
@@ -28,4 +28,4 @@ class sdc_test_plugin : public appbase::plugin< sdc_test_plugin >
       std::unique_ptr< class sdc_test_plugin_impl > my;
 };
 
-} } } // steem::plugins::sdc_test
+} } } // dpay::plugins::sdc_test

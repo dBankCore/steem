@@ -24,9 +24,9 @@
 #endif
 
 
-namespace steem { namespace plugins { namespace market_history {
+namespace dpay { namespace plugins { namespace market_history {
 
-using namespace steem::chain;
+using namespace dpay::chain;
 using namespace appbase;
 
 enum market_history_object_types
@@ -43,7 +43,7 @@ class market_history_plugin : public plugin< market_history_plugin >
       market_history_plugin();
       virtual ~market_history_plugin();
 
-      APPBASE_PLUGIN_REQUIRES( (steem::plugins::chain::chain_plugin) )
+      APPBASE_PLUGIN_REQUIRES( (dpay::plugins::chain::chain_plugin) )
 
       static const std::string& name() { static std::string name = STEEM_MARKET_HISTORY_PLUGIN_NAME; return name; }
 
@@ -101,13 +101,13 @@ struct bucket_object : public object< bucket_object_type, bucket_object >
    bucket_object_details non_steem;
 
 #ifdef STEEM_ENABLE_SDC
-   asset_symbol_type symbol = SBD_SYMBOL;
+   asset_symbol_type symbol = BBD_SYMBOL;
 
-   price high()const { return asset( non_steem.high, symbol ) / asset( steem.high, STEEM_SYMBOL ); }
-   price low()const { return asset( non_steem.low, symbol ) / asset( steem.low, STEEM_SYMBOL ); }
+   price high()const { return asset( non_steem.high, symbol ) / asset( steem.high, BEX_SYMBOL ); }
+   price low()const { return asset( non_steem.low, symbol ) / asset( steem.low, BEX_SYMBOL ); }
 #else
-   price high()const { return asset( non_steem.high, SBD_SYMBOL ) / asset( steem.high, STEEM_SYMBOL ); }
-   price low()const { return asset( non_steem.low, SBD_SYMBOL ) / asset( steem.low, STEEM_SYMBOL ); }
+   price high()const { return asset( non_steem.high, BBD_SYMBOL ) / asset( steem.high, BEX_SYMBOL ); }
+   price low()const { return asset( non_steem.low, BBD_SYMBOL ) / asset( steem.low, BEX_SYMBOL ); }
 #endif
 };
 
@@ -157,9 +157,9 @@ typedef multi_index_container<
    allocator< order_history_object >
 > order_history_index;
 
-} } } // steem::plugins::market_history
+} } } // dpay::plugins::market_history
 
-FC_REFLECT( steem::plugins::market_history::bucket_object_details,
+FC_REFLECT( dpay::plugins::market_history::bucket_object_details,
             (high)
             (low)
             (open)
@@ -167,23 +167,23 @@ FC_REFLECT( steem::plugins::market_history::bucket_object_details,
             (volume) )
 
 #if defined STEEM_ENABLE_SDC
-FC_REFLECT( steem::plugins::market_history::bucket_object,
+FC_REFLECT( dpay::plugins::market_history::bucket_object,
                      (id)
                      (open)(seconds)
                      (steem)(symbol)(non_steem)
          )
 #else
-FC_REFLECT( steem::plugins::market_history::bucket_object,
+FC_REFLECT( dpay::plugins::market_history::bucket_object,
                      (id)
                      (open)(seconds)
                      (steem)(non_steem)
          )
 #endif
 
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::market_history::bucket_object, steem::plugins::market_history::bucket_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::market_history::bucket_object, dpay::plugins::market_history::bucket_index )
 
-FC_REFLECT( steem::plugins::market_history::order_history_object,
+FC_REFLECT( dpay::plugins::market_history::order_history_object,
                      (id)
                      (time)
                      (op) )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::market_history::order_history_object, steem::plugins::market_history::order_history_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::market_history::order_history_object, dpay::plugins::market_history::order_history_index )

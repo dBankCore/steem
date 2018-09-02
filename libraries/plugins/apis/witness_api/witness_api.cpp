@@ -1,14 +1,14 @@
 #include <steem/plugins/witness_api/witness_api_plugin.hpp>
 #include <steem/plugins/witness_api/witness_api.hpp>
 
-namespace steem { namespace plugins { namespace witness {
+namespace dpay { namespace plugins { namespace witness {
 
 namespace detail {
 
 class witness_api_impl
 {
    public:
-      witness_api_impl() : _db( appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db() ) {}
+      witness_api_impl() : _db( appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db() ) {}
 
       DECLARE_API_IMPL(
          (get_account_bandwidth)
@@ -48,4 +48,4 @@ DEFINE_READ_APIS( witness_api,
    (get_reserve_ratio)
 )
 
-} } } // steem::plugins::witness
+} } } // dpay::plugins::witness

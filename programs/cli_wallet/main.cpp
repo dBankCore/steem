@@ -58,9 +58,9 @@
 #endif
 
 
-using namespace steem::utilities;
-using namespace steem::chain;
-using namespace steem::wallet;
+using namespace dpay::utilities;
+using namespace dpay::chain;
+using namespace dpay::wallet;
 using namespace std;
 namespace bpo = boost::program_options;
 
@@ -100,7 +100,7 @@ int main( int argc, char** argv )
          wdump((allowed_ips));
       }
 
-      steem::protocol::chain_id_type _steem_chain_id;
+      dpay::protocol::chain_id_type _steem_chain_id;
 
 #ifdef IS_TEST_NET
       if( options.count("chain-id") )
@@ -168,7 +168,7 @@ int main( int argc, char** argv )
       auto con  = client.connect( wdata.ws_server );
       auto apic = std::make_shared<fc::rpc::websocket_api_connection>(*con);
 
-      auto remote_api = apic->get_remote_api< steem::wallet::remote_node_api >( 0, "condenser_api" );
+      auto remote_api = apic->get_remote_api< dpay::wallet::remote_node_api >( 0, "condenser_api" );
 
       auto wapiptr = std::make_shared<wallet_api>( wdata, _steem_chain_id, remote_api );
       wapiptr->set_wallet_filename( wallet_file.generic_string() );

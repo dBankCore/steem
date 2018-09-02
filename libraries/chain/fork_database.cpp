@@ -2,7 +2,7 @@
 
 #include <steem/chain/database_exceptions.hpp>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
 fork_database::fork_database()
 {
@@ -240,4 +240,4 @@ void fork_database::remove(block_id_type id)
    _index.get<block_id>().erase(id);
 }
 
-} } // steem::chain
+} } // dpay::chain

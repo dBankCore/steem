@@ -8,15 +8,15 @@
 
 #include <steem/protocol/sdc_operations.hpp>
 
-namespace steem { namespace plugins { namespace sdc_test {
+namespace dpay { namespace plugins { namespace sdc_test {
 
-using namespace steem::protocol;
+using namespace dpay::protocol;
 
 class sdc_test_plugin_impl
 {
    public:
       sdc_test_plugin_impl( sdc_test_plugin& _plugin ) :
-         _db( appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db() ),
+         _db( appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db() ),
          _self( _plugin ) {}
 
       void on_pre_apply_operation( const operation_notification& op_obj );
@@ -261,7 +261,7 @@ void sdc_test_plugin::plugin_initialize( const boost::program_options::variables
    try
    {
       ilog( "Initializing sdc_test plugin" );
-      chain::database& db = appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db();
+      chain::database& db = appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db();
 
       db.add_pre_apply_operation_handler( [&]( const operation_notification& note ){ my->on_pre_apply_operation( note ); }, *this, 0 );
       db.add_post_apply_operation_handler( [&]( const operation_notification& note ){ my->on_post_apply_operation( note ); }, *this, 0 );
@@ -275,4 +275,4 @@ void sdc_test_plugin::plugin_startup() {}
 
 void sdc_test_plugin::plugin_shutdown() {}
 
-} } } // steem::plugins::sdc_test
+} } } // dpay::plugins::sdc_test

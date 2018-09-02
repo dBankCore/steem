@@ -2,7 +2,7 @@
 #include <steem/protocol/sign_state.hpp>
 #include <steem/protocol/exceptions.hpp>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 template< typename AuthContainerType >
 void verify_authority( const vector<AuthContainerType>& auth_containers, const flat_set<public_key_type>& sigs,
@@ -102,4 +102,4 @@ void verify_authority( const vector<AuthContainerType>& auth_containers, const f
       );
 } FC_CAPTURE_AND_RETHROW( (auth_containers)(sigs) ) }
 
-} } // steem::protocol
+} } // dpay::protocol

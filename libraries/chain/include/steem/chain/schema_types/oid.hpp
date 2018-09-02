@@ -6,7 +6,7 @@
 
 #include <chainbase/util/object_id.hpp>
 
-namespace steem { namespace schema { namespace detail {
+namespace dpay { namespace schema { namespace detail {
 
 //////////////////////////////////////////////
 // oid                                      //

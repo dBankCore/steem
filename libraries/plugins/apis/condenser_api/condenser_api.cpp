@@ -28,7 +28,7 @@
 #define CHECK_ARG_SIZE( s ) \
    FC_ASSERT( args.size() == s, "Expected #s argument(s), was ${n}", ("n", args.size()) );
 
-namespace steem { namespace plugins { namespace condenser_api {
+namespace dpay { namespace plugins { namespace condenser_api {
 
 namespace detail
 {
@@ -38,12 +38,12 @@ namespace detail
    {
       public:
          condenser_api_impl() :
-            _chain( appbase::app().get_plugin< steem::plugins::chain::chain_plugin >() ),
+            _chain( appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >() ),
             _db( _chain.db() )
          {
             _on_post_apply_block_conn = _db.add_post_apply_block_handler(
                [&]( const block_notification& note ){ on_post_apply_block( note.block ); },
-               appbase::app().get_plugin< steem::plugins::condenser_api::condenser_api_plugin >(),
+               appbase::app().get_plugin< dpay::plugins::condenser_api::condenser_api_plugin >(),
                0 );
          }
 
@@ -141,7 +141,7 @@ namespace detail
 
          void on_post_apply_block( const signed_block& b );
 
-         steem::plugins::chain::chain_plugin&                              _chain;
+         dpay::plugins::chain::chain_plugin&                              _chain;
 
          chain::database&                                                  _db;
 
@@ -170,7 +170,7 @@ namespace detail
       return get_version_return
       (
          fc::string( STEEM_BLOCKCHAIN_VERSION ),
-         fc::string( steem::utilities::git_revision_sha ),
+         fc::string( dpay::utilities::git_revision_sha ),
          fc::string( fc::git_revision_sha )
       );
    }
@@ -1244,7 +1244,7 @@ namespace detail
       {
          result.push_back( *itr );
 
-         // if( itr->sell_price.base.symbol == STEEM_SYMBOL )
+         // if( itr->sell_price.base.symbol == BEX_SYMBOL )
          //    result.back().real_price = (~result.back().sell_price).to_real();
          // else
          //    result.back().real_price = (result.back().sell_price).to_real();
@@ -1991,7 +1991,7 @@ namespace detail
          auto itr = cidx.lower_bound( d.id );
          if( itr != cidx.end() && itr->comment == d.id )
          {
-            d.promoted = legacy_asset::from_asset( asset( itr->promoted_balance, SBD_SYMBOL ) );
+            d.promoted = legacy_asset::from_asset( asset( itr->promoted_balance, BBD_SYMBOL ) );
          }
       }
 
@@ -2266,4 +2266,4 @@ DEFINE_READ_APIS( condenser_api,
    (get_market_history)
 )
 
-} } } // steem::plugins::condenser_api
+} } } // dpay::plugins::condenser_api

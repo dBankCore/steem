@@ -1,7 +1,7 @@
 #pragma once
 #include <steem/protocol/base.hpp>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
    struct block_header
    {
@@ -27,7 +27,7 @@ namespace steem { namespace protocol {
    };
 
 
-} } // steem::protocol
+} } // dpay::protocol
 
-FC_REFLECT( steem::protocol::block_header, (previous)(timestamp)(witness)(transaction_merkle_root)(extensions) )
-FC_REFLECT_DERIVED( steem::protocol::signed_block_header, (steem::protocol::block_header), (witness_signature) )
+FC_REFLECT( dpay::protocol::block_header, (previous)(timestamp)(witness)(transaction_merkle_root)(extensions) )
+FC_REFLECT_DERIVED( dpay::protocol::signed_block_header, (dpay::protocol::block_header), (witness_signature) )

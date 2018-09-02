@@ -6,7 +6,7 @@
 #include <steem/chain/account_object.hpp>
 #include <steem/chain/comment_object.hpp>
 
-namespace steem { namespace plugins { namespace follow {
+namespace dpay { namespace plugins { namespace follow {
 
 void follow_evaluator::do_apply( const follow_operation& o )
 {
@@ -216,4 +216,4 @@ void reblog_evaluator::do_apply( const reblog_operation& o )
    FC_CAPTURE_AND_RETHROW( (o) )
 }
 
-} } } // steem::follow
+} } } // dpay::follow

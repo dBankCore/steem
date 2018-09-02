@@ -9,7 +9,7 @@
 
 // max_decay = (uint64_t(1) << (MAX_POOL_BITS + MIN_DECAY_BITS - DECAY_DENOM_SHIFT))-1;
 
-namespace steem { namespace chain { namespace util {
+namespace dpay { namespace chain { namespace util {
 
 void rd_validate_user_params(
    const rd_user_params& user_params )

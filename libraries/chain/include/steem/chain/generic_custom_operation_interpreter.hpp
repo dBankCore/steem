@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
 using protocol::operation;
 using protocol::authority;
@@ -217,9 +217,9 @@ class generic_custom_operation_interpreter
          FC_CAPTURE_AND_RETHROW( (outer_o) )
       }
 
-      virtual std::shared_ptr< steem::schema::abstract_schema > get_operation_schema() override
+      virtual std::shared_ptr< dpay::schema::abstract_schema > get_operation_schema() override
       {
-         return steem::schema::get_schema_for_type< CustomOperationType >();
+         return dpay::schema::get_schema_for_type< CustomOperationType >();
       }
 };
 

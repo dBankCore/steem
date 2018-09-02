@@ -9,12 +9,12 @@
 #define STEEM_FOLLOW_PLUGIN_NAME "follow"
 
 
-namespace steem { namespace plugins{ namespace follow {
+namespace dpay { namespace plugins{ namespace follow {
 
 namespace detail { class follow_plugin_impl; }
 
 using namespace appbase;
-using steem::chain::generic_custom_operation_interpreter;
+using dpay::chain::generic_custom_operation_interpreter;
 
 class follow_plugin : public appbase::plugin< follow_plugin >
 {
@@ -22,7 +22,7 @@ class follow_plugin : public appbase::plugin< follow_plugin >
       follow_plugin();
       virtual ~follow_plugin();
 
-      APPBASE_PLUGIN_REQUIRES( (steem::plugins::chain::chain_plugin) )
+      APPBASE_PLUGIN_REQUIRES( (dpay::plugins::chain::chain_plugin) )
 
       static const std::string& name() { static std::string name = STEEM_FOLLOW_PLUGIN_NAME; return name; }
 
@@ -42,4 +42,4 @@ class follow_plugin : public appbase::plugin< follow_plugin >
       std::unique_ptr< detail::follow_plugin_impl > my;
 };
 
-} } } //steem::follow
+} } } //dpay::follow

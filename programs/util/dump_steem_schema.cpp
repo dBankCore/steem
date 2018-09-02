@@ -19,7 +19,7 @@
 #include <steem/chain/database.hpp>
 #include <steem/chain/index.hpp>
 
-using steem::schema::abstract_schema;
+using dpay::schema::abstract_schema;
 
 struct schema_info
 {
@@ -74,8 +74,8 @@ FC_REFLECT( steem_schema, (schema_map)(chain_object_types) )
 
 int main( int argc, char** argv, char** envp )
 {
-   steem::chain::database db;
-   steem::chain::database::open_args db_args;
+   dpay::chain::database db;
+   dpay::chain::database::open_args db_args;
 
    db_args.data_dir = "tempdata";
    db_args.shared_mem_dir = "tempdata/blockchain";
@@ -88,8 +88,8 @@ int main( int argc, char** argv, char** envp )
    steem_schema ss;
 
    std::vector< std::string > chain_objects;
-   db.for_each_index_extension< steem::chain::index_info >(
-      [&]( std::shared_ptr< steem::chain::index_info > info )
+   db.for_each_index_extension< dpay::chain::index_info >(
+      [&]( std::shared_ptr< dpay::chain::index_info > info )
       {
          std::string name;
          info->get_schema()->get_name( name );

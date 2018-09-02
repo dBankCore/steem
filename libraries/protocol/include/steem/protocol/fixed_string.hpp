@@ -57,7 +57,7 @@ namespace fc
    }
 }
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 /**
  * This class is an in-place memory allocation of a fixed length character string.
@@ -170,7 +170,7 @@ template< typename T > struct fixed_string_size_for_impl;
 template<>                                                         \
 struct fixed_string_impl_for_size< SIZE >                          \
 {                                                                  \
-   typedef steem::protocol::fixed_string_impl< STORAGE_TYPE > t;   \
+   typedef dpay::protocol::fixed_string_impl< STORAGE_TYPE > t;   \
 };                                                                 \
                                                                    \
 template<>                                                         \
@@ -186,18 +186,18 @@ STEEM_DEFINE_FIXED_STRING_IMPL( 32, BOOST_IDENTITY_TYPE((fc::erpair< fc::uint128
 template< size_t N >
 using fixed_string = typename fixed_string_impl_for_size<N>::t;
 
-} } // steem::protocol
+} } // dpay::protocol
 
 namespace fc { namespace raw {
 
 template< typename Stream, typename Storage >
-inline void pack( Stream& s, const steem::protocol::fixed_string_impl< Storage >& u )
+inline void pack( Stream& s, const dpay::protocol::fixed_string_impl< Storage >& u )
 {
    pack( s, std::string( u ) );
 }
 
 template< typename Stream, typename Storage >
-inline void unpack( Stream& s, steem::protocol::fixed_string_impl< Storage >& u )
+inline void unpack( Stream& s, dpay::protocol::fixed_string_impl< Storage >& u )
 {
    std::string str;
    unpack( s, str );
@@ -207,25 +207,25 @@ inline void unpack( Stream& s, steem::protocol::fixed_string_impl< Storage >& u 
 } // raw
 
 template< typename Storage >
-void to_variant(   const steem::protocol::fixed_string_impl< Storage >& s, variant& v )
+void to_variant(   const dpay::protocol::fixed_string_impl< Storage >& s, variant& v )
 {
    v = std::string( s );
 }
 
 template< typename Storage >
-void from_variant( const variant& v, steem::protocol::fixed_string_impl< Storage >& s )
+void from_variant( const variant& v, dpay::protocol::fixed_string_impl< Storage >& s )
 {
    s = v.as_string();
 }
 
 template< typename Storage >
-struct get_typename< steem::protocol::fixed_string_impl< Storage > >
+struct get_typename< dpay::protocol::fixed_string_impl< Storage > >
 {
    static const char* name()
    {
       static const std::string n =
-         std::string("steem::protocol::fixed_string<") +
-         std::to_string( steem::protocol::fixed_string_size_for_impl<Storage>::size ) +
+         std::string("dpay::protocol::fixed_string<") +
+         std::to_string( dpay::protocol::fixed_string_size_for_impl<Storage>::size ) +
          std::string(">");
       return n.c_str();
    }

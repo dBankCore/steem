@@ -11,16 +11,16 @@
 
 #include <boost/thread/mutex.hpp>
 
-namespace steem { namespace plugins { namespace network_broadcast_api {
+namespace dpay { namespace plugins { namespace network_broadcast_api {
 
 using std::vector;
 using fc::variant;
 using fc::optional;
-using steem::plugins::json_rpc::void_type;
+using dpay::plugins::json_rpc::void_type;
 
-using steem::protocol::signed_transaction;
-using steem::protocol::transaction_id_type;
-using steem::protocol::signed_block;
+using dpay::protocol::signed_transaction;
+using dpay::protocol::transaction_id_type;
+using dpay::protocol::signed_block;
 
 struct broadcast_transaction_args
 {
@@ -54,10 +54,10 @@ class network_broadcast_api
       std::unique_ptr< detail::network_broadcast_api_impl > my;
 };
 
-} } } // steem::plugins::network_broadcast_api
+} } } // dpay::plugins::network_broadcast_api
 
-FC_REFLECT( steem::plugins::network_broadcast_api::broadcast_transaction_args,
+FC_REFLECT( dpay::plugins::network_broadcast_api::broadcast_transaction_args,
    (trx)(max_block_age) )
 
-FC_REFLECT( steem::plugins::network_broadcast_api::broadcast_block_args,
+FC_REFLECT( dpay::plugins::network_broadcast_api::broadcast_block_args,
    (block) )

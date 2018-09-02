@@ -6,7 +6,7 @@
 
 #include <fc/static_variant.hpp>
 
-namespace steem { namespace schema { namespace detail {
+namespace dpay { namespace schema { namespace detail {
 
 //////////////////////////////////////////////
 // static_variant                           //

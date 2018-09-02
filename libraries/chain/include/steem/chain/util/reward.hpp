@@ -12,11 +12,11 @@
 
 #include <fc/uint128.hpp>
 
-namespace steem { namespace chain { namespace util {
+namespace dpay { namespace chain { namespace util {
 
-using steem::protocol::asset;
-using steem::protocol::price;
-using steem::protocol::share_type;
+using dpay::protocol::asset;
+using dpay::protocol::price;
+using dpay::protocol::share_type;
 
 using fc::uint128_t;
 
@@ -43,12 +43,12 @@ uint128_t evaluate_reward_curve( const uint128_t& rshares, const protocol::curve
 
 inline bool is_comment_payout_dust( const price& p, uint64_t steem_payout )
 {
-   return to_sbd( p, asset( steem_payout, STEEM_SYMBOL ) ) < STEEM_MIN_PAYOUT_SBD;
+   return to_sbd( p, asset( steem_payout, BEX_SYMBOL ) ) < STEEM_MIN_PAYOUT_SBD;
 }
 
-} } } // steem::chain::util
+} } } // dpay::chain::util
 
-FC_REFLECT( steem::chain::util::comment_reward_context,
+FC_REFLECT( dpay::chain::util::comment_reward_context,
    (rshares)
    (reward_weight)
    (max_sbd)

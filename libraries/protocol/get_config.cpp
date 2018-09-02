@@ -4,7 +4,7 @@
 #include <steem/protocol/types.hpp>
 #include <steem/protocol/version.hpp>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 fc::variant_object get_config()
 {
@@ -25,7 +25,7 @@ fc::variant_object get_config()
    result[ "STEEM_ENABLE_SDC" ] = false;
 #endif
 
-   result["SBD_SYMBOL"] = SBD_SYMBOL;
+   result["BBD_SYMBOL"] = BBD_SYMBOL;
    result["STEEM_INITIAL_VOTE_POWER_RATE"] = STEEM_INITIAL_VOTE_POWER_RATE;
    result["STEEM_REDUCED_VOTE_POWER_RATE"] = STEEM_REDUCED_VOTE_POWER_RATE;
    result["STEEM_100_PERCENT"] = STEEM_100_PERCENT;
@@ -188,7 +188,7 @@ fc::variant_object get_config()
    result["STEEM_VESTING_WITHDRAW_INTERVAL_SECONDS"] = STEEM_VESTING_WITHDRAW_INTERVAL_SECONDS;
    result["STEEM_VOTE_DUST_THRESHOLD"] = STEEM_VOTE_DUST_THRESHOLD;
    result["STEEM_VOTING_MANA_REGENERATION_SECONDS"] = STEEM_VOTING_MANA_REGENERATION_SECONDS;
-   result["STEEM_SYMBOL"] = STEEM_SYMBOL;
+   result["BEX_SYMBOL"] = BEX_SYMBOL;
    result["VESTS_SYMBOL"] = VESTS_SYMBOL;
    result["STEEM_VIRTUAL_SCHEDULE_LAP_LENGTH"] = STEEM_VIRTUAL_SCHEDULE_LAP_LENGTH;
    result["STEEM_VIRTUAL_SCHEDULE_LAP_LENGTH2"] = STEEM_VIRTUAL_SCHEDULE_LAP_LENGTH2;
@@ -216,4 +216,4 @@ fc::variant_object get_config()
    return result;
 }
 
-} } // steem::protocol
+} } // dpay::protocol

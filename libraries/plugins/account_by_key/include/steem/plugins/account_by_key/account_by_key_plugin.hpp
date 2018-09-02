@@ -3,7 +3,7 @@
 
 #include <steem/plugins/chain/chain_plugin.hpp>
 
-namespace steem { namespace plugins { namespace account_by_key {
+namespace dpay { namespace plugins { namespace account_by_key {
 
 namespace detail { class account_by_key_plugin_impl; }
 
@@ -17,7 +17,7 @@ class account_by_key_plugin : public appbase::plugin< account_by_key_plugin >
       account_by_key_plugin();
       virtual ~account_by_key_plugin();
 
-      APPBASE_PLUGIN_REQUIRES( (steem::plugins::chain::chain_plugin) )
+      APPBASE_PLUGIN_REQUIRES( (dpay::plugins::chain::chain_plugin) )
 
       static const std::string& name() { static std::string name = STEEM_ACCOUNT_BY_KEY_PLUGIN_NAME; return name; }
 
@@ -30,4 +30,4 @@ class account_by_key_plugin : public appbase::plugin< account_by_key_plugin >
       std::unique_ptr< detail::account_by_key_plugin_impl > my;
 };
 
-} } } // steem::plugins::account_by_key
+} } } // dpay::plugins::account_by_key

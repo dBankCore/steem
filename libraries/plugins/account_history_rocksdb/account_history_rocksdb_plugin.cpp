@@ -28,7 +28,7 @@
 
 namespace bpo = boost::program_options;
 
-#define STEEM_NAMESPACE_PREFIX "steem::protocol::"
+#define STEEM_NAMESPACE_PREFIX "dpay::protocol::"
 #define OPEN_FILE_LIMIT 750
 
 #define DIAGNOSTIC(s)
@@ -53,19 +53,19 @@ namespace bpo = boost::program_options;
 #define STORE_MAJOR_VERSION          1
 #define STORE_MINOR_VERSION          0
 
-namespace steem { namespace plugins { namespace account_history_rocksdb {
+namespace dpay { namespace plugins { namespace account_history_rocksdb {
 
-using steem::protocol::account_name_type;
-using steem::protocol::block_id_type;
-using steem::protocol::operation;
-using steem::protocol::signed_block;
-using steem::protocol::signed_block_header;
-using steem::protocol::signed_transaction;
+using dpay::protocol::account_name_type;
+using dpay::protocol::block_id_type;
+using dpay::protocol::operation;
+using dpay::protocol::signed_block;
+using dpay::protocol::signed_block_header;
+using dpay::protocol::signed_transaction;
 
-using steem::chain::operation_notification;
-using steem::chain::transaction_id_type;
+using dpay::chain::operation_notification;
+using dpay::chain::transaction_id_type;
 
-using steem::utilities::benchmark_dumper;
+using dpay::utilities::benchmark_dumper;
 
 using ::rocksdb::DB;
 using ::rocksdb::DBOptions;
@@ -358,18 +358,18 @@ class account_history_rocksdb_plugin::impl final
 public:
    impl( account_history_rocksdb_plugin& self, const bpo::variables_map& options, const bfs::path& storagePath) :
       _self(self),
-      _mainDb(appbase::app().get_plugin<steem::plugins::chain::chain_plugin>().db()),
+      _mainDb(appbase::app().get_plugin<dpay::plugins::chain::chain_plugin>().db()),
       _storagePath(storagePath),
       _writeBuffer(_storage, _columnHandles)
       {
       collectOptions(options);
 
-      _mainDb.add_pre_reindex_handler([&]( const steem::chain::reindex_notification& note ) -> void
+      _mainDb.add_pre_reindex_handler([&]( const dpay::chain::reindex_notification& note ) -> void
          {
             on_pre_reindex( note );
          }, _self, 0);
 
-      _mainDb.add_post_reindex_handler([&]( const steem::chain::reindex_notification& note ) -> void
+      _mainDb.add_post_reindex_handler([&]( const dpay::chain::reindex_notification& note ) -> void
          {
             on_post_reindex( note );
          }, _self, 0);
@@ -444,8 +444,8 @@ public:
    }
 
    void printReport(uint32_t blockNo, const char* detailText) const;
-   void on_pre_reindex( const steem::chain::reindex_notification& note );
-   void on_post_reindex( const steem::chain::reindex_notification& note );
+   void on_pre_reindex( const dpay::chain::reindex_notification& note );
+   void on_post_reindex( const dpay::chain::reindex_notification& note );
 
    /// Allows to start immediate data import (outside replay process).
    void importData(unsigned int blockLimit);
@@ -774,7 +774,7 @@ inline bool account_history_rocksdb_plugin::impl::isTrackedAccount(const account
 std::vector<account_name_type> account_history_rocksdb_plugin::impl::getImpactedAccounts(const operation& op) const
 {
    flat_set<account_name_type> impacted;
-   steem::app::operation_get_impacted_accounts(op, impacted);
+   dpay::app::operation_get_impacted_accounts(op, impacted);
    std::vector<account_name_type> retVal;
 
    if(impacted.empty())
@@ -1192,7 +1192,7 @@ void account_history_rocksdb_plugin::impl::prunePotentiallyTooOldItems(account_h
    }
 }
 
-void account_history_rocksdb_plugin::impl::on_pre_reindex(const steem::chain::reindex_notification& note)
+void account_history_rocksdb_plugin::impl::on_pre_reindex(const dpay::chain::reindex_notification& note)
 {
    ilog("Received onReindexStart request, attempting to clean database storage.");
 
@@ -1217,7 +1217,7 @@ void account_history_rocksdb_plugin::impl::on_pre_reindex(const steem::chain::re
    ilog("onReindexStart request completed successfully.");
 }
 
-void account_history_rocksdb_plugin::impl::on_post_reindex(const steem::chain::reindex_notification& note)
+void account_history_rocksdb_plugin::impl::on_post_reindex(const dpay::chain::reindex_notification& note)
 {
    ilog("Reindex completed up to block: ${b}. Setting back write limit to non-massive level.",
       ("b", note.last_block_number));
@@ -1497,5 +1497,5 @@ uint32_t account_history_rocksdb_plugin::enum_operations_from_block_range(uint32
 
 } } }
 
-FC_REFLECT( steem::plugins::account_history_rocksdb::account_history_info,
+FC_REFLECT( dpay::plugins::account_history_rocksdb::account_history_info,
    (id)(oldestEntryId)(newestEntryId)(oldestEntryTimestamp) )

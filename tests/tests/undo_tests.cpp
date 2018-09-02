@@ -22,9 +22,9 @@
 #include <iostream>
 #include <stdexcept>
 
-using namespace steem;
-using namespace steem::chain;
-using namespace steem::protocol;
+using namespace dpay;
+using namespace dpay::chain;
+using namespace dpay::protocol;
 using fc::string;
 
 BOOST_FIXTURE_TEST_SUITE( undo_tests, clean_database_fixture )

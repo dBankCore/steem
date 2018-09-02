@@ -7,11 +7,11 @@
 
 #include <steem/protocol/config.hpp>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
-using steem::chain::util::rd_system_params;
-using steem::chain::util::rd_user_params;
-using steem::chain::util::rd_validate_user_params;
+using dpay::chain::util::rd_system_params;
+using dpay::chain::util::rd_user_params;
+using dpay::chain::util::rd_validate_user_params;
 
 void reset_virtual_schedule_time( database& db )
 {

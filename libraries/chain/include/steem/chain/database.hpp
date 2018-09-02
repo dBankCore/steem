@@ -25,14 +25,14 @@
 
 #include <map>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
-   using steem::protocol::signed_transaction;
-   using steem::protocol::operation;
-   using steem::protocol::authority;
-   using steem::protocol::asset;
-   using steem::protocol::asset_symbol_type;
-   using steem::protocol::price;
+   using dpay::protocol::signed_transaction;
+   using dpay::protocol::operation;
+   using dpay::protocol::authority;
+   using dpay::protocol::asset;
+   using dpay::protocol::asset_symbol_type;
+   using dpay::protocol::price;
    using abstract_plugin = appbase::abstract_plugin;
 
    class database_impl;

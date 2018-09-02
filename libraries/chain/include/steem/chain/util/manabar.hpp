@@ -8,7 +8,7 @@
 #include <fc/exception/exception.hpp>
 #include <fc/reflect/reflect.hpp>
 
-namespace steem { namespace chain { namespace util {
+namespace dpay { namespace chain { namespace util {
 
 struct manabar_params
 {
@@ -108,9 +108,9 @@ int64_t get_effective_vesting_shares( const T& account )
    return effective_vesting_shares;
 }
 
-} } } // steem::chain::util
+} } } // dpay::chain::util
 
-FC_REFLECT( steem::chain::util::manabar,
+FC_REFLECT( dpay::chain::util::manabar,
    (current_mana)
    (last_update_time)
    )

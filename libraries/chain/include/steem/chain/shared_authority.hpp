@@ -3,11 +3,11 @@
 #include <chainbase/chainbase.hpp>
 #include <boost/interprocess/managed_mapped_file.hpp>
 
-namespace steem { namespace chain {
-   using steem::protocol::authority;
-   using steem::protocol::public_key_type;
-   using steem::protocol::account_name_type;
-   using steem::protocol::weight_type;
+namespace dpay { namespace chain {
+   using dpay::protocol::authority;
+   using dpay::protocol::public_key_type;
+   using dpay::protocol::account_name_type;
+   using dpay::protocol::weight_type;
 
    using chainbase::t_flat_map;
    using chainbase::t_allocator_pair;
@@ -98,7 +98,7 @@ namespace steem { namespace chain {
    bool operator == ( const authority& a, const shared_authority& b );
    bool operator == ( const shared_authority& a, const authority& b );
 
-} } //steem::chain
+} } //dpay::chain
 
-FC_REFLECT_TYPENAME( steem::chain::shared_authority::account_authority_map)
-FC_REFLECT( steem::chain::shared_authority, (weight_threshold)(account_auths)(key_auths) )
+FC_REFLECT_TYPENAME( dpay::chain::shared_authority::account_authority_map)
+FC_REFLECT( dpay::chain::shared_authority, (weight_threshold)(account_auths)(key_auths) )

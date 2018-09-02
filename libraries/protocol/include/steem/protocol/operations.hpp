@@ -7,7 +7,7 @@
 #include <steem/protocol/steem_virtual_operations.hpp>
 #include <steem/protocol/sdc_operations.hpp>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
    /** NOTE: do not change the order of any operations prior to the virtual operations
     * or it will trigger a hardfork.
@@ -109,12 +109,12 @@ namespace steem { namespace protocol {
 
    bool is_virtual_operation( const operation& op );
 
-} } // steem::protocol
+} } // dpay::protocol
 
 /*namespace fc {
-    void to_variant( const steem::protocol::operation& var,  fc::variant& vo );
-    void from_variant( const fc::variant& var,  steem::protocol::operation& vo );
+    void to_variant( const dpay::protocol::operation& var,  fc::variant& vo );
+    void from_variant( const fc::variant& var,  dpay::protocol::operation& vo );
 }*/
 
-STEEM_DECLARE_OPERATION_TYPE( steem::protocol::operation )
-FC_REFLECT_TYPENAME( steem::protocol::operation )
+STEEM_DECLARE_OPERATION_TYPE( dpay::protocol::operation )
+FC_REFLECT_TYPENAME( dpay::protocol::operation )

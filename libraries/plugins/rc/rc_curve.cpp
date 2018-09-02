@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace steem { namespace plugins { namespace rc {
+namespace dpay { namespace plugins { namespace rc {
 
 void rc_curve_gen_params::validate()const
 {

@@ -16,20 +16,20 @@
 
 #define STEEM_RC_REGEN_TIME   (60*60*24*5)
 
-namespace steem { namespace plugins { namespace rc {
+namespace dpay { namespace plugins { namespace rc {
 
-using steem::plugins::block_data_export::block_data_export_plugin;
+using dpay::plugins::block_data_export::block_data_export_plugin;
 
 namespace detail {
 
 using chain::plugin_exception;
-using steem::chain::util::manabar_params;
+using dpay::chain::util::manabar_params;
 
 class rc_plugin_impl
 {
    public:
       rc_plugin_impl( rc_plugin& _plugin ) :
-         _db( appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db() ),
+         _db( appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db() ),
          _self( _plugin )
       {
          _skip.skip_reject_not_enough_rc = 0;
@@ -296,7 +296,7 @@ void rc_plugin_impl::on_post_apply_transaction( const transaction_notification& 
    use_account_rcs( _db, gpo, tx_info.resource_user, total_cost, _skip );
 
    std::shared_ptr< exp_rc_data > export_data =
-      steem::plugins::block_data_export::find_export_data< exp_rc_data >( STEEM_RC_PLUGIN_NAME );
+      dpay::plugins::block_data_export::find_export_data< exp_rc_data >( STEEM_RC_PLUGIN_NAME );
    if( (gpo.head_block_number % 10000) == 0 )
    {
       dlog( "${t} : ${i}", ("t", gpo.time)("i", tx_info) );
@@ -424,7 +424,7 @@ void rc_plugin_impl::on_post_apply_block( const block_notification& note )
       } );
 
    std::shared_ptr< exp_rc_data > export_data =
-      steem::plugins::block_data_export::find_export_data< exp_rc_data >( STEEM_RC_PLUGIN_NAME );
+      dpay::plugins::block_data_export::find_export_data< exp_rc_data >( STEEM_RC_PLUGIN_NAME );
    if( export_data )
       export_data->block_info = block_info;
 }
@@ -432,7 +432,7 @@ void rc_plugin_impl::on_post_apply_block( const block_notification& note )
 void rc_plugin_impl::on_first_block()
 {
    // Initial values are located at `libraries/jsonball/data/resource_parameters.json`
-   std::string resource_params_json = steem::jsonball::get_resource_parameters();
+   std::string resource_params_json = dpay::jsonball::get_resource_parameters();
    fc::variant resource_params_var = fc::json::from_string( resource_params_json, fc::json::strict_parser );
    std::vector< std::pair< fc::variant, std::pair< fc::variant_object, fc::variant_object > > > resource_params_pairs;
    fc::from_variant( resource_params_var, resource_params_pairs );
@@ -720,7 +720,7 @@ struct post_apply_operation_visitor
    void operator()( const pow_operation& op )const
    {
       // ilog( "handling post-apply pow_operation" );
-      create_rc_account< true >( _db, _current_time, op.worker_account, asset( 0, STEEM_SYMBOL ) );
+      create_rc_account< true >( _db, _current_time, op.worker_account, asset( 0, BEX_SYMBOL ) );
       _mod_accounts.push_back( op.worker_account );
       _mod_accounts.push_back( _current_witness );
    }
@@ -728,7 +728,7 @@ struct post_apply_operation_visitor
    void operator()( const pow2_operation& op )const
    {
       auto worker_name = get_worker_name( op.work );
-      create_rc_account< true >( _db, _current_time, worker_name, asset( 0, STEEM_SYMBOL ) );
+      create_rc_account< true >( _db, _current_time, worker_name, asset( 0, BEX_SYMBOL ) );
       _mod_accounts.push_back( worker_name );
       _mod_accounts.push_back( _current_witness );
    }
@@ -931,7 +931,7 @@ void rc_plugin::plugin_initialize( const boost::program_options::variables_map& 
             []() -> std::shared_ptr< exportable_block_data > { return std::make_shared< exp_rc_data >(); } );
       }
 
-      chain::database& db = appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db();
+      chain::database& db = appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db();
 
       my->_post_apply_block_conn = db.add_post_apply_block_handler( [&]( const block_notification& note )
          { try { my->on_post_apply_block( note ); } FC_LOG_AND_RETHROW() }, *this, 0 );
@@ -987,4 +987,4 @@ void exp_rc_data::to_variant( fc::variant& v )const
    fc::to_variant( *this, v );
 }
 
-} } } // steem::plugins::rc
+} } } // dpay::plugins::rc

@@ -9,16 +9,16 @@
 
 #define STEEM_DEBUG_NODE_PLUGIN_NAME "debug_node"
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
    struct pow2;
    struct signed_block;
 } }
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
    struct block_notification;
 } }
 
-namespace steem { namespace plugins { namespace debug_node {
+namespace dpay { namespace plugins { namespace debug_node {
 
 using namespace appbase;
 
@@ -28,7 +28,7 @@ struct debug_generate_blocks_args
 {
    std::string                               debug_key;
    uint32_t                                  count = 0;
-   uint32_t                                  skip = steem::chain::database::skip_nothing;
+   uint32_t                                  skip = dpay::chain::database::skip_nothing;
    uint32_t                                  miss_blocks = 0;
    bool                                      edit_if_needed = true;
 };
@@ -58,7 +58,7 @@ class debug_node_plugin : public plugin< debug_node_plugin >
       chain::database& database();
 
       template< typename Lambda >
-      void debug_update( Lambda&& callback, uint32_t skip = steem::chain::database::skip_nothing )
+      void debug_update( Lambda&& callback, uint32_t skip = dpay::chain::database::skip_nothing )
       {
          // this was a method on database in Graphene
          chain::database& db = database();
@@ -83,14 +83,14 @@ class debug_node_plugin : public plugin< debug_node_plugin >
       uint32_t debug_generate_blocks(
          const std::string& debug_key,
          uint32_t count,
-         uint32_t skip = steem::chain::database::skip_nothing,
+         uint32_t skip = dpay::chain::database::skip_nothing,
          uint32_t miss_blocks = 0
          );
       uint32_t debug_generate_blocks_until(
          const std::string& debug_key,
          const fc::time_point_sec& head_block_time,
          bool generate_sparsely,
-         uint32_t skip = steem::chain::database::skip_nothing
+         uint32_t skip = dpay::chain::database::skip_nothing
          );
 
       void set_json_object_stream( const std::string& filename );
@@ -102,7 +102,7 @@ class debug_node_plugin : public plugin< debug_node_plugin >
       bool logging = true;
 
    private:
-      void on_post_apply_block( const steem::chain::block_notification& note );
+      void on_post_apply_block( const dpay::chain::block_notification& note );
 
       void apply_debug_updates();
 
@@ -121,13 +121,13 @@ class debug_node_plugin : public plugin< debug_node_plugin >
 
 } } }
 
-FC_REFLECT( steem::plugins::debug_node::debug_generate_blocks_args,
+FC_REFLECT( dpay::plugins::debug_node::debug_generate_blocks_args,
             (debug_key)
             (count)
             (skip)
             (miss_blocks)
             (edit_if_needed)
           )
-FC_REFLECT( steem::plugins::debug_node::debug_generate_blocks_return,
+FC_REFLECT( dpay::plugins::debug_node::debug_generate_blocks_return,
             (blocks)
           )

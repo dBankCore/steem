@@ -6,7 +6,7 @@
 
 #include <locale>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
    void validate_auth_size( const authority& a )
    {
@@ -17,7 +17,7 @@ namespace steem { namespace protocol {
    void account_create_operation::validate() const
    {
       validate_account_name( new_account_name );
-      FC_ASSERT( is_asset_type( fee, STEEM_SYMBOL ), "Account creation fee must be BEX" );
+      FC_ASSERT( is_asset_type( fee, BEX_SYMBOL ), "Account creation fee must be BEX" );
       owner.validate();
       active.validate();
 
@@ -26,14 +26,14 @@ namespace steem { namespace protocol {
          FC_ASSERT( fc::is_utf8(json_metadata), "JSON Metadata not formatted in UTF8" );
          FC_ASSERT( fc::json::is_valid(json_metadata), "JSON Metadata not valid JSON" );
       }
-      FC_ASSERT( fee >= asset( 0, STEEM_SYMBOL ), "Account creation fee cannot be negative" );
+      FC_ASSERT( fee >= asset( 0, BEX_SYMBOL ), "Account creation fee cannot be negative" );
    }
 
    void account_create_with_delegation_operation::validate() const
    {
       validate_account_name( new_account_name );
       validate_account_name( creator );
-      FC_ASSERT( is_asset_type( fee, STEEM_SYMBOL ), "Account creation fee must be BEX" );
+      FC_ASSERT( is_asset_type( fee, BEX_SYMBOL ), "Account creation fee must be BEX" );
       FC_ASSERT( is_asset_type( delegation, VESTS_SYMBOL ), "Delegation must be VESTS" );
 
       owner.validate();
@@ -46,7 +46,7 @@ namespace steem { namespace protocol {
          FC_ASSERT( fc::json::is_valid(json_metadata), "JSON Metadata not valid JSON" );
       }
 
-      FC_ASSERT( fee >= asset( 0, STEEM_SYMBOL ), "Account creation fee cannot be negative" );
+      FC_ASSERT( fee >= asset( 0, BEX_SYMBOL ), "Account creation fee cannot be negative" );
       FC_ASSERT( delegation >= asset( 0, VESTS_SYMBOL ), "Delegation cannot be negative" );
    }
 
@@ -129,7 +129,7 @@ namespace steem { namespace protocol {
    {
       validate_account_name( author );
       FC_ASSERT( percent_steem_dollars <= STEEM_100_PERCENT, "Percent cannot exceed 100%" );
-      FC_ASSERT( max_accepted_payout.symbol == SBD_SYMBOL, "Max accepted payout must be in BBD" );
+      FC_ASSERT( max_accepted_payout.symbol == BBD_SYMBOL, "Max accepted payout must be in BBD" );
       FC_ASSERT( max_accepted_payout.amount.value >= 0, "Cannot accept less than 0 payout" );
       validate_permlink( permlink );
       for( auto& e : extensions )
@@ -145,9 +145,9 @@ namespace steem { namespace protocol {
    void claim_account_operation::validate()const
    {
       validate_account_name( creator );
-      FC_ASSERT( is_asset_type( fee, STEEM_SYMBOL ), "Account creation fee must be BEX" );
-      FC_ASSERT( fee >= asset( 0, STEEM_SYMBOL ), "Account creation fee cannot be negative" );
-      FC_ASSERT( fee <= asset( STEEM_MAX_ACCOUNT_CREATION_FEE, STEEM_SYMBOL ), "Account creation fee cannot be too large" );
+      FC_ASSERT( is_asset_type( fee, BEX_SYMBOL ), "Account creation fee must be BEX" );
+      FC_ASSERT( fee >= asset( 0, BEX_SYMBOL ), "Account creation fee cannot be negative" );
+      FC_ASSERT( fee <= asset( STEEM_MAX_ACCOUNT_CREATION_FEE, BEX_SYMBOL ), "Account creation fee cannot be too large" );
 
       FC_ASSERT( extensions.size() == 0, "There are no extensions for claim_account_operation." );
    }
@@ -193,7 +193,7 @@ namespace steem { namespace protocol {
    void transfer_to_vesting_operation::validate() const
    {
       validate_account_name( from );
-      FC_ASSERT( amount.symbol == STEEM_SYMBOL ||
+      FC_ASSERT( amount.symbol == BEX_SYMBOL ||
                  ( amount.symbol.space() == asset_symbol_type::sdc_nai_space && amount.symbol.is_vesting() == false ),
                  "Amount must be BEX or SDC liquid" );
       if ( to != account_name_type() ) validate_account_name( to );
@@ -221,7 +221,7 @@ namespace steem { namespace protocol {
 
       FC_ASSERT( url.size() > 0, "URL size must be greater than 0" );
       FC_ASSERT( fc::is_utf8( url ), "URL is not valid UTF8" );
-      FC_ASSERT( fee >= asset( 0, STEEM_SYMBOL ), "Fee cannot be negative" );
+      FC_ASSERT( fee >= asset( 0, BEX_SYMBOL ), "Fee cannot be negative" );
       props.validate< false >();
    }
 
@@ -237,7 +237,7 @@ namespace steem { namespace protocol {
       {
          asset account_creation_fee;
          fc::raw::unpack_from_vector( itr->second, account_creation_fee );
-         FC_ASSERT( account_creation_fee.symbol == STEEM_SYMBOL, "account_creation_fee must be in BEX" );
+         FC_ASSERT( account_creation_fee.symbol == BEX_SYMBOL, "account_creation_fee must be in BEX" );
          FC_ASSERT( account_creation_fee.amount >= STEEM_MIN_ACCOUNT_CREATION_FEE, "account_creation_fee smaller than minimum account creation fee" );
       }
 
@@ -271,7 +271,7 @@ namespace steem { namespace protocol {
       {
          price sbd_exchange_rate;
          fc::raw::unpack_from_vector( itr->second, sbd_exchange_rate );
-         FC_ASSERT( ( is_asset_type( sbd_exchange_rate.base, SBD_SYMBOL ) && is_asset_type( sbd_exchange_rate.quote, STEEM_SYMBOL ) ),
+         FC_ASSERT( ( is_asset_type( sbd_exchange_rate.base, BBD_SYMBOL ) && is_asset_type( sbd_exchange_rate.quote, BEX_SYMBOL ) ),
             "Price feed must be a BEX/BBD price" );
          sbd_exchange_rate.validate();
       }
@@ -465,8 +465,8 @@ namespace steem { namespace protocol {
    void feed_publish_operation::validate()const
    {
       validate_account_name( publisher );
-      FC_ASSERT( ( is_asset_type( exchange_rate.base, STEEM_SYMBOL ) && is_asset_type( exchange_rate.quote, SBD_SYMBOL ) )
-         || ( is_asset_type( exchange_rate.base, SBD_SYMBOL ) && is_asset_type( exchange_rate.quote, STEEM_SYMBOL ) ),
+      FC_ASSERT( ( is_asset_type( exchange_rate.base, BEX_SYMBOL ) && is_asset_type( exchange_rate.quote, BBD_SYMBOL ) )
+         || ( is_asset_type( exchange_rate.base, BBD_SYMBOL ) && is_asset_type( exchange_rate.quote, BEX_SYMBOL ) ),
          "Price feed must be a BEX/BBD price" );
       exchange_rate.validate();
    }
@@ -475,14 +475,14 @@ namespace steem { namespace protocol {
    {
       validate_account_name( owner );
 
-      FC_ASSERT(  ( is_asset_type( amount_to_sell, STEEM_SYMBOL ) && is_asset_type( min_to_receive, SBD_SYMBOL ) )
-               || ( is_asset_type( amount_to_sell, SBD_SYMBOL ) && is_asset_type( min_to_receive, STEEM_SYMBOL ) )
+      FC_ASSERT(  ( is_asset_type( amount_to_sell, BEX_SYMBOL ) && is_asset_type( min_to_receive, BBD_SYMBOL ) )
+               || ( is_asset_type( amount_to_sell, BBD_SYMBOL ) && is_asset_type( min_to_receive, BEX_SYMBOL ) )
                || (
                      amount_to_sell.symbol.space() == asset_symbol_type::sdc_nai_space
-                     && is_asset_type( min_to_receive, STEEM_SYMBOL )
+                     && is_asset_type( min_to_receive, BEX_SYMBOL )
                   )
                || (
-                     is_asset_type( amount_to_sell, STEEM_SYMBOL )
+                     is_asset_type( amount_to_sell, BEX_SYMBOL )
                      && min_to_receive.symbol.space() == asset_symbol_type::sdc_nai_space
                   ),
                "Limit order must be for the BEX:BBD or SDC:(BEX/BBD) market" );
@@ -497,14 +497,14 @@ namespace steem { namespace protocol {
       FC_ASSERT( amount_to_sell.symbol == exchange_rate.base.symbol, "Sell asset must be the base of the price" );
       exchange_rate.validate();
 
-      FC_ASSERT(  ( is_asset_type( amount_to_sell, STEEM_SYMBOL ) && is_asset_type( exchange_rate.quote, SBD_SYMBOL ) )
-               || ( is_asset_type( amount_to_sell, SBD_SYMBOL ) && is_asset_type( exchange_rate.quote, STEEM_SYMBOL ) )
+      FC_ASSERT(  ( is_asset_type( amount_to_sell, BEX_SYMBOL ) && is_asset_type( exchange_rate.quote, BBD_SYMBOL ) )
+               || ( is_asset_type( amount_to_sell, BBD_SYMBOL ) && is_asset_type( exchange_rate.quote, BEX_SYMBOL ) )
                || (
                      amount_to_sell.symbol.space() == asset_symbol_type::sdc_nai_space
-                     && is_asset_type( exchange_rate.quote, STEEM_SYMBOL )
+                     && is_asset_type( exchange_rate.quote, BEX_SYMBOL )
                   )
                || (
-                     is_asset_type( amount_to_sell, STEEM_SYMBOL )
+                     is_asset_type( amount_to_sell, BEX_SYMBOL )
                      && exchange_rate.quote.symbol.space() == asset_symbol_type::sdc_nai_space
                   ),
                "Limit order must be for the BEX:BBD or SDC:(BEX/BBD) market" );
@@ -522,7 +522,7 @@ namespace steem { namespace protocol {
       validate_account_name( owner );
       /// only allow conversion from BBD to BEX, allowing the opposite can enable traders to abuse
       /// market fluxuations through converting large quantities without moving the price.
-      FC_ASSERT( is_asset_type( amount, SBD_SYMBOL ), "Can only convert BBD to BEX" );
+      FC_ASSERT( is_asset_type( amount, BBD_SYMBOL ), "Can only convert BBD to BEX" );
       FC_ASSERT( amount.amount > 0, "Must convert some SBD" );
    }
 
@@ -546,9 +546,9 @@ namespace steem { namespace protocol {
       FC_ASSERT( steem_amount.amount >= 0, "steem amount cannot be negative" );
       FC_ASSERT( sbd_amount.amount > 0 || steem_amount.amount > 0, "escrow must transfer a non-zero amount" );
       FC_ASSERT( from != agent && to != agent, "agent must be a third party" );
-      FC_ASSERT( (fee.symbol == STEEM_SYMBOL) || (fee.symbol == SBD_SYMBOL), "fee must be BEX or BBD" );
-      FC_ASSERT( sbd_amount.symbol == SBD_SYMBOL, "BBD amount must contain SBD" );
-      FC_ASSERT( steem_amount.symbol == STEEM_SYMBOL, "dPay amount must contain BEX" );
+      FC_ASSERT( (fee.symbol == BEX_SYMBOL) || (fee.symbol == BBD_SYMBOL), "fee must be BEX or BBD" );
+      FC_ASSERT( sbd_amount.symbol == BBD_SYMBOL, "BBD amount must contain SBD" );
+      FC_ASSERT( steem_amount.symbol == BEX_SYMBOL, "dPay amount must contain BEX" );
       FC_ASSERT( ratification_deadline < escrow_expiration, "ratification deadline must be before escrow expiration" );
       if ( json_meta.size() > 0 )
       {
@@ -587,8 +587,8 @@ namespace steem { namespace protocol {
       FC_ASSERT( sbd_amount.amount >= 0, "sbd amount cannot be negative" );
       FC_ASSERT( steem_amount.amount >= 0, "steem amount cannot be negative" );
       FC_ASSERT( sbd_amount.amount > 0 || steem_amount.amount > 0, "escrow must release a non-zero amount" );
-      FC_ASSERT( sbd_amount.symbol == SBD_SYMBOL, "SBD amount must contain SBD" );
-      FC_ASSERT( steem_amount.symbol == STEEM_SYMBOL, "BEX amount must contain BEX" );
+      FC_ASSERT( sbd_amount.symbol == BBD_SYMBOL, "SBD amount must contain SBD" );
+      FC_ASSERT( steem_amount.symbol == BEX_SYMBOL, "BEX amount must contain BEX" );
    }
 
    void request_account_recovery_operation::validate()const
@@ -619,7 +619,7 @@ namespace steem { namespace protocol {
       validate_account_name( from );
       validate_account_name( to );
       FC_ASSERT( amount.amount > 0 );
-      FC_ASSERT( amount.symbol == STEEM_SYMBOL || amount.symbol == SBD_SYMBOL );
+      FC_ASSERT( amount.symbol == BEX_SYMBOL || amount.symbol == BBD_SYMBOL );
       FC_ASSERT( memo.size() < STEEM_MAX_MEMO_SIZE, "Memo is too large" );
       FC_ASSERT( fc::is_utf8( memo ), "Memo is not UTF8" );
    }
@@ -627,7 +627,7 @@ namespace steem { namespace protocol {
       validate_account_name( from );
       validate_account_name( to );
       FC_ASSERT( amount.amount > 0 );
-      FC_ASSERT( amount.symbol == STEEM_SYMBOL || amount.symbol == SBD_SYMBOL );
+      FC_ASSERT( amount.symbol == BEX_SYMBOL || amount.symbol == BBD_SYMBOL );
       FC_ASSERT( memo.size() < STEEM_MAX_MEMO_SIZE, "Memo is too large" );
       FC_ASSERT( fc::is_utf8( memo ), "Memo is not UTF8" );
    }
@@ -661,8 +661,8 @@ namespace steem { namespace protocol {
    void claim_reward_balance_operation::validate()const
    {
       validate_account_name( account );
-      FC_ASSERT( is_asset_type( reward_steem, STEEM_SYMBOL ), "Reward BEX must be BEX" );
-      FC_ASSERT( is_asset_type( reward_sbd, SBD_SYMBOL ), "Reward BEX must be BBD" );
+      FC_ASSERT( is_asset_type( reward_steem, BEX_SYMBOL ), "Reward BEX must be BEX" );
+      FC_ASSERT( is_asset_type( reward_sbd, BBD_SYMBOL ), "Reward BEX must be BBD" );
       FC_ASSERT( is_asset_type( reward_vests, VESTS_SYMBOL ), "Reward BEX must be VESTS" );
       FC_ASSERT( reward_steem.amount >= 0, "Cannot claim a negative amount" );
       FC_ASSERT( reward_sbd.amount >= 0, "Cannot claim a negative amount" );
@@ -699,4 +699,4 @@ namespace steem { namespace protocol {
       FC_ASSERT( vesting_shares >= asset( 0, VESTS_SYMBOL ), "Delegation cannot be negative" );
    }
 
-} } // steem::protocol
+} } // dpay::protocol

@@ -4,9 +4,9 @@
 
 #include <steem/chain/evaluator.hpp>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
-using namespace steem::protocol;
+using namespace dpay::protocol;
 
 STEEM_DEFINE_EVALUATOR( account_create )
 STEEM_DEFINE_EVALUATOR( account_create_with_delegation )
@@ -64,4 +64,4 @@ STEEM_DEFINE_EVALUATOR( sdc_set_runtime_parameters )
 STEEM_DEFINE_EVALUATOR( sdc_create )
 #endif
 
-} } // steem::chain
+} } // dpay::chain

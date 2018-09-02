@@ -7,7 +7,7 @@
 #define STEEM_CHAIN_API_PLUGIN_NAME "chain_api"
 
 
-namespace steem { namespace plugins { namespace chain {
+namespace dpay { namespace plugins { namespace chain {
 
 using namespace appbase;
 
@@ -15,8 +15,8 @@ class chain_api_plugin : public plugin< chain_api_plugin >
 {
 public:
    APPBASE_PLUGIN_REQUIRES(
-      (steem::plugins::chain::chain_plugin)
-      (steem::plugins::json_rpc::json_rpc_plugin)
+      (dpay::plugins::chain::chain_plugin)
+      (dpay::plugins::json_rpc::json_rpc_plugin)
    )
 
    chain_api_plugin();
@@ -35,4 +35,4 @@ public:
    std::shared_ptr< class chain_api > api;
 };
 
-} } } // steem::plugins::chain
+} } } // dpay::plugins::chain

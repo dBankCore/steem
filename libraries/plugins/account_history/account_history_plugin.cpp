@@ -15,11 +15,11 @@
 #include <boost/algorithm/string.hpp>
 
 
-#define STEEM_NAMESPACE_PREFIX "steem::protocol::"
+#define STEEM_NAMESPACE_PREFIX "dpay::protocol::"
 
-namespace steem { namespace plugins { namespace account_history {
+namespace dpay { namespace plugins { namespace account_history {
 
-using namespace steem::protocol;
+using namespace dpay::protocol;
 
 using chain::database;
 using chain::operation_notification;
@@ -31,7 +31,7 @@ class account_history_plugin_impl
 {
    public:
       account_history_plugin_impl() :
-         _db( appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db() ) {}
+         _db( appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db() ) {}
 
       virtual ~account_history_plugin_impl() {}
 
@@ -330,4 +330,4 @@ flat_map< account_name_type, account_name_type > account_history_plugin::tracked
    return my->_tracked_accounts;
 }
 
-} } } // steem::plugins::account_history
+} } } // dpay::plugins::account_history

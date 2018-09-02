@@ -10,7 +10,7 @@
 
 #include <steem/protocol/sdc_operations.hpp>
 #ifdef STEEM_ENABLE_SDC
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
 namespace {
 
@@ -81,9 +81,9 @@ void sdc_create_evaluator::do_apply( const sdc_create_operation& o )
 
    asset effective_elevation_fee;
 
-   FC_ASSERT( dgpo.sdc_creation_fee.symbol == STEEM_SYMBOL || dgpo.sdc_creation_fee.symbol == SBD_SYMBOL,
+   FC_ASSERT( dgpo.sdc_creation_fee.symbol == BEX_SYMBOL || dgpo.sdc_creation_fee.symbol == BBD_SYMBOL,
       "Unexpected internal error - wrong symbol ${s} of SDC creation fee.", ("s", dgpo.sdc_creation_fee.symbol) );
-   FC_ASSERT( o.sdc_creation_fee.symbol == STEEM_SYMBOL || o.sdc_creation_fee.symbol == SBD_SYMBOL,
+   FC_ASSERT( o.sdc_creation_fee.symbol == BEX_SYMBOL || o.sdc_creation_fee.symbol == BBD_SYMBOL,
       "Asset fee must be BEX or BBD, was ${s}", ("s", o.sdc_creation_fee.symbol) );
    if( o.sdc_creation_fee.symbol == dgpo.sdc_creation_fee.symbol )
    {
@@ -93,7 +93,7 @@ void sdc_create_evaluator::do_apply( const sdc_create_operation& o )
    {
       const auto& fhistory = _db.get_feed_history();
       FC_ASSERT( !fhistory.current_median_history.is_null(), "Cannot pay the fee using SBD because there is no price feed." );
-      if( o.sdc_creation_fee.symbol == STEEM_SYMBOL )
+      if( o.sdc_creation_fee.symbol == BEX_SYMBOL )
       {
          effective_elevation_fee = _db.to_sbd( o.sdc_creation_fee );
       }

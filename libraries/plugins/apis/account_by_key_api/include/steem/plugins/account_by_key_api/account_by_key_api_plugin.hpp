@@ -7,7 +7,7 @@
 #define STEEM_ACCOUNT_BY_KEY_API_PLUGIN_NAME "account_by_key_api"
 
 
-namespace steem { namespace plugins { namespace account_by_key {
+namespace dpay { namespace plugins { namespace account_by_key {
 
 using namespace appbase;
 
@@ -15,8 +15,8 @@ class account_by_key_api_plugin : public appbase::plugin< account_by_key_api_plu
 {
 public:
    APPBASE_PLUGIN_REQUIRES(
-      (steem::plugins::account_by_key::account_by_key_plugin)
-      (steem::plugins::json_rpc::json_rpc_plugin)
+      (dpay::plugins::account_by_key::account_by_key_plugin)
+      (dpay::plugins::json_rpc::json_rpc_plugin)
    )
 
    account_by_key_api_plugin();
@@ -33,4 +33,4 @@ public:
    std::shared_ptr< class account_by_key_api > api;
 };
 
-} } } // steem::plugins::account_by_key
+} } } // dpay::plugins::account_by_key

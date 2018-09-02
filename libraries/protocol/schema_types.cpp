@@ -4,7 +4,7 @@
 
 #include <steem/protocol/schema_types.hpp>
 
-namespace steem { namespace schema { namespace detail {
+namespace dpay { namespace schema { namespace detail {
 
 //////////////////////////////////////////////
 // account_name_type                        //

@@ -10,10 +10,10 @@
 
 #include <boost/multi_index/composite_key.hpp>
 
-namespace steem { namespace plugins { namespace rc {
+namespace dpay { namespace plugins { namespace rc {
 
 using namespace std;
-using namespace steem::chain;
+using namespace dpay::chain;
 
 #ifndef STEEM_RC_SPACE_ID
 #define STEEM_RC_SPACE_ID 16
@@ -66,7 +66,7 @@ class rc_account_object : public object< rc_account_object_type, rc_account_obje
       id_type               id;
 
       account_name_type     account;
-      steem::chain::util::manabar   rc_manabar;
+      dpay::chain::util::manabar   rc_manabar;
       asset                 max_rc_creation_adjustment = asset( 0, VESTS_SYMBOL );
       int64_t               max_rc = 0;
 
@@ -102,15 +102,15 @@ typedef multi_index_container<
    allocator< rc_account_object >
 > rc_account_index;
 
-} } } // steem::plugins::rc
+} } } // dpay::plugins::rc
 
-FC_REFLECT( steem::plugins::rc::rc_resource_param_object, (id)(resource_param_array) )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::rc::rc_resource_param_object, steem::plugins::rc::rc_resource_param_index )
+FC_REFLECT( dpay::plugins::rc::rc_resource_param_object, (id)(resource_param_array) )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::rc::rc_resource_param_object, dpay::plugins::rc::rc_resource_param_index )
 
-FC_REFLECT( steem::plugins::rc::rc_pool_object, (id)(pool_array) )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::rc::rc_pool_object, steem::plugins::rc::rc_pool_index )
+FC_REFLECT( dpay::plugins::rc::rc_pool_object, (id)(pool_array) )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::rc::rc_pool_object, dpay::plugins::rc::rc_pool_index )
 
-FC_REFLECT( steem::plugins::rc::rc_account_object,
+FC_REFLECT( dpay::plugins::rc::rc_account_object,
    (id)
    (account)
    (rc_manabar)
@@ -118,4 +118,4 @@ FC_REFLECT( steem::plugins::rc::rc_account_object,
    (max_rc)
    (last_max_rc)
    )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::rc::rc_account_object, steem::plugins::rc::rc_account_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::rc::rc_account_object, dpay::plugins::rc::rc_account_index )

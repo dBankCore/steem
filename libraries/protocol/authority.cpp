@@ -1,6 +1,6 @@
 #include <steem/protocol/authority.hpp>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 // authority methods
 void authority::add_authority( const public_key_type& k, weight_type w )
@@ -116,4 +116,4 @@ bool operator == ( const authority& a, const authority& b )
             ( a.key_auths      == b.key_auths );
 }
 
-} } // steem::protocol
+} } // dpay::protocol

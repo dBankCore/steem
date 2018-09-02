@@ -7,7 +7,7 @@
 
 #include <fc/utf8.hpp>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 inline bool is_asset_type( asset asset, asset_symbol_type symbol )
 {

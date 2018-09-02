@@ -11,7 +11,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace steem { namespace plugins { namespace block_log_info {
+namespace dpay { namespace plugins { namespace block_log_info {
 
 namespace detail {
 
@@ -19,7 +19,7 @@ class block_log_info_plugin_impl
 {
    public:
       block_log_info_plugin_impl( block_log_info_plugin& _plugin ) :
-         _db( appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db() ),
+         _db( appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db() ),
          _self( _plugin ) {}
 
       void on_post_apply_block( const block_notification& note );
@@ -148,7 +148,7 @@ void block_log_info_plugin::plugin_initialize( const boost::program_options::var
    try
    {
       ilog( "Initializing block_log_info plugin" );
-      chain::database& db = appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db();
+      chain::database& db = appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db();
 
       my->_post_apply_block_conn = db.add_post_apply_block_handler(
          [&]( const block_notification& note ){ my->on_post_apply_block( note ); }, *this );
@@ -175,4 +175,4 @@ void block_log_info_plugin::plugin_shutdown()
    chain::util::disconnect_signal( my->_post_apply_block_conn );
 }
 
-} } } // steem::plugins::block_log_info
+} } } // dpay::plugins::block_log_info

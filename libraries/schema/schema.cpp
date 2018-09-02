@@ -3,7 +3,7 @@
 
 #include <set>
 
-namespace steem { namespace schema {
+namespace dpay { namespace schema {
 
 namespace detail {
 

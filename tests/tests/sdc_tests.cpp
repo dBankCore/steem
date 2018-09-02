@@ -16,8 +16,8 @@ FC_TODO(Extend testing scenarios to support multiple NAIs per account)
 
 #include "../db_fixture/database_fixture.hpp"
 
-using namespace steem::chain;
-using namespace steem::protocol;
+using namespace dpay::chain;
+using namespace dpay::protocol;
 using fc::string;
 using boost::container::flat_set;
 using boost::container::flat_map;
@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE( sdc_create_validate )
       op.symbol = op.symbol.get_paired_symbol();
       STEEM_REQUIRE_THROW( op.validate(), fc::exception );
       // Legacy symbol used instead of SDC.
-      op.symbol = STEEM_SYMBOL;
+      op.symbol = BEX_SYMBOL;
       STEEM_REQUIRE_THROW( op.validate(), fc::exception );
    }
    FC_LOG_AND_RETHROW()
@@ -124,19 +124,19 @@ BOOST_AUTO_TEST_CASE( sdc_create_apply )
       // Fund with STEEM, and set fee with SBD.
       FUND( "alice", test_amount );
       // Declare fee in SBD/TBD though alice has none.
-      op.sdc_creation_fee = asset( test_amount, SBD_SYMBOL );
+      op.sdc_creation_fee = asset( test_amount, BBD_SYMBOL );
       // Throw due to insufficient balance of SBD/TBD.
       FAIL_WITH_OP(op, alice_private_key, fc::assert_exception);
 
       // Now fund with SBD, and set fee with STEEM.
-      convert( "alice", asset( test_amount, STEEM_SYMBOL ) );
+      convert( "alice", asset( test_amount, BEX_SYMBOL ) );
       // Declare fee in STEEM though alice has none.
-      op.sdc_creation_fee = asset( test_amount, STEEM_SYMBOL );
+      op.sdc_creation_fee = asset( test_amount, BEX_SYMBOL );
       // Throw due to insufficient balance of STEEM.
       FAIL_WITH_OP(op, alice_private_key, fc::assert_exception);
 
       // Push valid operation.
-      op.sdc_creation_fee = asset( test_amount, SBD_SYMBOL );
+      op.sdc_creation_fee = asset( test_amount, BBD_SYMBOL );
       PUSH_OP( op, alice_private_key );
 
       // Check the SDC cannot be created twice even with different precision.
@@ -160,12 +160,12 @@ BOOST_AUTO_TEST_CASE( sdc_create_apply )
 
       // Check too low fee in STEEM.
       FUND( "bob", too_low_fee_amount );
-      op.sdc_creation_fee = asset( too_low_fee_amount, STEEM_SYMBOL );
+      op.sdc_creation_fee = asset( too_low_fee_amount, BEX_SYMBOL );
       FAIL_WITH_OP(op, bob_private_key, fc::assert_exception);
 
       // Check too low fee in SBD.
-      convert( "bob", asset( too_low_fee_amount, STEEM_SYMBOL ) );
-      op.sdc_creation_fee = asset( too_low_fee_amount, SBD_SYMBOL );
+      convert( "bob", asset( too_low_fee_amount, BEX_SYMBOL ) );
+      op.sdc_creation_fee = asset( too_low_fee_amount, BBD_SYMBOL );
       FAIL_WITH_OP(op, bob_private_key, fc::assert_exception);
 
       validate_database();
@@ -348,12 +348,12 @@ BOOST_AUTO_TEST_CASE( setup_emissions_apply )
          fail_op.symbol = sdc2;
          fail_op.lep_abs_amount = fail_op.rep_abs_amount = asset( 1000, fail_op.symbol );
          // TODO: Replace the code below with account setup operation execution once its implemented.
-         const steem::chain::sdc_token_object* sdc = db->find< steem::chain::sdc_token_object, by_symbol >( fail_op.symbol );
+         const dpay::chain::sdc_token_object* sdc = db->find< dpay::chain::sdc_token_object, by_symbol >( fail_op.symbol );
          FC_ASSERT( sdc != nullptr, "The SDC has just been created!" );
-         FC_ASSERT( sdc->phase < steem::chain::sdc_phase::setup_completed, "Who closed setup phase?!" );
-         db->modify( *sdc, [&]( steem::chain::sdc_token_object& token )
+         FC_ASSERT( sdc->phase < dpay::chain::sdc_phase::setup_completed, "Who closed setup phase?!" );
+         db->modify( *sdc, [&]( dpay::chain::sdc_token_object& token )
          {
-            token.phase = steem::chain::sdc_phase::setup_completed;
+            token.phase = dpay::chain::sdc_phase::setup_completed;
          });
          // Fail due to closed setup phase (too late).
          FAIL_WITH_OP(fail_op, alice_private_key, fc::assert_exception)
@@ -784,7 +784,7 @@ BOOST_AUTO_TEST_CASE( comment_votable_assers_validate )
          allowed_vote_assets ava;
          const auto& sdc = sdcs.front();
          ava.add_votable_asset(sdc, share_type(20), false);
-         ava.add_votable_asset(STEEM_SYMBOL, share_type(20), true);
+         ava.add_votable_asset(BEX_SYMBOL, share_type(20), true);
          op.extensions.insert( ava );
          STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
       }
@@ -861,17 +861,17 @@ BOOST_AUTO_TEST_CASE( asset_symbol_vesting_methods )
    {
       BOOST_TEST_MESSAGE( "Test asset_symbol vesting methods" );
 
-      asset_symbol_type Steem = STEEM_SYMBOL;
+      asset_symbol_type Steem = BEX_SYMBOL;
       FC_ASSERT( Steem.is_vesting() == false );
       FC_ASSERT( Steem.get_paired_symbol() == VESTS_SYMBOL );
 
       asset_symbol_type Vests = VESTS_SYMBOL;
       FC_ASSERT( Vests.is_vesting() );
-      FC_ASSERT( Vests.get_paired_symbol() == STEEM_SYMBOL );
+      FC_ASSERT( Vests.get_paired_symbol() == BEX_SYMBOL );
 
-      asset_symbol_type Sbd = SBD_SYMBOL;
+      asset_symbol_type Sbd = BBD_SYMBOL;
       FC_ASSERT( Sbd.is_vesting() == false );
-      FC_ASSERT( Sbd.get_paired_symbol() == SBD_SYMBOL );
+      FC_ASSERT( Sbd.get_paired_symbol() == BBD_SYMBOL );
 
       ACTORS( (alice) )
       generate_block();
@@ -1313,7 +1313,7 @@ BOOST_AUTO_TEST_CASE( setup_apply )
       sign( tx, bob_private_key );
       db->push_transaction( tx, 0 );
 
-      const steem::chain::sdc_token_object* sdc_token = db->find< steem::chain::sdc_token_object, by_control_account >( op.control_account );
+      const dpay::chain::sdc_token_object* sdc_token = db->find< dpay::chain::sdc_token_object, by_control_account >( op.control_account );
       BOOST_REQUIRE( sdc_token != nullptr );
       uint8_t decimals = sdc_token->liquid_symbol.decimals();
       BOOST_REQUIRE( decimals == 5 );

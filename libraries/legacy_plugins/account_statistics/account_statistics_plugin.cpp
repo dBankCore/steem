@@ -5,7 +5,7 @@
 
 #include <steem/chain/database.hpp>
 
-namespace steem { namespace account_statistics {
+namespace dpay { namespace account_statistics {
 
 namespace detail
 {
@@ -105,6 +105,6 @@ const flat_set< std::string >& account_statistics_plugin::get_tracked_accounts()
    return _my->_tracked_accounts;
 }
 
-} } // steem::account_statistics
+} } // dpay::account_statistics
 
-STEEM_DEFINE_PLUGIN( account_statistics, steem::account_statistics::account_statistics_plugin );
+STEEM_DEFINE_PLUGIN( account_statistics, dpay::account_statistics::account_statistics_plugin );

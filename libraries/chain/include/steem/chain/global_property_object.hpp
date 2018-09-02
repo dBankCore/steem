@@ -5,10 +5,10 @@
 
 #include <steem/protocol/asset.hpp>
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
-   using steem::protocol::asset;
-   using steem::protocol::price;
+   using dpay::protocol::asset;
+   using dpay::protocol::price;
 
    /**
     * @class dynamic_global_property_object
@@ -49,22 +49,22 @@ namespace steem { namespace chain {
           */
          uint32_t num_pow_witnesses = 0;
 
-         asset       virtual_supply             = asset( 0, STEEM_SYMBOL );
-         asset       current_supply             = asset( 0, STEEM_SYMBOL );
-         asset       confidential_supply        = asset( 0, STEEM_SYMBOL ); ///< total asset held in confidential balances
-         asset       current_sbd_supply         = asset( 0, SBD_SYMBOL );
-         asset       confidential_sbd_supply    = asset( 0, SBD_SYMBOL ); ///< total asset held in confidential balances
-         asset       total_vesting_fund_steem   = asset( 0, STEEM_SYMBOL );
+         asset       virtual_supply             = asset( 0, BEX_SYMBOL );
+         asset       current_supply             = asset( 0, BEX_SYMBOL );
+         asset       confidential_supply        = asset( 0, BEX_SYMBOL ); ///< total asset held in confidential balances
+         asset       current_sbd_supply         = asset( 0, BBD_SYMBOL );
+         asset       confidential_sbd_supply    = asset( 0, BBD_SYMBOL ); ///< total asset held in confidential balances
+         asset       total_vesting_fund_steem   = asset( 0, BEX_SYMBOL );
          asset       total_vesting_shares       = asset( 0, VESTS_SYMBOL );
-         asset       total_reward_fund_steem    = asset( 0, STEEM_SYMBOL );
+         asset       total_reward_fund_steem    = asset( 0, BEX_SYMBOL );
          fc::uint128 total_reward_shares2; ///< the running total of REWARD^2
          asset       pending_rewarded_vesting_shares = asset( 0, VESTS_SYMBOL );
-         asset       pending_rewarded_vesting_steem = asset( 0, STEEM_SYMBOL );
+         asset       pending_rewarded_vesting_steem = asset( 0, BEX_SYMBOL );
 
          price       get_vesting_share_price() const
          {
             if ( total_vesting_fund_steem.amount == 0 || total_vesting_shares.amount == 0 )
-               return price ( asset( 1000, STEEM_SYMBOL ), asset( 1000000, VESTS_SYMBOL ) );
+               return price ( asset( 1000, BEX_SYMBOL ), asset( 1000000, VESTS_SYMBOL ) );
 
             return price( total_vesting_shares, total_vesting_fund_steem );
          }
@@ -123,7 +123,7 @@ namespace steem { namespace chain {
          uint16_t sbd_stop_percent = 0;
          uint16_t sbd_start_percent = 0;
 #ifdef STEEM_ENABLE_SDC
-         asset sdc_creation_fee = asset( 1000000, SBD_SYMBOL );
+         asset sdc_creation_fee = asset( 1000000, BBD_SYMBOL );
 #endif
    };
 
@@ -136,9 +136,9 @@ namespace steem { namespace chain {
       allocator< dynamic_global_property_object >
    > dynamic_global_property_index;
 
-} } // steem::chain
+} } // dpay::chain
 
-FC_REFLECT( steem::chain::dynamic_global_property_object,
+FC_REFLECT( dpay::chain::dynamic_global_property_object,
              (id)
              (head_block_number)
              (head_block_id)
@@ -174,4 +174,4 @@ FC_REFLECT( steem::chain::dynamic_global_property_object,
              (sdc_creation_fee)
 #endif
           )
-CHAINBASE_SET_INDEX_TYPE( steem::chain::dynamic_global_property_object, steem::chain::dynamic_global_property_index )
+CHAINBASE_SET_INDEX_TYPE( dpay::chain::dynamic_global_property_object, dpay::chain::dynamic_global_property_index )

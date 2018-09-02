@@ -3,10 +3,10 @@
 
 #include <boost/multi_index/composite_key.hpp>
 
-namespace steem { namespace plugins { namespace follow {
+namespace dpay { namespace plugins { namespace follow {
 
 using namespace std;
-using namespace steem::chain;
+using namespace dpay::chain;
 
 using chainbase::t_vector;
 
@@ -284,36 +284,36 @@ typedef multi_index_container<
    allocator< follow_count_object >
 > follow_count_index;
 
-} } } // steem::plugins::follow
+} } } // dpay::plugins::follow
 
-FC_REFLECT_ENUM( steem::plugins::follow::follow_type, (undefined)(blog)(ignore) )
+FC_REFLECT_ENUM( dpay::plugins::follow::follow_type, (undefined)(blog)(ignore) )
 
-FC_REFLECT( steem::plugins::follow::follow_object, (id)(follower)(following)(what) )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::follow::follow_object, steem::plugins::follow::follow_index )
+FC_REFLECT( dpay::plugins::follow::follow_object, (id)(follower)(following)(what) )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::follow::follow_object, dpay::plugins::follow::follow_index )
 
-FC_REFLECT( steem::plugins::follow::feed_object, (id)(account)(first_reblogged_by)(first_reblogged_on)(reblogged_by)(comment)(account_feed_id) )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::follow::feed_object, steem::plugins::follow::feed_index )
+FC_REFLECT( dpay::plugins::follow::feed_object, (id)(account)(first_reblogged_by)(first_reblogged_on)(reblogged_by)(comment)(account_feed_id) )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::follow::feed_object, dpay::plugins::follow::feed_index )
 
-FC_REFLECT( steem::plugins::follow::blog_object, (id)(account)(comment)(reblogged_on)(blog_feed_id) )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::follow::blog_object, steem::plugins::follow::blog_index )
+FC_REFLECT( dpay::plugins::follow::blog_object, (id)(account)(comment)(reblogged_on)(blog_feed_id) )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::follow::blog_object, dpay::plugins::follow::blog_index )
 
-FC_REFLECT( steem::plugins::follow::reputation_object, (id)(account)(reputation) )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::follow::reputation_object, steem::plugins::follow::reputation_index )
+FC_REFLECT( dpay::plugins::follow::reputation_object, (id)(account)(reputation) )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::follow::reputation_object, dpay::plugins::follow::reputation_index )
 
-FC_REFLECT( steem::plugins::follow::follow_count_object, (id)(account)(follower_count)(following_count) )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::follow::follow_count_object, steem::plugins::follow::follow_count_index )
+FC_REFLECT( dpay::plugins::follow::follow_count_object, (id)(account)(follower_count)(following_count) )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::follow::follow_count_object, dpay::plugins::follow::follow_count_index )
 
-FC_REFLECT( steem::plugins::follow::blog_author_stats_object, (id)(blogger)(guest)(count) )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::follow::blog_author_stats_object, steem::plugins::follow::blog_author_stats_index );
+FC_REFLECT( dpay::plugins::follow::blog_author_stats_object, (id)(blogger)(guest)(count) )
+CHAINBASE_SET_INDEX_TYPE( dpay::plugins::follow::blog_author_stats_object, dpay::plugins::follow::blog_author_stats_index );
 
 namespace helpers
 {
    template <>
-   class index_statistic_provider<steem::plugins::follow::feed_index>
+   class index_statistic_provider<dpay::plugins::follow::feed_index>
    {
    public:
-      typedef steem::plugins::follow::feed_index IndexType;
-      typedef typename steem::plugins::follow::feed_object::t_reblogged_by_container t_reblogged_by_container;
+      typedef dpay::plugins::follow::feed_index IndexType;
+      typedef typename dpay::plugins::follow::feed_object::t_reblogged_by_container t_reblogged_by_container;
 
       index_statistic_info gather_statistics(const IndexType& index, bool onlyStaticInfo) const
       {

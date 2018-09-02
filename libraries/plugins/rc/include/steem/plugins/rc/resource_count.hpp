@@ -8,11 +8,11 @@
 
 #define STEEM_NUM_RESOURCE_TYPES     5
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 struct signed_transaction;
-} } // steem::protocol
+} } // dpay::protocol
 
-namespace steem { namespace plugins { namespace rc {
+namespace dpay { namespace plugins { namespace rc {
 
 enum rc_resource_types
 {
@@ -31,12 +31,12 @@ struct count_resources_result
 };
 
 void count_resources(
-   const steem::protocol::signed_transaction& tx,
+   const dpay::protocol::signed_transaction& tx,
    count_resources_result& result );
 
-} } } // steem::plugins::rc
+} } } // dpay::plugins::rc
 
-FC_REFLECT_ENUM( steem::plugins::rc::rc_resource_types,
+FC_REFLECT_ENUM( dpay::plugins::rc::rc_resource_types,
     (resource_history_bytes)
     (resource_new_accounts)
     (resource_market_bytes)
@@ -44,8 +44,8 @@ FC_REFLECT_ENUM( steem::plugins::rc::rc_resource_types,
     (resource_execution_time)
    )
 
-FC_REFLECT( steem::plugins::rc::count_resources_result,
+FC_REFLECT( dpay::plugins::rc::count_resources_result,
    (resource_count)
 )
 
-FC_REFLECT_TYPENAME( steem::plugins::rc::resource_count_type )
+FC_REFLECT_TYPENAME( dpay::plugins::rc::resource_count_type )

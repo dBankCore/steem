@@ -16,7 +16,7 @@ my $fileHeader = <<'END';
 #include <steem/wallet/api_documentation.hpp>
 #include <steem/wallet/wallet.hpp>
 
-namespace steem { namespace wallet {
+namespace dpay { namespace wallet {
    namespace detail
    {
       struct api_method_name_collector_visitor
@@ -38,7 +38,7 @@ $outFile->print($fileHeader);
 
 for my $class (@{$doxydocs->{classes}})
 {
-  if ($class->{name} eq 'steem::wallet::wallet_api')
+  if ($class->{name} eq 'dpay::wallet::wallet_api')
   {
     for my $member (@{$class->{public_methods}->{members}})
     {
@@ -84,7 +84,7 @@ my $fileFooter = <<'END';
           ++iter;
    }
 
-} } // end namespace steem::wallet
+} } // end namespace dpay::wallet
 END
 $outFile->print($fileFooter);
 $outFile->close();

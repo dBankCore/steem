@@ -2,7 +2,7 @@
 #include <steem/plugins/rc_api/rc_api.hpp>
 
 
-namespace steem { namespace plugins { namespace rc {
+namespace dpay { namespace plugins { namespace rc {
 
 rc_api_plugin::rc_api_plugin() {}
 rc_api_plugin::~rc_api_plugin() {}
@@ -17,4 +17,4 @@ void rc_api_plugin::plugin_initialize( const variables_map& options )
 void rc_api_plugin::plugin_startup() {}
 void rc_api_plugin::plugin_shutdown() {}
 
-} } } // steem::plugins::rc
+} } } // dpay::plugins::rc

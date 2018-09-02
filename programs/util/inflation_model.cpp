@@ -21,11 +21,11 @@
 #define VPOW_OFF        9
 #define REWARD_TYPES   10
 
-using steem::protocol::asset;
-using steem::protocol::share_type;
-using steem::protocol::calc_percent_reward_per_block;
-using steem::protocol::calc_percent_reward_per_round;
-using steem::protocol::calc_percent_reward_per_hour;
+using dpay::protocol::asset;
+using dpay::protocol::share_type;
+using dpay::protocol::calc_percent_reward_per_block;
+using dpay::protocol::calc_percent_reward_per_round;
+using dpay::protocol::calc_percent_reward_per_hour;
 
 /*
 Explanation of output

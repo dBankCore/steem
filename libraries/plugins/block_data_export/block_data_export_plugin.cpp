@@ -20,12 +20,12 @@
 #include <queue>
 #include <sstream>
 
-namespace steem { namespace plugins { namespace block_data_export {
+namespace dpay { namespace plugins { namespace block_data_export {
 
-using steem::chain::block_notification;
-using steem::chain::database;
+using dpay::chain::block_notification;
+using dpay::chain::database;
 
-using steem::protocol::block_id_type;
+using dpay::protocol::block_id_type;
 
 namespace detail {
 
@@ -46,9 +46,9 @@ struct api_export_data_object
 
 } } } }
 
-FC_REFLECT( steem::plugins::block_data_export::detail::api_export_data_object, (block_id)(previous)(export_data) )
+FC_REFLECT( dpay::plugins::block_data_export::detail::api_export_data_object, (block_id)(previous)(export_data) )
 
-namespace steem { namespace plugins { namespace block_data_export { namespace detail {
+namespace dpay { namespace plugins { namespace block_data_export { namespace detail {
 
 struct work_item
 {
@@ -61,7 +61,7 @@ class block_data_export_plugin_impl
 {
    public:
       block_data_export_plugin_impl( block_data_export_plugin& _plugin ) :
-         _db( appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db() ),
+         _db( appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db() ),
          _self( _plugin ),
          _data_queue( _max_queue_size ),
          _output_queue( _max_queue_size ) {}
@@ -306,4 +306,4 @@ void block_data_export_plugin::plugin_shutdown()
 exportable_block_data::exportable_block_data() {}
 exportable_block_data::~exportable_block_data() {}
 
-} } } // steem::plugins::block_data_export
+} } } // dpay::plugins::block_data_export

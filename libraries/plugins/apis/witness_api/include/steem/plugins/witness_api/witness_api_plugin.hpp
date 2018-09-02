@@ -7,7 +7,7 @@
 #define STEEM_WITNESS_API_PLUGIN_NAME "witness_api"
 
 
-namespace steem { namespace plugins { namespace witness {
+namespace dpay { namespace plugins { namespace witness {
 
 using namespace appbase;
 
@@ -15,8 +15,8 @@ class witness_api_plugin : public appbase::plugin< witness_api_plugin >
 {
 public:
    APPBASE_PLUGIN_REQUIRES(
-      (steem::plugins::witness::witness_plugin)
-      (steem::plugins::json_rpc::json_rpc_plugin)
+      (dpay::plugins::witness::witness_plugin)
+      (dpay::plugins::json_rpc::json_rpc_plugin)
    )
 
    witness_api_plugin();
@@ -33,4 +33,4 @@ public:
    std::shared_ptr< class witness_api > api;
 };
 
-} } } // steem::plugins::witness
+} } } // dpay::plugins::witness

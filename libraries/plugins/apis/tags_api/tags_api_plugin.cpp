@@ -2,7 +2,7 @@
 #include <steem/plugins/tags_api/tags_api.hpp>
 
 
-namespace steem { namespace plugins { namespace tags {
+namespace dpay { namespace plugins { namespace tags {
 
 tags_api_plugin::tags_api_plugin() {}
 tags_api_plugin::~tags_api_plugin() {}
@@ -17,4 +17,4 @@ void tags_api_plugin::plugin_initialize( const variables_map& options )
 void tags_api_plugin::plugin_startup() { api->api_startup(); }
 void tags_api_plugin::plugin_shutdown() {}
 
-} } } // steem::plugins::tags
+} } } // dpay::plugins::tags

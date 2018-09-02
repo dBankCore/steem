@@ -6,14 +6,14 @@
 #include <fc/variant_object.hpp>
 #include <fc/reflect/variant.hpp>
 
-namespace steem { namespace plugins { namespace rc {
+namespace dpay { namespace plugins { namespace rc {
 
 namespace detail {
 
 class rc_api_impl
 {
    public:
-      rc_api_impl() : _db( appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db() ) {}
+      rc_api_impl() : _db( appbase::app().get_plugin< dpay::plugins::chain::chain_plugin >().db() ) {}
 
       DECLARE_API_IMPL
       (
@@ -97,4 +97,4 @@ DEFINE_READ_APIS( rc_api,
    (find_rc_accounts)
    )
 
-} } } // steem::plugins::rc
+} } } // dpay::plugins::rc

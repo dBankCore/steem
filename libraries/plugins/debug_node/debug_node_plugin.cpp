@@ -15,7 +15,7 @@
 #include <sstream>
 #include <string>
 
-namespace steem { namespace plugins { namespace debug_node {
+namespace dpay { namespace plugins { namespace debug_node {
 
 namespace detail {
 class debug_node_plugin_impl
@@ -205,7 +205,7 @@ void debug_node_plugin::debug_generate_blocks(
    chain::public_key_type debug_public_key;
    if( args.debug_key != "" )
    {
-      debug_private_key = steem::utilities::wif_to_key( args.debug_key );
+      debug_private_key = dpay::utilities::wif_to_key( args.debug_key );
       FC_ASSERT( debug_private_key.valid() );
       debug_public_key = debug_private_key->get_public_key();
    }
@@ -360,4 +360,4 @@ void debug_node_plugin::plugin_shutdown()
    return;
 }
 
-} } } // steem::plugins::debug_node
+} } } // dpay::plugins::debug_node
