@@ -42,7 +42,7 @@
 /// Allows to limit number of total produced blocks.
 #define TESTNET_BLOCK_LIMIT                   (3000000)
 
-#else // IS LIVE STEEM NETWORK
+#else // IS LIVE DPAY NETWORK
 
 #define STEEM_BLOCKCHAIN_VERSION              ( version(0, 20, 0) )
 

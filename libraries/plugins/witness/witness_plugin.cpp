@@ -449,7 +449,7 @@ namespace detail {
          if( ( !_db.has_hardfork( STEEM_HARDFORK_0_20 ) ||  !_skip_enforce_bandwidth ) && _db.is_producing() )
          {
             STEEM_ASSERT( has_bandwidth,  plugin_exception,
-               "Account: ${account} bandwidth limit exceeded. Please wait to transact or power up STEEM.",
+               "Account: ${account} bandwidth limit exceeded. Please wait to transact or power up BEX.",
                ("account", a.name)
                ("account_vshares", account_vshares)
                ("account_average_bandwidth", account_average_bandwidth)

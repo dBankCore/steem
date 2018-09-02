@@ -122,7 +122,7 @@ Now that we've reset its key, we can take control of it in the wallet:
     unlock abc
     import_key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
     list_my_accounts
-    transfer steemit dantheman "1.234 STEEM" "make -j100 money" true
+    transfer steemit dantheman "1.234 BEX" "make -j100 money" true
     list_my_accounts
     get_account_history steemit -1 1000
 

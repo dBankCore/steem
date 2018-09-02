@@ -520,7 +520,7 @@ namespace steem { namespace protocol {
    void convert_operation::validate()const
    {
       validate_account_name( owner );
-      /// only allow conversion from SBD to STEEM, allowing the opposite can enable traders to abuse
+      /// only allow conversion from BBD to BEX, allowing the opposite can enable traders to abuse
       /// market fluxuations through converting large quantities without moving the price.
       FC_ASSERT( is_asset_type( amount, SBD_SYMBOL ), "Can only convert BBD to BEX" );
       FC_ASSERT( amount.amount > 0, "Must convert some SBD" );
@@ -547,8 +547,8 @@ namespace steem { namespace protocol {
       FC_ASSERT( sbd_amount.amount > 0 || steem_amount.amount > 0, "escrow must transfer a non-zero amount" );
       FC_ASSERT( from != agent && to != agent, "agent must be a third party" );
       FC_ASSERT( (fee.symbol == STEEM_SYMBOL) || (fee.symbol == SBD_SYMBOL), "fee must be BEX or BBD" );
-      FC_ASSERT( sbd_amount.symbol == SBD_SYMBOL, "sbd amount must contain SBD" );
-      FC_ASSERT( steem_amount.symbol == STEEM_SYMBOL, "steem amount must contain STEEM" );
+      FC_ASSERT( sbd_amount.symbol == SBD_SYMBOL, "BBD amount must contain SBD" );
+      FC_ASSERT( steem_amount.symbol == STEEM_SYMBOL, "dPay amount must contain BEX" );
       FC_ASSERT( ratification_deadline < escrow_expiration, "ratification deadline must be before escrow expiration" );
       if ( json_meta.size() > 0 )
       {
@@ -587,8 +587,8 @@ namespace steem { namespace protocol {
       FC_ASSERT( sbd_amount.amount >= 0, "sbd amount cannot be negative" );
       FC_ASSERT( steem_amount.amount >= 0, "steem amount cannot be negative" );
       FC_ASSERT( sbd_amount.amount > 0 || steem_amount.amount > 0, "escrow must release a non-zero amount" );
-      FC_ASSERT( sbd_amount.symbol == SBD_SYMBOL, "sbd amount must contain SBD" );
-      FC_ASSERT( steem_amount.symbol == STEEM_SYMBOL, "steem amount must contain STEEM" );
+      FC_ASSERT( sbd_amount.symbol == SBD_SYMBOL, "SBD amount must contain SBD" );
+      FC_ASSERT( steem_amount.symbol == STEEM_SYMBOL, "BEX amount must contain BEX" );
    }
 
    void request_account_recovery_operation::validate()const

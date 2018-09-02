@@ -1281,7 +1281,7 @@ asset create_vesting2( database& db, const account_object& to_account, asset liq
 
 /**
  * @param to_account - the account to receive the new vesting shares
- * @param liquid     - STEEM or liquid SMT to be converted to vesting shares
+ * @param liquid     - BEX or liquid SMT to be converted to vesting shares
  */
 asset database::create_vesting( const account_object& to_account, asset liquid, bool to_reward_balance )
 {
@@ -2414,7 +2414,7 @@ share_type database::pay_reward_funds( share_type reward )
 
       used_rewards += r;
 
-      // Sanity check to ensure we aren't printing more STEEM than has been allocated through inflation
+      // Sanity check to ensure we aren't printing more BEX than has been allocated through inflation
       FC_ASSERT( used_rewards <= reward );
    }
 
@@ -4124,7 +4124,7 @@ void database::modify_balance( const account_object& a, const asset& delta, bool
             acnt.balance += delta;
             if( check_balance )
             {
-               FC_ASSERT( acnt.balance.amount.value >= 0, "Insufficient STEEM funds" );
+               FC_ASSERT( acnt.balance.amount.value >= 0, "Insufficient BEX funds" );
             }
             break;
          case STEEM_ASSET_NUM_SBD:
@@ -4185,7 +4185,7 @@ void database::modify_reward_balance( const account_object& a, const asset& valu
                acnt.reward_steem_balance += value_delta;
                if( check_balance )
                {
-                  FC_ASSERT( acnt.reward_steem_balance.amount.value >= 0, "Insufficient reward STEEM funds" );
+                  FC_ASSERT( acnt.reward_steem_balance.amount.value >= 0, "Insufficient reward BEX funds" );
                }
             }
             else
@@ -4314,7 +4314,7 @@ void database::adjust_savings_balance( const account_object& a, const asset& del
             acnt.savings_balance += delta;
             if( check_balance )
             {
-               FC_ASSERT( acnt.savings_balance.amount.value >= 0, "Insufficient savings STEEM funds" );
+               FC_ASSERT( acnt.savings_balance.amount.value >= 0, "Insufficient savings BEX funds" );
             }
             break;
          case STEEM_ASSET_NUM_SBD:

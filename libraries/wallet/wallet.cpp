@@ -802,13 +802,13 @@ public:
 
          ss << ' ' << setw( ( spacing * 4 ) + 6 ) << "Bids" << "Asks\n"
             << ' '
-            << setw( spacing + 3 ) << "Sum(SBD)"
-            << setw( spacing + 1) << "SBD"
-            << setw( spacing + 1 ) << "STEEM"
+            << setw( spacing + 3 ) << "Sum(BBD)"
+            << setw( spacing + 1) << "BBD"
+            << setw( spacing + 1 ) << "BEX"
             << setw( spacing + 1 ) << "Price"
             << setw( spacing + 1 ) << "Price"
-            << setw( spacing + 1 ) << "STEEM "
-            << setw( spacing + 1 ) << "SBD " << "Sum(SBD)"
+            << setw( spacing + 1 ) << "BEX "
+            << setw( spacing + 1 ) << "BBD " << "Sum(SBD)"
             << "\n====================================================================================================="
             << "|=====================================================================================================\n";
 

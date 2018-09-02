@@ -921,7 +921,7 @@ void escrow_transfer_evaluator::do_apply( const escrow_transfer_operation& o )
       else
          sbd_spent += o.fee;
 
-      FC_ASSERT( from_account.balance >= steem_spent, "Account cannot cover STEEM costs of escrow. Required: ${r} Available: ${a}", ("r",steem_spent)("a",from_account.balance) );
+      FC_ASSERT( from_account.balance >= steem_spent, "Account cannot cover BEX costs of escrow. Required: ${r} Available: ${a}", ("r",steem_spent)("a",from_account.balance) );
       FC_ASSERT( from_account.sbd_balance >= sbd_spent, "Account cannot cover SBD costs of escrow. Required: ${r} Available: ${a}", ("r",sbd_spent)("a",from_account.sbd_balance) );
 
       _db.adjust_balance( from_account, -steem_spent );
@@ -2724,9 +2724,9 @@ void claim_reward_balance_evaluator::do_apply( const claim_reward_balance_operat
 {
    const auto& acnt = _db.get_account( op.account );
 
-   FC_ASSERT( op.reward_steem <= acnt.reward_steem_balance, "Cannot claim that much STEEM. Claim: ${c} Actual: ${a}",
+   FC_ASSERT( op.reward_steem <= acnt.reward_steem_balance, "Cannot claim that much BEX. Claim: ${c} Actual: ${a}",
       ("c", op.reward_steem)("a", acnt.reward_steem_balance) );
-   FC_ASSERT( op.reward_sbd <= acnt.reward_sbd_balance, "Cannot claim that much SBD. Claim: ${c} Actual: ${a}",
+   FC_ASSERT( op.reward_sbd <= acnt.reward_sbd_balance, "Cannot claim that much BBD. Claim: ${c} Actual: ${a}",
       ("c", op.reward_sbd)("a", acnt.reward_sbd_balance) );
    FC_ASSERT( op.reward_vests <= acnt.reward_vesting_balance, "Cannot claim that much VESTS. Claim: ${c} Actual: ${a}",
       ("c", op.reward_vests)("a", acnt.reward_vesting_balance) );

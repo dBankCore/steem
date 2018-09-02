@@ -241,7 +241,7 @@ void use_account_rcs(
       if( (!skip.skip_reject_not_enough_rc) && db.has_hardfork( STEEM_HARDFORK_0_20 ) && db.is_producing() )
       {
          STEEM_ASSERT( has_mana, plugin_exception,
-            "Account: ${account} needs ${rc_needed} RC. Please wait to transact, or power up STEEM.",
+            "Account: ${account} needs ${rc_needed} RC. Please wait to transact, or power up BEX.",
             ("account", account_name)
             ("rc_needed", rc)
             );

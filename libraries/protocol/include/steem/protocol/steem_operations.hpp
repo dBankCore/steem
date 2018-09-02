@@ -382,7 +382,7 @@ namespace steem { namespace protocol {
 
 
    /**
-    *  This operation converts liquid token (STEEM or liquid SMT) into VFS (Vesting Fund Shares,
+    *  This operation converts liquid token (BEX or liquid SMT) into VFS (Vesting Fund Shares,
     *  VESTS or vesting SMT) at the current exchange rate. With this operation it is possible to
     *  give another account vesting shares so that faucets can pre-fund new accounts with vesting shares.
     */
@@ -390,7 +390,7 @@ namespace steem { namespace protocol {
    {
       account_name_type from;
       account_name_type to;      ///< if null, then same as from
-      asset             amount;  ///< must be STEEM or liquid variant of SMT
+      asset             amount;  ///< must be BEX or liquid variant of SMT
 
       void validate()const;
       void get_required_active_authorities( flat_set<account_name_type>& a )const{ a.insert(from); }
@@ -614,7 +614,7 @@ namespace steem { namespace protocol {
 
 
    /**
-    *  This operation instructs the blockchain to start a conversion between STEEM and SBD,
+    *  This operation instructs the blockchain to start a conversion between BEX and BBD,
     *  The funds are deposited after STEEM_CONVERSION_DELAY
     */
    struct convert_operation : public base_operation

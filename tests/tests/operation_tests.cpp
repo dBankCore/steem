@@ -3894,12 +3894,12 @@ BOOST_AUTO_TEST_CASE( escrow_transfer_validate )
       op.sbd_amount.symbol = STEEM_SYMBOL;
       STEEM_REQUIRE_THROW( op.validate(), fc::exception );
 
-      BOOST_TEST_MESSAGE( "--- failure when steem symbol != STEEM" );
+      BOOST_TEST_MESSAGE( "--- failure when steem symbol != BEX" );
       op.sbd_amount.symbol = SBD_SYMBOL;
       op.steem_amount.symbol = SBD_SYMBOL;
       STEEM_REQUIRE_THROW( op.validate(), fc::exception );
 
-      BOOST_TEST_MESSAGE( "--- failure when fee symbol != SBD and fee symbol != STEEM" );
+      BOOST_TEST_MESSAGE( "--- failure when fee symbol != BBD and fee symbol != BEX" );
       op.steem_amount.symbol = STEEM_SYMBOL;
       op.fee.symbol = VESTS_SYMBOL;
       STEEM_REQUIRE_THROW( op.validate(), fc::exception );
@@ -3910,7 +3910,7 @@ BOOST_AUTO_TEST_CASE( escrow_transfer_validate )
       op.steem_amount.amount = 0;
       STEEM_REQUIRE_THROW( op.validate(), fc::exception );
 
-      BOOST_TEST_MESSAGE( "--- failure when sbd < 0" );
+      BOOST_TEST_MESSAGE( "--- failure when bbd < 0" );
       op.sbd_amount.amount = -100;
       op.steem_amount.amount = 1000;
       STEEM_REQUIRE_THROW( op.validate(), fc::exception );
@@ -5361,7 +5361,7 @@ BOOST_AUTO_TEST_CASE( transfer_to_savings_apply )
       validate_database();
 
 
-      BOOST_TEST_MESSAGE( "--- success transferring STEEM to other" );
+      BOOST_TEST_MESSAGE( "--- success transferring BEX to other" );
       op.to = "bob";
       op.amount = ASSET( "1.000 TESTS" );
 

@@ -281,7 +281,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
 
       // BOOST_TEST_MESSAGE( "--- Test having a partial match to limit order" );
       // // Alice has order for 15 SMT at a price of 2:3
-      // // Fill 5 STEEM for 7.5 SMT
+      // // Fill 5 BEX for 7.5 SMT
 
       op.owner = "bob";
       op.orderid = 1;
@@ -756,7 +756,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
 
       // BOOST_TEST_MESSAGE( "--- Test having a partial match to limit order" );
       // // Alice has order for 15 SMT at a price of 2:3
-      // // Fill 5 STEEM for 7.5 SMT
+      // // Fill 5 BEX for 7.5 SMT
 
       op.owner = "bob";
       op.orderid = 1;
