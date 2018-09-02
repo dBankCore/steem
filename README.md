@@ -11,7 +11,7 @@ dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" socia
 
 # Chain Details
 - **Blockchain ID** - 38f14b346eb697ba04ae0f5adcfaa0a437ed3711197704aa256a14cb9b4a8f26
-- **Init Miner Public Key** - DWB6FSKRxQMaXSa6zXsETV8ZVexCdyau3pNYPERVeKCdSoiZPt4yg
+- **Init Miner Public Key** - DWB88FC9nDFczSTfVxrzHvVe8ZuvajLHKikfJYWiKkNvrUebBovzF
 - **Peer-To-Peer Port** - 6620
 - **RPC/WS Port** - 1776
 
