@@ -143,7 +143,7 @@ void CreateObject(std::unique_ptr<char[]>* data, fbson::FbsonValue** value) {
 namespace rocksdb {
 
 
-// TODO(stash): find sdch easier
+// TODO(stash): find smth easier
 JSONDocument::JSONDocument() {
   InitJSONDocument(&data_,
                    &value_,
