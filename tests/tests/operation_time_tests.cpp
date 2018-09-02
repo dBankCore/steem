@@ -220,7 +220,7 @@ BOOST_AUTO_TEST_CASE( comment_payout_dust )
 
       generate_blocks( db->get_comment( "alice", string( "test" ) ).cashout_time );
 
-      // If comments are paid out independent of order, then the last satoshi of STEEM cannot be divided among them
+      // If comments are paid out independent of order, then the last satoshi of BEX cannot be divided among them
       const auto rf = db->get< reward_fund_object, by_name >( STEEM_POST_REWARD_FUND_NAME );
       BOOST_REQUIRE( rf.reward_balance == ASSET( "0.001 TESTS" ) );
 

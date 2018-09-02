@@ -6128,7 +6128,7 @@ BOOST_AUTO_TEST_CASE( account_create_with_delegation_apply )
       BOOST_TEST_MESSAGE( "Testing: account_create_with_delegation_apply" );
       signed_transaction tx;
       ACTORS( (alice) );
-      // 150 * fee = ( 5 * STEEM ) + SP
+      // 150 * fee = ( 5 * BEX ) + BP
       //auto gpo = db->get_dynamic_global_properties();
       generate_blocks(1);
       fund( "alice", ASSET("1510.000 TESTS") );

@@ -1,12 +1,12 @@
 Quickstart
 ----------
 
-### Get current steemd
+### Get current dpayd
 Use docker:
 ```
 docker run \
-    -d -p 2001:2001 -p 8090:8090 --name steemd-default \
-    --restart unless-stopped steemit/steem
+    -d -p 2001:2001 -p 8090:8090 --name dpayd-default \
+    --restart unless-stopped dpays/dpay
 ```
 #### Low memory node?
 Above runs low memory node, which is suitable for:
@@ -18,9 +18,9 @@ For full api node use:
 ```
 docker run \
     --env USE_WAY_TOO_MUCH_RAM=1 --env USE_FULL_WEB_NODE=1 \
-    -d -p 2001:2001 -p 8090:8090 --name steemd-full \
+    -d -p 2001:2001 -p 8090:8090 --name dpayd-full \
     --restart unless-stopped \
-    steemit/steem
+    dpays/dpay
 ```
 ### Configure for your use case
 #### Full API node
@@ -42,9 +42,9 @@ This configuration exists in Docker with the following command
 
 ```
 docker run -d --env TRACK_ACCOUNT="yourexchangeid" \
-    --name steemd \
+    --name dpayd \
     --restart unless-stopped \
-    steemit/steem
+    dpays/dpay
 ```
 
 ### Resources usage

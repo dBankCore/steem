@@ -88,7 +88,7 @@ namespace steem { namespace chain {
 
          uint16_t          reward_weight = 0;
 
-         /** tracks the total payout this comment has received over time, measured in SBD */
+         /** tracks the total payout this comment has received over time, measured in BBD */
          asset             total_payout_value = asset(0, SBD_SYMBOL);
          asset             curator_payout_value = asset(0, SBD_SYMBOL);
          asset             beneficiary_payout_value = asset( 0, SBD_SYMBOL );
@@ -99,7 +99,7 @@ namespace steem { namespace chain {
 
          id_type           root_comment;
 
-         asset             max_accepted_payout = asset( 1000000000, SBD_SYMBOL );       /// SBD value of the maximum payout this post will receive
+         asset             max_accepted_payout = asset( 1000000000, SBD_SYMBOL );       /// BBD value of the maximum payout this post will receive
          uint16_t          percent_steem_dollars = STEEM_100_PERCENT; /// the percent of Steem Dollars to key, unkept amounts will be received as Steem Power
          bool              allow_replies = true;      /// allows a post to disable replies.
          bool              allow_votes   = true;      /// allows a post to receive votes;
@@ -299,7 +299,7 @@ CHAINBASE_SET_INDEX_TYPE( steem::chain::comment_vote_object, steem::chain::comme
 namespace helpers
 {
    using steem::chain::shared_string;
-   
+
    template <>
    class index_statistic_provider<steem::chain::comment_index>
    {

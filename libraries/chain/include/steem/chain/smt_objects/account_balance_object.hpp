@@ -16,7 +16,7 @@ class account_regular_balance_object : public object< account_regular_balance_ob
 {
    account_regular_balance_object() = delete;
 
-public:   
+public:
    template <typename Constructor, typename Allocator>
    account_regular_balance_object(Constructor&& c, allocator< Allocator > a)
    {
@@ -27,7 +27,7 @@ public:
    id_type             id;
    /// Name of the account, the balance is held for.
    account_name_type   owner;
-   asset               liquid;   /// 'balance' for STEEM
+   asset               liquid;   /// 'balance' for BEX
    asset               vesting;  /// 'vesting_shares' for VESTS
 
    /** Set of simple methods that allow unification of
@@ -64,7 +64,7 @@ class account_rewards_balance_object : public object< account_rewards_balance_ob
 {
    account_rewards_balance_object() = delete;
 
-public:   
+public:
    template <typename Constructor, typename Allocator>
    account_rewards_balance_object(Constructor&& c, allocator< Allocator > a)
    {
@@ -75,7 +75,7 @@ public:
    id_type             id;
    /// Name of the account, the balance is held for.
    account_name_type   owner;
-   asset               pending_liquid;          /// 'reward_steem_balance' for pending STEEM
+   asset               pending_liquid;          /// 'reward_steem_balance' for pending BEX
    asset               pending_vesting_shares;  /// 'reward_vesting_balance' for pending VESTS
    asset               pending_vesting_value;   /// 'reward_vesting_steem' for pending VESTS
 

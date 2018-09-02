@@ -1115,8 +1115,8 @@ uint32_t database::get_slot_at_time(fc::time_point_sec when)const
 }
 
 /**
- *  Converts STEEM into sbd and adds it to to_account while reducing the STEEM supply
- *  by STEEM and increasing the sbd supply by the specified amount.
+ *  Converts BEX into sbd and adds it to to_account while reducing the BEX supply
+ *  by BEX and increasing the sbd supply by the specified amount.
  */
 std::pair< asset, asset > database::create_sbd( const account_object& to_account, asset steem, bool to_reward_balance )
 {
@@ -1230,7 +1230,7 @@ asset create_vesting2( database& db, const account_object& to_account, asset liq
 #endif
 
       FC_ASSERT( liquid.symbol == STEEM_SYMBOL );
-      // ^ A novelty, needed but risky in case someone managed to slip SBD/TESTS here in blockchain history.
+      // ^ A novelty, needed but risky in case someone managed to slip BBD/TESTS here in blockchain history.
       // Get share price.
       const auto& cprops = db.get_dynamic_global_properties();
       price vesting_share_price = to_reward_balance ? cprops.get_reward_vesting_share_price() : cprops.get_vesting_share_price();
@@ -1869,8 +1869,8 @@ share_type database::cashout_comment_helper( util::comment_reward_context& ctx, 
                   benefactor_vesting_steem  = benefactor_tokens - benefactor_sbd_steem;
                   auto sbd_payout           = create_sbd( get_account( b.account ), asset( benefactor_sbd_steem, STEEM_SYMBOL ), true );
 
-                  vop.sbd_payout   = sbd_payout.first; // SBD portion
-                  vop.steem_payout = sbd_payout.second; // STEEM portion
+                  vop.sbd_payout   = sbd_payout.first; // BBD portion
+                  vop.steem_payout = sbd_payout.second; // BEX portion
                }
 
                create_vesting2( *this, get_account( b.account ), asset( benefactor_vesting_steem, STEEM_SYMBOL ), has_hardfork( STEEM_HARDFORK_0_17__659 ),
@@ -2050,7 +2050,7 @@ void database::process_comment_cashout()
     *
     * Each payout follows a similar pattern, but for a different reason.
     * Cashout comment helper does not know about the reward fund it is paying from.
-    * The helper only does token allocation based on curation rewards and the SBD
+    * The helper only does token allocation based on curation rewards and the BBD
     * global %, etc.
     *
     * Each context is used by get_rshare_reward to determine what part of each budget
@@ -5019,7 +5019,7 @@ void database::validate_invariants()const
          else if( itr->pending_fee.symbol == SBD_SYMBOL )
             total_sbd += itr->pending_fee;
          else
-            FC_ASSERT( false, "found escrow pending fee that is not SBD or STEEM" );
+            FC_ASSERT( false, "found escrow pending fee that is not BBD or BEX" );
       }
 
       const auto& savings_withdraw_idx = get_index< savings_withdraw_index >().indices().get< by_id >();
@@ -5031,7 +5031,7 @@ void database::validate_invariants()const
          else if( itr->amount.symbol == SBD_SYMBOL )
             total_sbd += itr->amount;
          else
-            FC_ASSERT( false, "found savings withdraw that is not SBD or STEEM" );
+            FC_ASSERT( false, "found savings withdraw that is not BBD or BEX" );
       }
 
       const auto& reward_idx = get_index< reward_fund_index, by_id >();

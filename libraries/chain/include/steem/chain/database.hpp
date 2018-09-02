@@ -399,7 +399,7 @@ namespace steem { namespace chain {
 
          /**
           * Helper method to return the current sbd value of a given amount of
-          * STEEM.  Return 0 SBD if there isn't a current_median_history
+          * STEEM.  Return 0 BBD if there isn't a current_median_history
           */
          asset to_sbd( const asset& steem )const;
          asset to_steem( const asset& sbd )const;

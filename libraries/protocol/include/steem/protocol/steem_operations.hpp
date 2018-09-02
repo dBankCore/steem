@@ -164,7 +164,7 @@ namespace steem { namespace protocol {
       {
          FC_ASSERT(votable_assets.size() <= SMT_MAX_VOTABLE_ASSETS, "Too much votable assets specified");
          FC_ASSERT(is_allowed(STEEM_SYMBOL) == false,
-            "STEEM can not be explicitly specified as one of allowed_vote_assets");
+            "BEX can not be explicitly specified as one of allowed_vote_assets");
       }
 
       flat_map< asset_symbol_type, votable_asset_info > votable_assets;
@@ -256,7 +256,7 @@ namespace steem { namespace protocol {
    /**
     * @ingroup operations
     *
-    * @brief Transfers STEEM from one account to another.
+    * @brief Transfers BEX from one account to another.
     */
    struct transfer_operation : public base_operation
    {
@@ -445,7 +445,7 @@ namespace steem { namespace protocol {
    struct legacy_chain_properties
    {
       /**
-       *  This fee, paid in STEEM, is converted into VESTING SHARES for the new account. Accounts
+       *  This fee, paid in BEX, is converted into VESTING SHARES for the new account. Accounts
        *  without vesting shares cannot earn usage rations and therefore are powerless. This minimum
        *  fee requires all accounts to have some kind of commitment to the network that includes the
        *  ability to vote and make transactions.
@@ -784,7 +784,7 @@ namespace steem { namespace protocol {
     * key getting compromised and being used to produced multiple blocks so
     * the attacker can report it and steel their vesting steem.
     *
-    * The result of the operation is to transfer the full VESTING STEEM balance
+    * The result of the operation is to transfer the full VESTING BEX balance
     * of the block producer to the reporter.
     */
    struct report_over_production_operation : public base_operation

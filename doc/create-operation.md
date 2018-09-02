@@ -1,5 +1,5 @@
 
-This is developer documentation for creating brand-new operations on the STEEM blockchain.
+This is developer documentation for creating brand-new operations on the dPay blockchain.
 
 - (1) Define `smt_elevate_account_operation` structure in `smt_operations.hpp`
 - (2) Create `FC_REFLECT` definition for the operation struct.
@@ -104,7 +104,7 @@ later we will see how to adapt this field to different objects.
 - (5e) Methods which get objects from the database return `const` references.
 The most general way to retrieve chain state is with
 `get< type, index >( index_value )`, for example see the
-[implementation](https://github.com/steemit/steem/blob/a0a69b10189d93a9be4da7e7fd9d5358af956e34/libraries/chain/database.cpp#L364)
+[implementation](https://github.com/dpays/dpay/blob/a0a69b10189d93a9be4da7e7fd9d5358af956e34/libraries/chain/database.cpp#L364)
 of `get_account(name)`.
 
 - (5f) To modify an object on the database, you must issue `db.modify()`,

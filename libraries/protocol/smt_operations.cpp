@@ -29,7 +29,7 @@ void smt_create_operation::validate()const
    smt_base_operation::validate();
    FC_ASSERT( smt_creation_fee.amount >= 0, "fee cannot be negative" );
    FC_ASSERT( smt_creation_fee.amount <= STEEM_MAX_SHARE_SUPPLY, "Fee must be smaller than STEEM_MAX_SHARE_SUPPLY" );
-   FC_ASSERT( is_asset_type( smt_creation_fee, STEEM_SYMBOL ) || is_asset_type( smt_creation_fee, SBD_SYMBOL ), "Fee must be STEEM or SBD" );
+   FC_ASSERT( is_asset_type( smt_creation_fee, STEEM_SYMBOL ) || is_asset_type( smt_creation_fee, SBD_SYMBOL ), "Fee must be BEX or BBD" );
    FC_ASSERT( symbol.decimals() == precision, "Mismatch between redundantly provided precision ${prec1} vs ${prec2}",
       ("prec1",symbol.decimals())("prec2",precision) );
 }
@@ -195,13 +195,13 @@ struct validate_visitor
 void smt_setup_emissions_operation::validate()const
 {
    smt_base_operation::validate();
-   
+
    FC_ASSERT( schedule_time > STEEM_GENESIS_TIME );
    FC_ASSERT( emissions_unit.token_unit.empty() == false );
-   
+
    //interval_seconds <- any value of unsigned int is OK
    //interval_count <- any value of unsigned int is OK
-   
+
    FC_ASSERT( lep_time <= rep_time );
    FC_ASSERT( schedule_time <= lep_time || lep_time == rep_time );
    // ^ lep_time is either later or non-important
@@ -231,7 +231,7 @@ void smt_setup_operation::validate()const
    FC_ASSERT( generation_end_time > generation_begin_time );
    FC_ASSERT( announced_launch_time >= generation_end_time );
    FC_ASSERT( launch_expiration_time >= announced_launch_time );
-}  
+}
 
 struct smt_set_runtime_parameters_operation_visitor
 {

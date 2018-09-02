@@ -806,7 +806,7 @@ DEFINE_API_IMPL( database_api_impl, find_vesting_delegation_expirations )
 }
 
 
-/* SBD Conversion Requests */
+/* BBD Conversion Requests */
 
 DEFINE_API_IMPL( database_api_impl, list_sbd_conversion_requests )
 {

@@ -17,7 +17,7 @@ namespace steem { namespace protocol {
    void account_create_operation::validate() const
    {
       validate_account_name( new_account_name );
-      FC_ASSERT( is_asset_type( fee, STEEM_SYMBOL ), "Account creation fee must be STEEM" );
+      FC_ASSERT( is_asset_type( fee, STEEM_SYMBOL ), "Account creation fee must be BEX" );
       owner.validate();
       active.validate();
 
@@ -33,7 +33,7 @@ namespace steem { namespace protocol {
    {
       validate_account_name( new_account_name );
       validate_account_name( creator );
-      FC_ASSERT( is_asset_type( fee, STEEM_SYMBOL ), "Account creation fee must be STEEM" );
+      FC_ASSERT( is_asset_type( fee, STEEM_SYMBOL ), "Account creation fee must be BEX" );
       FC_ASSERT( is_asset_type( delegation, VESTS_SYMBOL ), "Delegation must be VESTS" );
 
       owner.validate();
@@ -129,7 +129,7 @@ namespace steem { namespace protocol {
    {
       validate_account_name( author );
       FC_ASSERT( percent_steem_dollars <= STEEM_100_PERCENT, "Percent cannot exceed 100%" );
-      FC_ASSERT( max_accepted_payout.symbol == SBD_SYMBOL, "Max accepted payout must be in SBD" );
+      FC_ASSERT( max_accepted_payout.symbol == SBD_SYMBOL, "Max accepted payout must be in BBD" );
       FC_ASSERT( max_accepted_payout.amount.value >= 0, "Cannot accept less than 0 payout" );
       validate_permlink( permlink );
       for( auto& e : extensions )
@@ -145,7 +145,7 @@ namespace steem { namespace protocol {
    void claim_account_operation::validate()const
    {
       validate_account_name( creator );
-      FC_ASSERT( is_asset_type( fee, STEEM_SYMBOL ), "Account creation fee must be STEEM" );
+      FC_ASSERT( is_asset_type( fee, STEEM_SYMBOL ), "Account creation fee must be BEX" );
       FC_ASSERT( fee >= asset( 0, STEEM_SYMBOL ), "Account creation fee cannot be negative" );
       FC_ASSERT( fee <= asset( STEEM_MAX_ACCOUNT_CREATION_FEE, STEEM_SYMBOL ), "Account creation fee cannot be too large" );
 
@@ -176,7 +176,7 @@ namespace steem { namespace protocol {
    {
       validate_account_name( voter );
       validate_account_name( author );\
-      FC_ASSERT( abs(weight) <= STEEM_100_PERCENT, "Weight is not a STEEMIT percentage" );
+      FC_ASSERT( abs(weight) <= STEEM_100_PERCENT, "Weight is not a dPay percentage" );
       validate_permlink( permlink );
    }
 
@@ -184,7 +184,7 @@ namespace steem { namespace protocol {
    { try {
       validate_account_name( from );
       validate_account_name( to );
-      FC_ASSERT( amount.symbol != VESTS_SYMBOL, "transferring of Steem Power (STMP) is not allowed." );
+      FC_ASSERT( amount.symbol != VESTS_SYMBOL, "transferring of BEX Power (STMP) is not allowed." );
       FC_ASSERT( amount.amount > 0, "Cannot transfer a negative amount (aka: stealing)" );
       FC_ASSERT( memo.size() < STEEM_MAX_MEMO_SIZE, "Memo is too large" );
       FC_ASSERT( fc::is_utf8( memo ), "Memo is not UTF8" );
@@ -195,7 +195,7 @@ namespace steem { namespace protocol {
       validate_account_name( from );
       FC_ASSERT( amount.symbol == STEEM_SYMBOL ||
                  ( amount.symbol.space() == asset_symbol_type::smt_nai_space && amount.symbol.is_vesting() == false ),
-                 "Amount must be STEEM or SMT liquid" );
+                 "Amount must be BEX or SMT liquid" );
       if ( to != account_name_type() ) validate_account_name( to );
       FC_ASSERT( amount.amount > 0, "Must transfer a nonzero amount" );
    }
@@ -237,7 +237,7 @@ namespace steem { namespace protocol {
       {
          asset account_creation_fee;
          fc::raw::unpack_from_vector( itr->second, account_creation_fee );
-         FC_ASSERT( account_creation_fee.symbol == STEEM_SYMBOL, "account_creation_fee must be in STEEM" );
+         FC_ASSERT( account_creation_fee.symbol == STEEM_SYMBOL, "account_creation_fee must be in BEX" );
          FC_ASSERT( account_creation_fee.amount >= STEEM_MIN_ACCOUNT_CREATION_FEE, "account_creation_fee smaller than minimum account creation fee" );
       }
 
@@ -272,7 +272,7 @@ namespace steem { namespace protocol {
          price sbd_exchange_rate;
          fc::raw::unpack_from_vector( itr->second, sbd_exchange_rate );
          FC_ASSERT( ( is_asset_type( sbd_exchange_rate.base, SBD_SYMBOL ) && is_asset_type( sbd_exchange_rate.quote, STEEM_SYMBOL ) ),
-            "Price feed must be a STEEM/SBD price" );
+            "Price feed must be a BEX/BBD price" );
          sbd_exchange_rate.validate();
       }
 
@@ -467,7 +467,7 @@ namespace steem { namespace protocol {
       validate_account_name( publisher );
       FC_ASSERT( ( is_asset_type( exchange_rate.base, STEEM_SYMBOL ) && is_asset_type( exchange_rate.quote, SBD_SYMBOL ) )
          || ( is_asset_type( exchange_rate.base, SBD_SYMBOL ) && is_asset_type( exchange_rate.quote, STEEM_SYMBOL ) ),
-         "Price feed must be a STEEM/SBD price" );
+         "Price feed must be a BEX/BBD price" );
       exchange_rate.validate();
    }
 
@@ -485,7 +485,7 @@ namespace steem { namespace protocol {
                      is_asset_type( amount_to_sell, STEEM_SYMBOL )
                      && min_to_receive.symbol.space() == asset_symbol_type::smt_nai_space
                   ),
-               "Limit order must be for the STEEM:SBD or SMT:(STEEM/SBD) market" );
+               "Limit order must be for the BEX:BBD or SMT:(BEX/BBD) market" );
 
       (amount_to_sell / min_to_receive).validate();
    }
@@ -507,7 +507,7 @@ namespace steem { namespace protocol {
                      is_asset_type( amount_to_sell, STEEM_SYMBOL )
                      && exchange_rate.quote.symbol.space() == asset_symbol_type::smt_nai_space
                   ),
-               "Limit order must be for the STEEM:SBD or SMT:(STEEM/SBD) market" );
+               "Limit order must be for the BEX:BBD or SMT:(BEX/BBD) market" );
 
       FC_ASSERT( ( amount_to_sell * exchange_rate ).amount > 0, "Amount to sell cannot round to 0 when traded" );
    }
@@ -522,7 +522,7 @@ namespace steem { namespace protocol {
       validate_account_name( owner );
       /// only allow conversion from SBD to STEEM, allowing the opposite can enable traders to abuse
       /// market fluxuations through converting large quantities without moving the price.
-      FC_ASSERT( is_asset_type( amount, SBD_SYMBOL ), "Can only convert SBD to STEEM" );
+      FC_ASSERT( is_asset_type( amount, SBD_SYMBOL ), "Can only convert BBD to BEX" );
       FC_ASSERT( amount.amount > 0, "Must convert some SBD" );
    }
 
@@ -546,7 +546,7 @@ namespace steem { namespace protocol {
       FC_ASSERT( steem_amount.amount >= 0, "steem amount cannot be negative" );
       FC_ASSERT( sbd_amount.amount > 0 || steem_amount.amount > 0, "escrow must transfer a non-zero amount" );
       FC_ASSERT( from != agent && to != agent, "agent must be a third party" );
-      FC_ASSERT( (fee.symbol == STEEM_SYMBOL) || (fee.symbol == SBD_SYMBOL), "fee must be STEEM or SBD" );
+      FC_ASSERT( (fee.symbol == STEEM_SYMBOL) || (fee.symbol == SBD_SYMBOL), "fee must be BEX or BBD" );
       FC_ASSERT( sbd_amount.symbol == SBD_SYMBOL, "sbd amount must contain SBD" );
       FC_ASSERT( steem_amount.symbol == STEEM_SYMBOL, "steem amount must contain STEEM" );
       FC_ASSERT( ratification_deadline < escrow_expiration, "ratification deadline must be before escrow expiration" );
@@ -661,9 +661,9 @@ namespace steem { namespace protocol {
    void claim_reward_balance_operation::validate()const
    {
       validate_account_name( account );
-      FC_ASSERT( is_asset_type( reward_steem, STEEM_SYMBOL ), "Reward Steem must be STEEM" );
-      FC_ASSERT( is_asset_type( reward_sbd, SBD_SYMBOL ), "Reward Steem must be SBD" );
-      FC_ASSERT( is_asset_type( reward_vests, VESTS_SYMBOL ), "Reward Steem must be VESTS" );
+      FC_ASSERT( is_asset_type( reward_steem, STEEM_SYMBOL ), "Reward BEX must be BEX" );
+      FC_ASSERT( is_asset_type( reward_sbd, SBD_SYMBOL ), "Reward BEX must be BBD" );
+      FC_ASSERT( is_asset_type( reward_vests, VESTS_SYMBOL ), "Reward BEX must be VESTS" );
       FC_ASSERT( reward_steem.amount >= 0, "Cannot claim a negative amount" );
       FC_ASSERT( reward_sbd.amount >= 0, "Cannot claim a negative amount" );
       FC_ASSERT( reward_vests.amount >= 0, "Cannot claim a negative amount" );

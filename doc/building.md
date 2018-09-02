@@ -10,7 +10,7 @@ running tests, it is recommended to build as release.
 
 ### LOW_MEMORY_NODE=[OFF/ON]
 
-Builds steemd to be a consensus-only low memory node. Data and fields not
+Builds dpayd to be a consensus-only low memory node. Data and fields not
 needed for consensus are not stored in the object database.  This option is
 recommended for witnesses and seed-nodes.
 
@@ -32,9 +32,9 @@ huge gain if you do not need this functionality.
 
 We ship a Dockerfile.  This builds both common node type binaries.
 
-    git clone https://github.com/steemit/steem
+    git clone https://github.com/dpays/dpay
     cd steem
-    docker build -t steemit/steem .
+    docker build -t dpays/dpay .
 
 ## Building on Ubuntu 16.04
 
@@ -80,14 +80,14 @@ will build out of the box without further effort:
         libreadline-dev \
         perl
 
-    git clone https://github.com/steemit/steem
+    git clone https://github.com/dpays/dpay
     cd steem
     git checkout stable
     git submodule update --init --recursive
     mkdir build
     cd build
     cmake -DCMAKE_BUILD_TYPE=Release ..
-    make -j$(nproc) steemd
+    make -j$(nproc) dpayd
     make -j$(nproc) cli_wallet
     # optional
     make install  # defaults to /usr/local
@@ -146,13 +146,13 @@ Here is how to build and install Boost 1.60 into your user's home directory
 
 Then the instructions are the same as for steem:
 
-    git clone https://github.com/steemit/steem
+    git clone https://github.com/dpays/dpay
     cd steem
     git checkout stable
     git submodule update --init --recursive
     mkdir build && cd build
     cmake -DCMAKE_BUILD_TYPE=Release ..
-    make -j$(nproc) steemd
+    make -j$(nproc) dpayd
     make -j$(nproc) cli_wallet
 
 ## Building on macOS X
@@ -203,7 +203,7 @@ steem. Until then, this will allow you to install boost 1.60.0.
 
 ### Clone the Repository
 
-    git clone https://github.com/steemit/steem.git
+    git clone https://github.com/dpays/dpay.git
     cd steem
 
 ### Compile
@@ -221,15 +221,15 @@ steem. Until then, this will allow you to install boost 1.60.0.
 
 Also, some useful build targets for `make` are:
 
-    steemd
+    dpayd
     chain_test
     cli_wallet
 
 e.g.:
 
-    make -j$(sysctl -n hw.logicalcpu) steemd
+    make -j$(sysctl -n hw.logicalcpu) dpayd
 
-This will only build `steemd`.
+This will only build `dpayd`.
 
 ## Building on Other Platforms
 

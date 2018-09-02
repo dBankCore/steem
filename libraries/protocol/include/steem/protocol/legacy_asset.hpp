@@ -31,7 +31,7 @@ struct legacy_steem_asset
       {
          if( force_canon )
          {
-            FC_ASSERT( symbol.is_canon(), "Must use canonical STEEM symbol serialization" );
+            FC_ASSERT( symbol.is_canon(), "Must use canonical BEX symbol serialization" );
          }
          return asset( amount, STEEM_SYMBOL );
       }

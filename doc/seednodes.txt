@@ -3,14 +3,14 @@ seed-central.steemit.com:2001       # steemit
 seed-west.steemit.com:2001          # steemit
 steem-seed1.abit-more.com:2001      # abit
 52.74.152.79:2001                   # smooth.witness
-seed.steemd.com:34191               # roadscape
+seed.dpayd.com:34191               # roadscape
 anyx.co:2001                        # anyx
 seed.xeldal.com:12150               # xeldal
 seed.steemnodes.com:2001            # wackou
 seed.liondani.com:2016              # liondani
 gtg.steem.house:2001                # gtg
 seed.jesta.us:2001                  # jesta
-steemd.pharesim.me:2001             # pharesim
+dpayd.pharesim.me:2001             # pharesim
 5.9.18.213:2001                     # pfunk
 lafonasteem.com:2001                # lafona
 seed.rossco99.com:2001              # rossco99

@@ -360,7 +360,7 @@ struct find_vesting_delegation_expirations_args
 typedef list_vesting_delegation_expirations_return find_vesting_delegation_expirations_return;
 
 
-/* SBD Converstions */
+/* BBD Converstions */
 
 struct list_sbd_conversion_requests_args
 {

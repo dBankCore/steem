@@ -23,10 +23,10 @@ inline const smt_token_object& get_controlled_smt( const database& db, const acc
    // Check against unotherized account trying to access (and alter) SMT. Unotherized means "other than the one that created the SMT".
    FC_ASSERT( smt->control_account == control_account, "The account ${account} does NOT control the SMT ${smt}",
       ("account", control_account)("smt", smt_symbol.to_nai()) );
-   
+
    return *smt;
 }
-   
+
 }
 
 namespace {
@@ -84,7 +84,7 @@ void smt_create_evaluator::do_apply( const smt_create_operation& o )
    FC_ASSERT( dgpo.smt_creation_fee.symbol == STEEM_SYMBOL || dgpo.smt_creation_fee.symbol == SBD_SYMBOL,
       "Unexpected internal error - wrong symbol ${s} of SMT creation fee.", ("s", dgpo.smt_creation_fee.symbol) );
    FC_ASSERT( o.smt_creation_fee.symbol == STEEM_SYMBOL || o.smt_creation_fee.symbol == SBD_SYMBOL,
-      "Asset fee must be STEEM or SBD, was ${s}", ("s", o.smt_creation_fee.symbol) );
+      "Asset fee must be BEX or BBD, was ${s}", ("s", o.smt_creation_fee.symbol) );
    if( o.smt_creation_fee.symbol == dgpo.smt_creation_fee.symbol )
    {
       effective_elevation_fee = dgpo.smt_creation_fee;
@@ -99,11 +99,11 @@ void smt_create_evaluator::do_apply( const smt_create_operation& o )
       }
       else
       {
-         effective_elevation_fee = _db.to_steem( o.smt_creation_fee );         
+         effective_elevation_fee = _db.to_steem( o.smt_creation_fee );
       }
    }
 
-   FC_ASSERT( o.smt_creation_fee >= effective_elevation_fee, 
+   FC_ASSERT( o.smt_creation_fee >= effective_elevation_fee,
       "Fee of ${of} is too small, must be at least ${ef}", ("of", o.smt_creation_fee)("ef", effective_elevation_fee) );
    FC_ASSERT( _db.get_balance( o.control_account, o.smt_creation_fee.symbol ) >= o.smt_creation_fee,
     "Account does not have sufficient funds for specified fee of ${of}", ("of", o.smt_creation_fee) );
@@ -262,7 +262,7 @@ void smt_set_setup_parameters_evaluator::do_apply( const smt_set_setup_parameter
    FC_ASSERT( _db.has_hardfork( STEEM_SMT_HARDFORK ), "SMT functionality not enabled until hardfork ${hf}", ("hf", STEEM_SMT_HARDFORK) );
 
    const smt_token_object& smt_token = common_pre_setup_evaluation(_db, o.symbol, o.control_account);
-   
+
    _db.modify( smt_token, [&]( smt_token_object& token )
    {
       smt_setup_parameters_visitor visitor(token);

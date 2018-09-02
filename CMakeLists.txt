@@ -112,7 +112,7 @@ if( SKIP_BY_TX_ID )
    SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSKIP_BY_TX_ID" )
 endif()
 
-OPTION( STEEM_STATIC_BUILD "Build steemd as a static library (ON or OFF)" OFF )
+OPTION( STEEM_STATIC_BUILD "Build dpayd as a static library (ON or OFF)" OFF )
 if( STEEM_STATIC_BUILD AND ( ( MSVC AND NOT MINGW ) OR APPLE ) )
    MESSAGE( STATUS "Statuc build is not available on Windows or OS X" )
    SET( STEEM_STATIC_BUILD OFF )
@@ -314,9 +314,9 @@ endif(LINUX)
 endif(ENABLE_INSTALLER)
 
 if( BUILD_STEEM_TESTNET )
-  MESSAGE( STATUS "\n\n             CONFIGURED FOR TEST NETWORK             \n\n" )
+  MESSAGE( STATUS "\n\n             Configured For dPay Test Network             \n\n" )
 else()
-  MESSAGE( STATUS "\n\n             CONFIGURED FOR STEEM NETWORK             \n\n" )
+  MESSAGE( STATUS "\n\n             Configured For dPay Network             \n\n" )
 endif()
 
 if( ENABLE_SMT_SUPPORT )
@@ -336,5 +336,3 @@ if( LOW_MEMORY_NODE )
 else()
   MESSAGE( STATUS "\n\n             CONFIGURED FOR FULL NODE                \n\n" )
 endif()
-
-

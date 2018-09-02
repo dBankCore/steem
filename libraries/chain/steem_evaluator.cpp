@@ -2272,7 +2272,7 @@ void feed_publish_evaluator::do_apply( const feed_publish_operation& o )
 {
    if( _db.has_hardfork( STEEM_HARDFORK_0_20__409 ) )
       FC_ASSERT( is_asset_type( o.exchange_rate.base, SBD_SYMBOL ) && is_asset_type( o.exchange_rate.quote, STEEM_SYMBOL ),
-            "Price feed must be a SBD/STEEM price" );
+            "Price feed must be a BBD/BEX price" );
 
    const auto& witness = _db.get_witness( o.publisher );
    _db.modify( witness, [&]( witness_object& w )
@@ -2826,9 +2826,9 @@ void claim_reward_balance2_evaluator::do_apply( const claim_reward_balance2_oper
          else if( token.symbol == STEEM_SYMBOL || token.symbol == SBD_SYMBOL )
          {
             FC_ASSERT( is_asset_type( token, STEEM_SYMBOL ) == false || token <= a->reward_steem_balance,
-                       "Cannot claim that much STEEM. Claim: ${c} Actual: ${a}", ("c", token)("a", a->reward_steem_balance) );
+                       "Cannot claim that much BEX. Claim: ${c} Actual: ${a}", ("c", token)("a", a->reward_steem_balance) );
             FC_ASSERT( is_asset_type( token, SBD_SYMBOL ) == false || token <= a->reward_sbd_balance,
-                       "Cannot claim that much SBD. Claim: ${c} Actual: ${a}", ("c", token)("a", a->reward_sbd_balance) );
+                       "Cannot claim that much BBD. Claim: ${c} Actual: ${a}", ("c", token)("a", a->reward_sbd_balance) );
             _db.adjust_reward_balance( *a, -token );
             _db.adjust_balance( *a, token );
          }
