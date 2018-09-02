@@ -1,6 +1,6 @@
-#include <steem/plugins/follow/follow_operations.hpp>
+#include <dpay/plugins/follow/follow_operations.hpp>
 
-#include <steem/protocol/operation_util_impl.hpp>
+#include <dpay/protocol/operation_util_impl.hpp>
 
 namespace dpay { namespace plugins{ namespace follow {
 
@@ -16,4 +16,4 @@ void reblog_operation::validate()const
 
 } } } //dpay::plugins::follow
 
-STEEM_DEFINE_OPERATION_TYPE( dpay::plugins::follow::follow_plugin_operation )
+DPAY_DEFINE_OPERATION_TYPE( dpay::plugins::follow::follow_plugin_operation )

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 #include <stdint.h>
-#include <steem/utilities/words.hpp>
+#include <dpay/utilities/words.hpp>
 
 namespace dpay { namespace words {
 

@@ -8,10 +8,10 @@
 #include <fc/reflect/reflect.hpp>
 #include <fc/variant.hpp>
 
-#include <steem/utilities/key_conversion.hpp>
+#include <dpay/utilities/key_conversion.hpp>
 
-#include <steem/protocol/transaction.hpp>
-#include <steem/protocol/types.hpp>
+#include <dpay/protocol/transaction.hpp>
+#include <dpay/protocol/types.hpp>
 
 #define CHAIN_ID_PARAM "--chain-id"
 
@@ -43,7 +43,7 @@ int main(int argc, char** argv, char** envp)
 {
    fc::sha256 chainId;
 
-   chainId = STEEM_CHAIN_ID;
+   chainId = DPAY_CHAIN_ID;
 
    const size_t chainIdLen = strlen(CHAIN_ID_PARAM);
 

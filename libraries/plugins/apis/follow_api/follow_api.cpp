@@ -1,7 +1,7 @@
-#include <steem/plugins/follow_api/follow_api_plugin.hpp>
-#include <steem/plugins/follow_api/follow_api.hpp>
+#include <dpay/plugins/follow_api/follow_api_plugin.hpp>
+#include <dpay/plugins/follow_api/follow_api.hpp>
 
-#include <steem/plugins/follow/follow_objects.hpp>
+#include <dpay/plugins/follow/follow_objects.hpp>
 
 namespace dpay { namespace plugins { namespace follow {
 
@@ -296,7 +296,7 @@ DEFINE_API_IMPL( follow_api_impl, get_blog_authors )
 
 follow_api::follow_api(): my( new detail::follow_api_impl() )
 {
-   JSON_RPC_REGISTER_API( STEEM_FOLLOW_API_PLUGIN_NAME );
+   JSON_RPC_REGISTER_API( DPAY_FOLLOW_API_PLUGIN_NAME );
 }
 
 follow_api::~follow_api() {}

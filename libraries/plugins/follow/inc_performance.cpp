@@ -1,7 +1,7 @@
-#include <steem/plugins/follow/inc_performance.hpp>
+#include <dpay/plugins/follow/inc_performance.hpp>
 
-#include <steem/chain/database.hpp>
-#include <steem/plugins/follow/follow_objects.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/plugins/follow/follow_objects.hpp>
 
 namespace dpay { namespace plugins{ namespace follow {
 

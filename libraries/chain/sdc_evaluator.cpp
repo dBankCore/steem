@@ -1,15 +1,15 @@
 
-#include <steem/chain/steem_evaluator.hpp>
-#include <steem/chain/database.hpp>
-#include <steem/chain/steem_objects.hpp>
-#include <steem/chain/sdc_objects.hpp>
+#include <dpay/chain/dpay_evaluator.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/dpay_objects.hpp>
+#include <dpay/chain/sdc_objects.hpp>
 
-#include <steem/chain/util/reward.hpp>
+#include <dpay/chain/util/reward.hpp>
 
-#include <steem/protocol/sdc_operations.hpp>
+#include <dpay/protocol/sdc_operations.hpp>
 
-#include <steem/protocol/sdc_operations.hpp>
-#ifdef STEEM_ENABLE_SDC
+#include <dpay/protocol/sdc_operations.hpp>
+#ifdef DPAY_ENABLE_SDC
 namespace dpay { namespace chain {
 
 namespace {
@@ -67,7 +67,7 @@ const sdc_token_object& common_pre_setup_evaluation(
 
 void sdc_create_evaluator::do_apply( const sdc_create_operation& o )
 {
-   FC_ASSERT( _db.has_hardfork( STEEM_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", STEEM_SDC_HARDFORK) );
+   FC_ASSERT( _db.has_hardfork( DPAY_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", DPAY_SDC_HARDFORK) );
    const dynamic_global_property_object& dgpo = _db.get_dynamic_global_properties();
 
    // Check that SDC with given nai has not been created already.
@@ -92,14 +92,14 @@ void sdc_create_evaluator::do_apply( const sdc_create_operation& o )
    else
    {
       const auto& fhistory = _db.get_feed_history();
-      FC_ASSERT( !fhistory.current_median_history.is_null(), "Cannot pay the fee using SBD because there is no price feed." );
+      FC_ASSERT( !fhistory.current_median_history.is_null(), "Cannot pay the fee using BBD because there is no price feed." );
       if( o.sdc_creation_fee.symbol == BEX_SYMBOL )
       {
-         effective_elevation_fee = _db.to_sbd( o.sdc_creation_fee );
+         effective_elevation_fee = _db.to_bbd( o.sdc_creation_fee );
       }
       else
       {
-         effective_elevation_fee = _db.to_steem( o.sdc_creation_fee );
+         effective_elevation_fee = _db.to_dpay( o.sdc_creation_fee );
       }
    }
 
@@ -109,7 +109,7 @@ void sdc_create_evaluator::do_apply( const sdc_create_operation& o )
     "Account does not have sufficient funds for specified fee of ${of}", ("of", o.sdc_creation_fee) );
 
    _db.adjust_balance( o.control_account , -o.sdc_creation_fee );
-   _db.adjust_balance( STEEM_NULL_ACCOUNT,  o.sdc_creation_fee );
+   _db.adjust_balance( DPAY_NULL_ACCOUNT,  o.sdc_creation_fee );
 
    // Create SDC object common to both liquid and vesting variants of SDC.
    _db.create< sdc_token_object >( [&]( sdc_token_object& token )
@@ -140,7 +140,7 @@ struct sdc_setup_evaluator_visitor
 
 void sdc_setup_evaluator::do_apply( const sdc_setup_operation& o )
 {
-   FC_ASSERT( _db.has_hardfork( STEEM_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", STEEM_SDC_HARDFORK) );
+   FC_ASSERT( _db.has_hardfork( DPAY_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", DPAY_SDC_HARDFORK) );
 #pragma message ("TODO: Adjust assertion below and add/modify negative tests appropriately.")
    const auto* _token = _db.find< sdc_token_object, by_symbol >( o.symbol );
    FC_ASSERT( _token, "SDC ${ac} not elevated yet.",("ac", o.control_account) );
@@ -191,7 +191,7 @@ void sdc_setup_evaluator::do_apply( const sdc_setup_operation& o )
 
 void sdc_cap_reveal_evaluator::do_apply( const sdc_cap_reveal_operation& o )
 {
-   FC_ASSERT( _db.has_hardfork( STEEM_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", STEEM_SDC_HARDFORK) );
+   FC_ASSERT( _db.has_hardfork( DPAY_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", DPAY_SDC_HARDFORK) );
 
    const sdc_token_object& sdc = get_controlled_sdc( _db, o.control_account, o.symbol );
    // Check whether it's not too early to reveal a cap.
@@ -201,40 +201,40 @@ void sdc_cap_reveal_evaluator::do_apply( const sdc_cap_reveal_operation& o )
 
    // As there's no information in cap reveal operation about which cap it reveals,
    // we'll check both, unless they are already revealed.
-   FC_ASSERT( sdc.steem_units_min_cap < 0 || sdc.steem_units_hard_cap < 0, "Both min cap and max hard cap have already been revealed" );
+   FC_ASSERT( sdc.dpay_units_min_cap < 0 || sdc.dpay_units_hard_cap < 0, "Both min cap and max hard cap have already been revealed" );
 
-   if( sdc.steem_units_min_cap < 0 )
+   if( sdc.dpay_units_min_cap < 0 )
       try
       {
-         o.cap.validate( sdc.capped_generation_policy.min_steem_units_commitment );
+         o.cap.validate( sdc.capped_generation_policy.min_dpay_units_commitment );
          _db.modify( sdc, [&]( sdc_token_object& sdc_object )
          {
-            sdc_object.steem_units_min_cap = o.cap.amount;
+            sdc_object.dpay_units_min_cap = o.cap.amount;
          });
          return;
       }
       catch( const fc::exception& e )
       {
-         if( sdc.steem_units_hard_cap >= 0 )
+         if( sdc.dpay_units_hard_cap >= 0 )
             throw;
       }
 
-   o.cap.validate( sdc.capped_generation_policy.hard_cap_steem_units_commitment );
+   o.cap.validate( sdc.capped_generation_policy.hard_cap_dpay_units_commitment );
    _db.modify( sdc, [&]( sdc_token_object& sdc_object )
    {
-      sdc_object.steem_units_hard_cap = o.cap.amount;
+      sdc_object.dpay_units_hard_cap = o.cap.amount;
    });
 }
 
 void sdc_refund_evaluator::do_apply( const sdc_refund_operation& o )
 {
-   FC_ASSERT( _db.has_hardfork( STEEM_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", STEEM_SDC_HARDFORK) );
+   FC_ASSERT( _db.has_hardfork( DPAY_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", DPAY_SDC_HARDFORK) );
    // TODO: Check whether some impostor tries to hijack SDC operation.
 }
 
 void sdc_setup_emissions_evaluator::do_apply( const sdc_setup_emissions_operation& o )
 {
-   FC_ASSERT( _db.has_hardfork( STEEM_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", STEEM_SDC_HARDFORK) );
+   FC_ASSERT( _db.has_hardfork( DPAY_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", DPAY_SDC_HARDFORK) );
 
    const sdc_token_object& sdc = common_pre_setup_evaluation(_db, o.symbol, o.control_account);
 
@@ -259,7 +259,7 @@ void sdc_setup_emissions_evaluator::do_apply( const sdc_setup_emissions_operatio
 
 void sdc_set_setup_parameters_evaluator::do_apply( const sdc_set_setup_parameters_operation& o )
 {
-   FC_ASSERT( _db.has_hardfork( STEEM_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", STEEM_SDC_HARDFORK) );
+   FC_ASSERT( _db.has_hardfork( DPAY_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", DPAY_SDC_HARDFORK) );
 
    const sdc_token_object& sdc_token = common_pre_setup_evaluation(_db, o.symbol, o.control_account);
 
@@ -314,7 +314,7 @@ struct sdc_set_runtime_parameters_evaluator_visitor
 
 void sdc_set_runtime_parameters_evaluator::do_apply( const sdc_set_runtime_parameters_operation& o )
 {
-   FC_ASSERT( _db.has_hardfork( STEEM_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", STEEM_SDC_HARDFORK) );
+   FC_ASSERT( _db.has_hardfork( DPAY_SDC_HARDFORK ), "SDC functionality not enabled until hardfork ${hf}", ("hf", DPAY_SDC_HARDFORK) );
 
    const sdc_token_object& _token = common_pre_setup_evaluation(_db, o.symbol, o.control_account);
 

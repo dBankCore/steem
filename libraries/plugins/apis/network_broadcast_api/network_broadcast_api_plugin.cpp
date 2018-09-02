@@ -1,5 +1,5 @@
-#include <steem/plugins/network_broadcast_api/network_broadcast_api_plugin.hpp>
-#include <steem/plugins/network_broadcast_api/network_broadcast_api.hpp>
+#include <dpay/plugins/network_broadcast_api/network_broadcast_api_plugin.hpp>
+#include <dpay/plugins/network_broadcast_api/network_broadcast_api.hpp>
 
 namespace dpay { namespace plugins { namespace network_broadcast_api {
 

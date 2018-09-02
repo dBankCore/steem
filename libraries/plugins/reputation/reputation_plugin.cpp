@@ -1,15 +1,15 @@
-#include <steem/plugins/reputation/reputation_plugin.hpp>
-#include <steem/plugins/reputation/reputation_objects.hpp>
+#include <dpay/plugins/reputation/reputation_plugin.hpp>
+#include <dpay/plugins/reputation/reputation_objects.hpp>
 
-#include <steem/chain/util/impacted.hpp>
+#include <dpay/chain/util/impacted.hpp>
 
-#include <steem/protocol/config.hpp>
+#include <dpay/protocol/config.hpp>
 
-#include <steem/chain/database.hpp>
-#include <steem/chain/index.hpp>
-#include <steem/chain/operation_notification.hpp>
-#include <steem/chain/account_object.hpp>
-#include <steem/chain/comment_object.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/index.hpp>
+#include <dpay/chain/operation_notification.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/comment_object.hpp>
 
 #include <fc/smart_ref_impl.hpp>
 #include <fc/thread/thread.hpp>

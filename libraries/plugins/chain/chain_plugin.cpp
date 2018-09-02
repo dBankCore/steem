@@ -1,9 +1,9 @@
-#include <steem/chain/database_exceptions.hpp>
+#include <dpay/chain/database_exceptions.hpp>
 
-#include <steem/plugins/chain/chain_plugin.hpp>
-#include <steem/plugins/statsd/utility.hpp>
+#include <dpay/plugins/chain/chain_plugin.hpp>
+#include <dpay/plugins/statsd/utility.hpp>
 
-#include <steem/utilities/benchmark_dumper.hpp>
+#include <dpay/utilities/benchmark_dumper.hpp>
 
 #include <fc/string.hpp>
 
@@ -315,7 +315,7 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
          ("check-locks", bpo::bool_switch()->default_value(false), "Check correctness of chainbase locking" )
          ("validate-database-invariants", bpo::bool_switch()->default_value(false), "Validate all supply invariants check out" )
 #ifdef IS_TEST_NET
-         ("chain-id", bpo::value< std::string >()->default_value( STEEM_CHAIN_ID ), "chain ID to connect to")
+         ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "chain ID to connect to")
 #endif
          ;
 }
@@ -437,7 +437,7 @@ void chain_plugin::plugin_startup()
    database::open_args db_open_args;
    db_open_args.data_dir = app().data_dir() / "blockchain";
    db_open_args.shared_mem_dir = my->shared_memory_dir;
-   db_open_args.initial_supply = STEEM_INIT_SUPPLY;
+   db_open_args.initial_supply = DPAY_INIT_SUPPLY;
    db_open_args.shared_file_size = my->shared_memory_size;
    db_open_args.shared_file_full_threshold = my->shared_file_full_threshold;
    db_open_args.shared_file_scale_rate = my->shared_file_scale_rate;

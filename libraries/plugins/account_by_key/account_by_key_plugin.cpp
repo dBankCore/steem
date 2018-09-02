@@ -1,10 +1,10 @@
-#include <steem/plugins/account_by_key/account_by_key_plugin.hpp>
-#include <steem/plugins/account_by_key/account_by_key_objects.hpp>
+#include <dpay/plugins/account_by_key/account_by_key_plugin.hpp>
+#include <dpay/plugins/account_by_key/account_by_key_objects.hpp>
 
-#include <steem/chain/account_object.hpp>
-#include <steem/chain/database.hpp>
-#include <steem/chain/index.hpp>
-#include <steem/chain/operation_notification.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/index.hpp>
+#include <dpay/chain/operation_notification.hpp>
 
 namespace dpay { namespace plugins { namespace account_by_key {
 
@@ -139,7 +139,7 @@ struct post_operation_visitor
 
    void operator()( const hardfork_operation& op )const
    {
-      if( op.hardfork_id == STEEM_HARDFORK_0_9 )
+      if( op.hardfork_id == DPAY_HARDFORK_0_9 )
       {
          auto& db = _plugin._db;
 

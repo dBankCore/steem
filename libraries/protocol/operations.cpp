@@ -1,6 +1,6 @@
-#include <steem/protocol/operations.hpp>
+#include <dpay/protocol/operations.hpp>
 
-#include <steem/protocol/operation_util_impl.hpp>
+#include <dpay/protocol/operation_util_impl.hpp>
 
 namespace dpay { namespace protocol {
 
@@ -34,4 +34,4 @@ bool is_virtual_operation( const operation& op )
 
 } } // dpay::protocol
 
-STEEM_DEFINE_OPERATION_TYPE( dpay::protocol::operation )
+DPAY_DEFINE_OPERATION_TYPE( dpay::protocol::operation )

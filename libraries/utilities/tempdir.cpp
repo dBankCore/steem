@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-#include <steem/utilities/tempdir.hpp>
+#include <dpay/utilities/tempdir.hpp>
 
 #include <cstdlib>
 
@@ -30,10 +30,10 @@ namespace dpay { namespace utilities {
 
 fc::path temp_directory_path()
 {
-   const char* steemit_tempdir = getenv("STEEM_TEMPDIR");
-   if( steemit_tempdir != nullptr )
-      return fc::path( steemit_tempdir );
-   return fc::temp_directory_path() / "steem-tmp";
+   const char* dsite_tempdir = getenv("DPAY_TEMPDIR");
+   if( dsite_tempdir != nullptr )
+      return fc::path( dsite_tempdir );
+   return fc::temp_directory_path() / "dpay-tmp";
 }
 
 } } // dpay::utilities

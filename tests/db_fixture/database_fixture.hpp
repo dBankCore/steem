@@ -1,17 +1,17 @@
 #pragma once
 
 #include <appbase/application.hpp>
-#include <steem/chain/database.hpp>
+#include <dpay/chain/database.hpp>
 #include <fc/io/json.hpp>
 #include <fc/smart_ref_impl.hpp>
 
-#include <steem/plugins/debug_node/debug_node_plugin.hpp>
+#include <dpay/plugins/debug_node/debug_node_plugin.hpp>
 
-#include <steem/utilities/key_conversion.hpp>
+#include <dpay/utilities/key_conversion.hpp>
 
-#include <steem/plugins/block_api/block_api_plugin.hpp>
-#include <steem/plugins/condenser_api/condenser_api_legacy_asset.hpp>
-#include <steem/plugins/database_api/database_api_plugin.hpp>
+#include <dpay/plugins/block_api/block_api_plugin.hpp>
+#include <dpay/plugins/condenser_api/condenser_api_legacy_asset.hpp>
+#include <dpay/plugins/database_api/database_api_plugin.hpp>
 
 #include <fc/network/http/connection.hpp>
 #include <fc/network/ip.hpp>
@@ -21,7 +21,7 @@
 
 #define INITIAL_TEST_SUPPLY (10000000000ll)
 
-extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
+extern uint32_t ( DPAY_TESTING_GENESIS_TIMESTAMP );
 
 #define PUSH_TX \
    dpay::chain::test::_push_transaction
@@ -46,7 +46,7 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
    db.push_transaction( trx, ~0 ); \
 }
 
-/*#define STEEM_REQUIRE_THROW( expr, exc_type )          \
+/*#define DPAY_REQUIRE_THROW( expr, exc_type )          \
 {                                                         \
    std::string req_throw_info = fc::json::to_string(      \
       fc::mutable_variant_object()                        \
@@ -56,18 +56,18 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
       ("exc_type", #exc_type)                             \
       );                                                  \
    if( fc::enable_record_assert_trip )                    \
-      std::cout << "STEEM_REQUIRE_THROW begin "        \
+      std::cout << "DPAY_REQUIRE_THROW begin "        \
          << req_throw_info << std::endl;                  \
    BOOST_REQUIRE_THROW( expr, exc_type );                 \
    if( fc::enable_record_assert_trip )                    \
-      std::cout << "STEEM_REQUIRE_THROW end "          \
+      std::cout << "DPAY_REQUIRE_THROW end "          \
          << req_throw_info << std::endl;                  \
 }*/
 
-#define STEEM_REQUIRE_THROW( expr, exc_type )          \
+#define DPAY_REQUIRE_THROW( expr, exc_type )          \
    BOOST_REQUIRE_THROW( expr, exc_type );
 
-#define STEEM_CHECK_THROW( expr, exc_type )            \
+#define DPAY_CHECK_THROW( expr, exc_type )            \
 {                                                         \
    std::string req_throw_info = fc::json::to_string(      \
       fc::mutable_variant_object()                        \
@@ -77,11 +77,11 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
       ("exc_type", #exc_type)                             \
       );                                                  \
    if( fc::enable_record_assert_trip )                    \
-      std::cout << "STEEM_CHECK_THROW begin "          \
+      std::cout << "DPAY_CHECK_THROW begin "          \
          << req_throw_info << std::endl;                  \
    BOOST_CHECK_THROW( expr, exc_type );                   \
    if( fc::enable_record_assert_trip )                    \
-      std::cout << "STEEM_CHECK_THROW end "            \
+      std::cout << "DPAY_CHECK_THROW end "            \
          << req_throw_info << std::endl;                  \
 }
 
@@ -89,7 +89,7 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
 { \
    const auto temp = op.field; \
    op.field = value; \
-   STEEM_REQUIRE_THROW( op.validate(), exc_type ); \
+   DPAY_REQUIRE_THROW( op.validate(), exc_type ); \
    op.field = temp; \
 }
 #define REQUIRE_OP_VALIDATION_FAILURE( op, field, value ) \
@@ -101,7 +101,7 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
    op.field = value; \
    trx.operations.back() = op; \
    op.field = bak; \
-   STEEM_REQUIRE_THROW(db.push_transaction(trx, ~0), exc_type); \
+   DPAY_REQUIRE_THROW(db.push_transaction(trx, ~0), exc_type); \
 }
 
 #define REQUIRE_THROW_WITH_VALUE( op, field, value ) \
@@ -153,7 +153,7 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
 
 #define OP2TX(OP,TX,KEY) \
 TX.operations.push_back( OP ); \
-TX.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION ); \
+TX.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION ); \
 TX.sign( KEY, db->get_chain_id(), fc::ecc::bip_0062 );
 
 #define PUSH_OP(OP,KEY) \
@@ -175,7 +175,7 @@ TX.sign( KEY, db->get_chain_id(), fc::ecc::bip_0062 );
 { \
    signed_transaction tx; \
    OP2TX(OP,tx,KEY) \
-   STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), EXCEPTION ); \
+   DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), EXCEPTION ); \
 }
 
 namespace dpay { namespace chain {
@@ -206,7 +206,7 @@ struct database_fixture {
    virtual ~database_fixture() { appbase::reset(); }
 
    static fc::ecc::private_key generate_private_key( string seed = "init_key" );
-#ifdef STEEM_ENABLE_SDC
+#ifdef DPAY_ENABLE_SDC
    static asset_symbol_type get_new_sdc_symbol( uint8_t token_decimal_places, chain::database* db );
 #endif
    string generate_anon_acct_name();
@@ -291,7 +291,7 @@ struct live_database_fixture : public database_fixture
    fc::path _chain_dir;
 };
 
-#ifdef STEEM_ENABLE_SDC
+#ifdef DPAY_ENABLE_SDC
 template< typename T >
 struct t_sdc_database_fixture : public T
 {
@@ -315,14 +315,14 @@ struct t_sdc_database_fixture : public T
    void create_conflicting_sdc( const asset_symbol_type existing_sdc, const char* control_account_name, const fc::ecc::private_key& key );
 
    //sdc_setup_operation
-   sdc_generation_unit get_generation_unit ( const units& steem_unit = units(), const units& token_unit = units() );
+   sdc_generation_unit get_generation_unit ( const units& dpay_unit = units(), const units& token_unit = units() );
    sdc_cap_commitment get_cap_commitment( share_type amount = 0, uint128_t nonce = 0 );
    sdc_capped_generation_policy get_capped_generation_policy
    (
       const sdc_generation_unit& pre_soft_cap_unit = sdc_generation_unit(),
       const sdc_generation_unit& post_soft_cap_unit = sdc_generation_unit(),
-      const sdc_cap_commitment& min_steem_units_commitment = sdc_cap_commitment(),
-      const sdc_cap_commitment& hard_cap_steem_units_commitment = sdc_cap_commitment(),
+      const sdc_cap_commitment& min_dpay_units_commitment = sdc_cap_commitment(),
+      const sdc_cap_commitment& hard_cap_dpay_units_commitment = sdc_cap_commitment(),
       uint16_t soft_cap_percent = 0,
       uint32_t min_unit_ratio = 0,
       uint32_t max_unit_ratio = 0

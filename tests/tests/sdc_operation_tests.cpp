@@ -1,16 +1,16 @@
 #include <fc/macros.hpp>
 
-#if defined IS_TEST_NET && defined STEEM_ENABLE_SDC
+#if defined IS_TEST_NET && defined DPAY_ENABLE_SDC
 
 #include <boost/test/unit_test.hpp>
 
-#include <steem/protocol/exceptions.hpp>
-#include <steem/protocol/hardfork.hpp>
+#include <dpay/protocol/exceptions.hpp>
+#include <dpay/protocol/hardfork.hpp>
 
-#include <steem/chain/database.hpp>
-#include <steem/chain/database_exceptions.hpp>
-#include <steem/chain/steem_objects.hpp>
-#include <steem/chain/sdc_objects.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/database_exceptions.hpp>
+#include <dpay/chain/dpay_objects.hpp>
+#include <dpay/chain/sdc_objects.hpp>
 
 #include "../db_fixture/database_fixture.hpp"
 
@@ -41,13 +41,13 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create_authorities )
       op.owner = "alice";
       op.amount_to_sell = ASSET( "1.000 TESTS" );
       op.min_to_receive = asset( 1000, alice_symbol );
-      op.expiration = db->head_block_time() + fc::seconds( STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      op.expiration = db->head_block_time() + fc::seconds( DPAY_MAX_TIME_UNTIL_EXPIRATION );
 
       tx.operations.push_back( op );
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
 
       BOOST_TEST_MESSAGE( "--- Test failure when no signature." );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_missing_active_auth );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_missing_active_auth );
 
       BOOST_TEST_MESSAGE( "--- Test success with account signature" );
       sign( tx, alice_private_key );
@@ -55,18 +55,18 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create_authorities )
 
       BOOST_TEST_MESSAGE( "--- Test failure with duplicate signature" );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_duplicate_sig );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_duplicate_sig );
 
       BOOST_TEST_MESSAGE( "--- Test failure with additional incorrect signature" );
       tx.signatures.clear();
       sign( tx, alice_private_key );
       sign( tx, bob_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_irrelevant_sig );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_irrelevant_sig );
 
       BOOST_TEST_MESSAGE( "--- Test failure with incorrect signature" );
       tx.signatures.clear();
       sign( tx, alice_post_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_missing_active_auth );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_missing_active_auth );
 
       validate_database();
    }
@@ -93,13 +93,13 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create2_authorities )
       op.owner = "alice";
       op.amount_to_sell = ASSET( "1.000 TESTS" );
       op.exchange_rate = price( ASSET( "1.000 TESTS" ), asset( 1000, alice_symbol ) );
-      op.expiration = db->head_block_time() + fc::seconds( STEEM_MAX_LIMIT_ORDER_EXPIRATION );
+      op.expiration = db->head_block_time() + fc::seconds( DPAY_MAX_LIMIT_ORDER_EXPIRATION );
 
       tx.operations.push_back( op );
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
 
       BOOST_TEST_MESSAGE( "--- Test failure when no signature." );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_missing_active_auth );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_missing_active_auth );
 
       BOOST_TEST_MESSAGE( "--- Test success with account signature" );
       sign( tx, alice_private_key );
@@ -107,18 +107,18 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create2_authorities )
 
       BOOST_TEST_MESSAGE( "--- Test failure with duplicate signature" );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_duplicate_sig );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_duplicate_sig );
 
       BOOST_TEST_MESSAGE( "--- Test failure with additional incorrect signature" );
       tx.signatures.clear();
       sign( tx, alice_private_key );
       sign( tx, bob_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_irrelevant_sig );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_irrelevant_sig );
 
       BOOST_TEST_MESSAGE( "--- Test failure with incorrect signature" );
       tx.signatures.clear();
       sign( tx, alice_post_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_missing_active_auth );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_missing_active_auth );
 
       validate_database();
    }
@@ -169,11 +169,11 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create_apply )
       op.amount_to_sell = ASSET( "10.000 TESTS" );
       op.min_to_receive = asset( 10000, alice_symbol );
       op.fill_or_kill = false;
-      op.expiration = db->head_block_time() + fc::seconds( STEEM_MAX_LIMIT_ORDER_EXPIRATION );
+      op.expiration = db->head_block_time() + fc::seconds( DPAY_MAX_LIMIT_ORDER_EXPIRATION );
       tx.operations.push_back( op );
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       sign( tx, bob_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "bob", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( bob_account, BEX_SYMBOL ).amount.value == bob_balance.amount.value );
@@ -188,7 +188,7 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create_apply )
       tx.signatures.clear();
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( bob_account, BEX_SYMBOL ).amount.value == bob_balance.amount.value );
@@ -203,7 +203,7 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create_apply )
       tx.signatures.clear();
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( bob_account, BEX_SYMBOL ).amount.value == bob_balance.amount.value );
@@ -213,16 +213,16 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create_apply )
       BOOST_TEST_MESSAGE( "--- Test failure when expiration is too long" );
       op.amount_to_sell = ASSET( "10.000 TESTS" );
       op.min_to_receive = ASSET( "15.000 TBD" );
-      op.expiration = db->head_block_time() + fc::seconds( STEEM_MAX_LIMIT_ORDER_EXPIRATION + 1 );
+      op.expiration = db->head_block_time() + fc::seconds( DPAY_MAX_LIMIT_ORDER_EXPIRATION + 1 );
       tx.operations.clear();
       tx.signatures.clear();
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_TEST_MESSAGE( "--- Test success creating limit order that will not be filled" );
 
-      op.expiration = db->head_block_time() + fc::seconds( STEEM_MAX_LIMIT_ORDER_EXPIRATION );
+      op.expiration = db->head_block_time() + fc::seconds( DPAY_MAX_LIMIT_ORDER_EXPIRATION );
       op.amount_to_sell = ASSET( "10.000 TESTS" );
       op.min_to_receive = asset( 15000, alice_symbol );
       tx.operations.clear();
@@ -251,7 +251,7 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create_apply )
       tx.signatures.clear();
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       limit_order = limit_order_idx.find( std::make_tuple( "alice", op.orderid ) );
       BOOST_REQUIRE( limit_order != limit_order_idx.end() );
@@ -272,7 +272,7 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create_apply )
       tx.signatures.clear();
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
@@ -426,7 +426,7 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create_apply )
       BOOST_TEST_MESSAGE( "--- Test filling limit order with better order when partial order is worse." );
 
       //auto gpo = db->get_dynamic_global_properties();
-      //auto start_sbd = gpo.current_sbd_supply;
+      //auto start_bbd = gpo.current_bbd_supply;
 
       op.owner = "alice";
       op.orderid = 5;
@@ -493,10 +493,10 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_cancel_authorities )
       c.orderid = 1;
       c.amount_to_sell = ASSET( "1.000 TESTS" );
       c.min_to_receive = asset( 1000, alice_symbol );
-      c.expiration = db->head_block_time() + fc::seconds( STEEM_MAX_LIMIT_ORDER_EXPIRATION );
+      c.expiration = db->head_block_time() + fc::seconds( DPAY_MAX_LIMIT_ORDER_EXPIRATION );
 
       tx.operations.push_back( c );
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       sign( tx, alice_private_key );
       db->push_transaction( tx, 0 );
 
@@ -509,7 +509,7 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_cancel_authorities )
       tx.operations.push_back( op );
 
       BOOST_TEST_MESSAGE( "--- Test failure when no signature." );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_missing_active_auth );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_missing_active_auth );
 
       BOOST_TEST_MESSAGE( "--- Test success with account signature" );
       sign( tx, alice_private_key );
@@ -517,18 +517,18 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_cancel_authorities )
 
       BOOST_TEST_MESSAGE( "--- Test failure with duplicate signature" );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_duplicate_sig );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_duplicate_sig );
 
       BOOST_TEST_MESSAGE( "--- Test failure with additional incorrect signature" );
       tx.signatures.clear();
       sign( tx, alice_private_key );
       sign( tx, bob_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_irrelevant_sig );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_irrelevant_sig );
 
       BOOST_TEST_MESSAGE( "--- Test failure with incorrect signature" );
       tx.signatures.clear();
       sign( tx, alice_post_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_missing_active_auth );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, database::skip_transaction_dupe_check ), tx_missing_active_auth );
 
       validate_database();
    }
@@ -566,9 +566,9 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_cancel_apply )
       op.owner = "alice";
       op.orderid = 5;
       tx.operations.push_back( op );
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_TEST_MESSAGE( "--- Test cancel order" );
 
@@ -577,7 +577,7 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_cancel_apply )
       create.orderid = 5;
       create.amount_to_sell = ASSET( "5.000 TESTS" );
       create.min_to_receive = asset( 7500, alice_symbol );
-      create.expiration = db->head_block_time() + fc::seconds( STEEM_MAX_LIMIT_ORDER_EXPIRATION );
+      create.expiration = db->head_block_time() + fc::seconds( DPAY_MAX_LIMIT_ORDER_EXPIRATION );
       tx.operations.clear();
       tx.signatures.clear();
       tx.operations.push_back( create );
@@ -643,11 +643,11 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create2_apply )
       op.amount_to_sell = ASSET( "10.000 TESTS" );
       op.exchange_rate = price( ASSET( "1.000 TESTS" ), asset( 1000, alice_symbol ) );
       op.fill_or_kill = false;
-      op.expiration = db->head_block_time() + fc::seconds( STEEM_MAX_LIMIT_ORDER_EXPIRATION );
+      op.expiration = db->head_block_time() + fc::seconds( DPAY_MAX_LIMIT_ORDER_EXPIRATION );
       tx.operations.push_back( op );
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       sign( tx, bob_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "bob", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( bob_account, BEX_SYMBOL ).amount.value == bob_balance.amount.value );
@@ -663,7 +663,7 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create2_apply )
       tx.signatures.clear();
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( bob_account, BEX_SYMBOL ).amount.value == bob_balance.amount.value );
@@ -678,7 +678,7 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create2_apply )
       tx.signatures.clear();
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( bob_account, BEX_SYMBOL ).amount.value == bob_balance.amount.value );
@@ -688,16 +688,16 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create2_apply )
       BOOST_TEST_MESSAGE( "--- Test failure when expiration is too long" );
       op.amount_to_sell = ASSET( "10.000 TESTS" );
       op.exchange_rate = price( ASSET( "2.000 TESTS" ), ASSET( "3.000 TBD" ) );
-      op.expiration = db->head_block_time() + fc::seconds( STEEM_MAX_LIMIT_ORDER_EXPIRATION + 1 );
+      op.expiration = db->head_block_time() + fc::seconds( DPAY_MAX_LIMIT_ORDER_EXPIRATION + 1 );
       tx.operations.clear();
       tx.signatures.clear();
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_TEST_MESSAGE( "--- Test success creating limit order that will not be filled" );
 
-      op.expiration = db->head_block_time() + fc::seconds( STEEM_MAX_LIMIT_ORDER_EXPIRATION );
+      op.expiration = db->head_block_time() + fc::seconds( DPAY_MAX_LIMIT_ORDER_EXPIRATION );
       op.amount_to_sell = ASSET( "10.000 TESTS" );
       op.exchange_rate = price( ASSET( "2.000 TESTS" ), asset( 3000, alice_symbol ) );
       tx.operations.clear();
@@ -726,7 +726,7 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create2_apply )
       tx.signatures.clear();
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       limit_order = limit_order_idx.find( std::make_tuple( "alice", op.orderid ) );
       BOOST_REQUIRE( limit_order != limit_order_idx.end() );
@@ -747,7 +747,7 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create2_apply )
       tx.signatures.clear();
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
-      STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
+      DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
@@ -901,7 +901,7 @@ BOOST_AUTO_TEST_CASE( sdc_limit_order_create2_apply )
       BOOST_TEST_MESSAGE( "--- Test filling limit order with better order when partial order is worse." );
 
       //auto gpo = db->get_dynamic_global_properties();
-      //auto start_sbd = gpo.current_sbd_supply;
+      //auto start_bbd = gpo.current_bbd_supply;
 
       op.owner = "alice";
       op.orderid = 5;
@@ -964,28 +964,28 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_validate )
       const auto& sdc3 = sdcs[2];
 
       BOOST_TEST_MESSAGE( "Testing empty rewards" );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
 
       BOOST_TEST_MESSAGE( "Testing ineffective rewards" );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       // Manually inserted.
       op.reward_tokens.push_back( ASSET( "0.000 TESTS" ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
       op.reward_tokens.push_back( ASSET( "0.000 TBD" ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
       op.reward_tokens.push_back( ASSET( "0.000000 VESTS" ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
       op.reward_tokens.push_back( asset( 0, sdc1 ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
       op.reward_tokens.push_back( asset( 0, sdc2 ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
       op.reward_tokens.push_back( asset( 0, sdc3 ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
 
       BOOST_TEST_MESSAGE( "Testing single reward claims" );
@@ -1025,41 +1025,41 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_validate )
 
       BOOST_TEST_MESSAGE( "Testing invalid rewards" );
       op.reward_tokens.push_back( ASSET( "-1.000 TESTS" ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
       op.reward_tokens.push_back( ASSET( "-1.000 TBD" ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
       op.reward_tokens.push_back( ASSET( "-1.000000 VESTS" ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
       op.reward_tokens.push_back( asset( -1, sdc1 ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
       op.reward_tokens.push_back( asset( -1, sdc2 ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
       op.reward_tokens.push_back( asset( -1, sdc3 ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
 
       BOOST_TEST_MESSAGE( "Testing duplicated reward tokens." );
       op.reward_tokens.push_back( asset( 1, sdc3 ) );
       op.reward_tokens.push_back( asset( 1, sdc3 ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
 
       BOOST_TEST_MESSAGE( "Testing inconsistencies of manually inserted reward tokens." );
       op.reward_tokens.push_back( ASSET( "1.000 TESTS" ) );
       op.reward_tokens.push_back( ASSET( "1.000 TBD" ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.push_back( asset( 1, sdc3 ) );
       op.reward_tokens.push_back( asset( 1, sdc1 ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
       op.reward_tokens.push_back( asset( 1, sdc1 ) );
       op.reward_tokens.push_back( asset( -1, sdc3 ) );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
    }
    FC_LOG_AND_RETHROW()
 }
@@ -1112,27 +1112,27 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_apply )
       {
          db.modify( db.get_account( "alice" ), []( account_object& a )
          {
-            a.reward_sbd_balance = ASSET( "10.000 TBD" );
-            a.reward_steem_balance = ASSET( "10.000 TESTS" );
+            a.reward_bbd_balance = ASSET( "10.000 TBD" );
+            a.reward_dpay_balance = ASSET( "10.000 TESTS" );
             a.reward_vesting_balance = ASSET( "10.000000 VESTS" );
-            a.reward_vesting_steem = ASSET( "10.000 TESTS" );
+            a.reward_vesting_dpay = ASSET( "10.000 TESTS" );
          });
 
          db.modify( db.get_dynamic_global_properties(), []( dynamic_global_property_object& gpo )
          {
-            gpo.current_sbd_supply += ASSET( "10.000 TBD" );
+            gpo.current_bbd_supply += ASSET( "10.000 TBD" );
             gpo.current_supply += ASSET( "20.000 TESTS" );
             gpo.virtual_supply += ASSET( "20.000 TESTS" );
             gpo.pending_rewarded_vesting_shares += ASSET( "10.000000 VESTS" );
-            gpo.pending_rewarded_vesting_steem += ASSET( "10.000 TESTS" );
+            gpo.pending_rewarded_vesting_dpay += ASSET( "10.000 TESTS" );
          });
       });
 
       generate_block();
       validate_database();
 
-      auto alice_steem = db->get_account( "alice" ).balance;
-      auto alice_sbd = db->get_account( "alice" ).sbd_balance;
+      auto alice_dpay = db->get_account( "alice" ).balance;
+      auto alice_bbd = db->get_account( "alice" ).bbd_balance;
       auto alice_vests = db->get_account( "alice" ).vesting_shares;
       auto alice_sdc1 = db->get_balance( "alice", sdc1 );
       auto alice_sdc2 = db->get_balance( "alice", sdc2 );
@@ -1162,13 +1162,13 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_apply )
       op.reward_tokens.push_back( ASSET( "0.000 TESTS" ) );
       op.reward_tokens.push_back( partial_vests );
       PUSH_OP(op, alice_private_key);
-      BOOST_REQUIRE( db->get_account( "alice" ).balance == alice_steem + ASSET( "0.000 TESTS" ) );
-      BOOST_REQUIRE( db->get_account( "alice" ).reward_steem_balance == ASSET( "10.000 TESTS" ) );
-      BOOST_REQUIRE( db->get_account( "alice" ).sbd_balance == alice_sbd + ASSET( "0.000 TBD" ) );
-      BOOST_REQUIRE( db->get_account( "alice" ).reward_sbd_balance == ASSET( "10.000 TBD" ) );
+      BOOST_REQUIRE( db->get_account( "alice" ).balance == alice_dpay + ASSET( "0.000 TESTS" ) );
+      BOOST_REQUIRE( db->get_account( "alice" ).reward_dpay_balance == ASSET( "10.000 TESTS" ) );
+      BOOST_REQUIRE( db->get_account( "alice" ).bbd_balance == alice_bbd + ASSET( "0.000 TBD" ) );
+      BOOST_REQUIRE( db->get_account( "alice" ).reward_bbd_balance == ASSET( "10.000 TBD" ) );
       BOOST_REQUIRE( db->get_account( "alice" ).vesting_shares == alice_vests + partial_vests );
       BOOST_REQUIRE( db->get_account( "alice" ).reward_vesting_balance == ASSET( "5.000000 VESTS" ) );
-      BOOST_REQUIRE( db->get_account( "alice" ).reward_vesting_steem == ASSET( "5.000 TESTS" ) );
+      BOOST_REQUIRE( db->get_account( "alice" ).reward_vesting_dpay == ASSET( "5.000 TESTS" ) );
       validate_database();
       alice_vests += partial_vests;
       op.reward_tokens.clear();
@@ -1187,19 +1187,19 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_apply )
 
       BOOST_TEST_MESSAGE( "--- Claiming the full reward balance" );
       // Legacy symbols
-      asset full_steem = ASSET( "10.000 TESTS" );
-      asset full_sbd = ASSET( "10.000 TBD" );
-      op.reward_tokens.push_back( full_sbd );
-      op.reward_tokens.push_back( full_steem );
+      asset full_dpay = ASSET( "10.000 TESTS" );
+      asset full_bbd = ASSET( "10.000 TBD" );
+      op.reward_tokens.push_back( full_bbd );
+      op.reward_tokens.push_back( full_dpay );
       op.reward_tokens.push_back( partial_vests );
       PUSH_OP(op, alice_private_key);
-      BOOST_REQUIRE( db->get_account( "alice" ).balance == alice_steem + full_steem );
-      BOOST_REQUIRE( db->get_account( "alice" ).reward_steem_balance == ASSET( "0.000 TESTS" ) );
-      BOOST_REQUIRE( db->get_account( "alice" ).sbd_balance == alice_sbd + full_sbd );
-      BOOST_REQUIRE( db->get_account( "alice" ).reward_sbd_balance == ASSET( "0.000 TBD" ) );
+      BOOST_REQUIRE( db->get_account( "alice" ).balance == alice_dpay + full_dpay );
+      BOOST_REQUIRE( db->get_account( "alice" ).reward_dpay_balance == ASSET( "0.000 TESTS" ) );
+      BOOST_REQUIRE( db->get_account( "alice" ).bbd_balance == alice_bbd + full_bbd );
+      BOOST_REQUIRE( db->get_account( "alice" ).reward_bbd_balance == ASSET( "0.000 TBD" ) );
       BOOST_REQUIRE( db->get_account( "alice" ).vesting_shares == alice_vests + partial_vests );
       BOOST_REQUIRE( db->get_account( "alice" ).reward_vesting_balance == ASSET( "0.000000 VESTS" ) );
-      BOOST_REQUIRE( db->get_account( "alice" ).reward_vesting_steem == ASSET( "0.000 TESTS" ) );
+      BOOST_REQUIRE( db->get_account( "alice" ).reward_vesting_dpay == ASSET( "0.000 TESTS" ) );
       validate_database();
       op.reward_tokens.clear();
       // SDCs
@@ -1239,27 +1239,27 @@ BOOST_AUTO_TEST_CASE( sdc_transfer_to_vesting_validate )
 
       // Fail on invalid 'from' account name
       op.from = "@@@@@";
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.from = "alice";
 
       // Fail on invalid 'to' account name
       op.to = "@@@@@";
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.to = "";
 
       // Fail on vesting symbol (instead of liquid)
       op.amount = asset( 20, sdc1.get_paired_symbol() );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.amount = asset( 20, sdc1 );
 
       // Fail on 0 amount
       op.amount = asset( 0, sdc1 );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.amount = asset( 20, sdc1 );
 
       // Fail on negative amount
       op.amount = asset( -20, sdc1 );
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.amount = asset( 20, sdc1 );
 
       validate_database();

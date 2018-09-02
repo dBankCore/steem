@@ -1,12 +1,12 @@
-#include <steem/plugins/tags/tags_plugin.hpp>
+#include <dpay/plugins/tags/tags_plugin.hpp>
 
-#include <steem/protocol/config.hpp>
+#include <dpay/protocol/config.hpp>
 
-#include <steem/chain/database.hpp>
-#include <steem/chain/index.hpp>
-#include <steem/chain/operation_notification.hpp>
-#include <steem/chain/account_object.hpp>
-#include <steem/chain/comment_object.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/index.hpp>
+#include <dpay/chain/operation_notification.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/comment_object.hpp>
 
 #include <fc/smart_ref_impl.hpp>
 #include <fc/thread/thread.hpp>
@@ -382,7 +382,7 @@ struct operation_visitor
 
    void operator()( const transfer_operation& op )const
    {
-      if( _my._db.head_block_time() >= _my._promoted_start_time && op.to == STEEM_NULL_ACCOUNT && op.amount.symbol == BBD_SYMBOL )
+      if( _my._db.head_block_time() >= _my._promoted_start_time && op.to == DPAY_NULL_ACCOUNT && op.amount.symbol == BBD_SYMBOL )
       {
          vector<string> part; part.reserve(4);
          auto path = op.memo;

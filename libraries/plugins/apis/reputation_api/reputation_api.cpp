@@ -1,7 +1,7 @@
-#include <steem/plugins/reputation_api/reputation_api_plugin.hpp>
-#include <steem/plugins/reputation_api/reputation_api.hpp>
+#include <dpay/plugins/reputation_api/reputation_api_plugin.hpp>
+#include <dpay/plugins/reputation_api/reputation_api.hpp>
 
-#include <steem/plugins/reputation/reputation_objects.hpp>
+#include <dpay/plugins/reputation/reputation_objects.hpp>
 
 namespace dpay { namespace plugins { namespace reputation {
 
@@ -50,7 +50,7 @@ DEFINE_API_IMPL( reputation_api_impl, get_account_reputations )
 
 reputation_api::reputation_api(): my( new detail::reputation_api_impl() )
 {
-   JSON_RPC_REGISTER_API( STEEM_REPUTATION_API_PLUGIN_NAME );
+   JSON_RPC_REGISTER_API( DPAY_REPUTATION_API_PLUGIN_NAME );
 }
 
 reputation_api::~reputation_api() {}

@@ -1,19 +1,19 @@
 
-#include <steem/plugins/block_data_export/block_data_export_plugin.hpp>
+#include <dpay/plugins/block_data_export/block_data_export_plugin.hpp>
 
-#include <steem/plugins/witness/witness_export_objects.hpp>
-#include <steem/plugins/witness/witness_plugin.hpp>
-#include <steem/plugins/witness/witness_objects.hpp>
+#include <dpay/plugins/witness/witness_export_objects.hpp>
+#include <dpay/plugins/witness/witness_plugin.hpp>
+#include <dpay/plugins/witness/witness_objects.hpp>
 
-#include <steem/chain/database_exceptions.hpp>
-#include <steem/chain/account_object.hpp>
-#include <steem/chain/comment_object.hpp>
-#include <steem/chain/witness_objects.hpp>
-#include <steem/chain/index.hpp>
-#include <steem/chain/util/impacted.hpp>
+#include <dpay/chain/database_exceptions.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/comment_object.hpp>
+#include <dpay/chain/witness_objects.hpp>
+#include <dpay/chain/index.hpp>
+#include <dpay/chain/util/impacted.hpp>
 
-#include <steem/utilities/key_conversion.hpp>
-#include <steem/utilities/plugin_utilities.hpp>
+#include <dpay/utilities/key_conversion.hpp>
+#include <dpay/utilities/plugin_utilities.hpp>
 
 #include <fc/io/json.hpp>
 #include <fc/macros.hpp>
@@ -43,8 +43,8 @@ void new_chain_banner( const chain::database& db )
    std::cerr << "\n"
       "********************************\n"
       "*                              *\n"
-      "*   ------- NEW CHAIN ------   *\n"
-      "*   -   Welcome to Steem!  -   *\n"
+      "*   ----The Great Chain ----   *\n"
+      "*   -   Welcome to dPay!  -   *\n"
       "*   ------------------------   *\n"
       "*                              *\n"
       "********************************\n"
@@ -94,7 +94,7 @@ namespace detail {
       block_production_condition::block_production_condition_enum maybe_produce_block(fc::mutable_variant_object& capture);
 
       bool     _production_enabled              = false;
-      uint32_t _required_witness_participation  = 33 * STEEM_1_PERCENT;
+      uint32_t _required_witness_participation  = 33 * DPAY_1_PERCENT;
       uint32_t _production_skip_flags           = chain::database::skip_nothing;
       bool     _skip_enforce_bandwidth          = true;
 
@@ -122,7 +122,7 @@ namespace detail {
       const comment_object& _c;
       const database& _db;
 
-#ifdef STEEM_ENABLE_SDC
+#ifdef DPAY_ENABLE_SDC
       void operator()( const allowed_vote_assets& va) const
       {
          FC_TODO("To be implemented  suppport for allowed_vote_assets");
@@ -131,7 +131,7 @@ namespace detail {
 
       void operator()( const comment_payout_beneficiaries& cpb )const
       {
-         STEEM_ASSERT( cpb.beneficiaries.size() <= 8,
+         DPAY_ASSERT( cpb.beneficiaries.size() <= 8,
             plugin_exception,
             "Cannot specify more than 8 beneficiaries." );
       }
@@ -166,27 +166,27 @@ namespace detail {
       for( auto& key_weight_pair : auth.owner.key_auths )
       {
          for( auto& key : keys )
-            STEEM_ASSERT( key_weight_pair.first != key,  plugin_exception,
+            DPAY_ASSERT( key_weight_pair.first != key,  plugin_exception,
                "Detected private owner key in memo field. You should change your owner keys." );
       }
 
       for( auto& key_weight_pair : auth.active.key_auths )
       {
          for( auto& key : keys )
-            STEEM_ASSERT( key_weight_pair.first != key,  plugin_exception,
+            DPAY_ASSERT( key_weight_pair.first != key,  plugin_exception,
                "Detected private active key in memo field. You should change your active keys." );
       }
 
       for( auto& key_weight_pair : auth.posting.key_auths )
       {
          for( auto& key : keys )
-            STEEM_ASSERT( key_weight_pair.first != key,  plugin_exception,
+            DPAY_ASSERT( key_weight_pair.first != key,  plugin_exception,
                "Detected private posting key in memo field. You should change your posting keys." );
       }
 
       const auto& memo_key = account.memo_key;
       for( auto& key : keys )
-         STEEM_ASSERT( memo_key != key,  plugin_exception,
+         DPAY_ASSERT( memo_key != key,  plugin_exception,
             "Detected private memo key in memo field. You should change your memo key." );
    }
 
@@ -215,14 +215,14 @@ namespace detail {
 
       void operator()( const comment_operation& o )const
       {
-         if( o.parent_author != STEEM_ROOT_POST_PARENT )
+         if( o.parent_author != DPAY_ROOT_POST_PARENT )
          {
             const auto& parent = _db.find_comment( o.parent_author, o.parent_permlink );
 
             if( parent != nullptr )
-            STEEM_ASSERT( parent->depth < STEEM_SOFT_MAX_COMMENT_DEPTH,
+            DPAY_ASSERT( parent->depth < DPAY_SOFT_MAX_COMMENT_DEPTH,
                plugin_exception,
-               "Comment is nested ${x} posts deep, maximum depth is ${y}.", ("x",parent->depth)("y",STEEM_SOFT_MAX_COMMENT_DEPTH) );
+               "Comment is nested ${x} posts deep, maximum depth is ${y}.", ("x",parent->depth)("y",DPAY_SOFT_MAX_COMMENT_DEPTH) );
          }
       }
 
@@ -302,7 +302,7 @@ namespace detail {
 
             for( auto& account : impacted )
                if( _db.is_producing() )
-                  STEEM_ASSERT( _dupe_customs.insert( account ).second, plugin_exception,
+                  DPAY_ASSERT( _dupe_customs.insert( account ).second, plugin_exception,
                      "Account ${a} already submitted a custom json operation this block.",
                      ("a", account) );
          }
@@ -325,10 +325,10 @@ namespace detail {
          _db.create< reserve_ratio_object >( [&]( reserve_ratio_object& r )
          {
             r.average_block_size = 0;
-            r.current_reserve_ratio = STEEM_MAX_RESERVE_RATIO * RESERVE_RATIO_PRECISION;
-            r.max_virtual_bandwidth = ( static_cast<uint128_t>( STEEM_MAX_BLOCK_SIZE) * STEEM_MAX_RESERVE_RATIO
-                                       * STEEM_BANDWIDTH_PRECISION * STEEM_BANDWIDTH_AVERAGE_WINDOW_SECONDS )
-                                       / STEEM_BLOCK_INTERVAL;
+            r.current_reserve_ratio = DPAY_MAX_RESERVE_RATIO * RESERVE_RATIO_PRECISION;
+            r.max_virtual_bandwidth = ( static_cast<uint128_t>( DPAY_MAX_BLOCK_SIZE) * DPAY_MAX_RESERVE_RATIO
+                                       * DPAY_BANDWIDTH_PRECISION * DPAY_BANDWIDTH_AVERAGE_WINDOW_SECONDS )
+                                       / DPAY_BLOCK_INTERVAL;
          });
          reserve_ratio_ptr = &_db.get( reserve_ratio_id_type() );
       }
@@ -370,8 +370,8 @@ namespace detail {
                   // By default, we should always slowly increase the reserve ratio.
                   r.current_reserve_ratio += std::max( RESERVE_RATIO_MIN_INCREMENT, ( r.current_reserve_ratio * distance ) / ( distance - DISTANCE_CALC_PRECISION ) );
 
-                  if( r.current_reserve_ratio > STEEM_MAX_RESERVE_RATIO * RESERVE_RATIO_PRECISION )
-                     r.current_reserve_ratio = STEEM_MAX_RESERVE_RATIO * RESERVE_RATIO_PRECISION;
+                  if( r.current_reserve_ratio > DPAY_MAX_RESERVE_RATIO * RESERVE_RATIO_PRECISION )
+                     r.current_reserve_ratio = DPAY_MAX_RESERVE_RATIO * RESERVE_RATIO_PRECISION;
                }
 
                if( old_reserve_ratio != r.current_reserve_ratio )
@@ -383,14 +383,14 @@ namespace detail {
                }
 
                r.max_virtual_bandwidth = ( uint128_t( max_block_size ) * uint128_t( r.current_reserve_ratio )
-                                          * uint128_t( STEEM_BANDWIDTH_PRECISION * STEEM_BANDWIDTH_AVERAGE_WINDOW_SECONDS ) )
-                                          / ( STEEM_BLOCK_INTERVAL * RESERVE_RATIO_PRECISION );
+                                          * uint128_t( DPAY_BANDWIDTH_PRECISION * DPAY_BANDWIDTH_AVERAGE_WINDOW_SECONDS ) )
+                                          / ( DPAY_BLOCK_INTERVAL * RESERVE_RATIO_PRECISION );
             }
          });
       }
 
       std::shared_ptr< exp_witness_data_object > export_data =
-         dpay::plugins::block_data_export::find_export_data< exp_witness_data_object >( STEEM_WITNESS_PLUGIN_NAME );
+         dpay::plugins::block_data_export::find_export_data< exp_witness_data_object >( DPAY_WITNESS_PLUGIN_NAME );
       if( export_data )
          export_data->reserve_ratio = exp_reserve_ratio_object( *reserve_ratio_ptr, block_size );
 
@@ -418,14 +418,14 @@ namespace detail {
          }
 
          share_type new_bandwidth;
-         share_type trx_bandwidth = trx_size * STEEM_BANDWIDTH_PRECISION;
+         share_type trx_bandwidth = trx_size * DPAY_BANDWIDTH_PRECISION;
          auto delta_time = ( _db.head_block_time() - band->last_bandwidth_update ).to_seconds();
 
-         if( delta_time > STEEM_BANDWIDTH_AVERAGE_WINDOW_SECONDS )
+         if( delta_time > DPAY_BANDWIDTH_AVERAGE_WINDOW_SECONDS )
             new_bandwidth = 0;
          else
-            new_bandwidth = ( ( ( STEEM_BANDWIDTH_AVERAGE_WINDOW_SECONDS - delta_time ) * fc::uint128( band->average_bandwidth.value ) )
-               / STEEM_BANDWIDTH_AVERAGE_WINDOW_SECONDS ).to_uint64();
+            new_bandwidth = ( ( ( DPAY_BANDWIDTH_AVERAGE_WINDOW_SECONDS - delta_time ) * fc::uint128( band->average_bandwidth.value ) )
+               / DPAY_BANDWIDTH_AVERAGE_WINDOW_SECONDS ).to_uint64();
 
          new_bandwidth += trx_bandwidth;
 
@@ -446,9 +446,9 @@ namespace detail {
          // Prior to hf 20, we don't want to listen to the enforce bandwidth arg and always want to enforce bandwidth
          // When hf 20 goes live this will default enforcement to the rc plugin.
          FC_TODO( "Remove HF 20 check after HF 20" );
-         if( ( !_db.has_hardfork( STEEM_HARDFORK_0_20 ) ||  !_skip_enforce_bandwidth ) && _db.is_producing() )
+         if( ( !_db.has_hardfork( DPAY_HARDFORK_0_20 ) ||  !_skip_enforce_bandwidth ) && _db.is_producing() )
          {
-            STEEM_ASSERT( has_bandwidth,  plugin_exception,
+            DPAY_ASSERT( has_bandwidth,  plugin_exception,
                "Account: ${account} bandwidth limit exceeded. Please wait to transact or power up BEX.",
                ("account", a.name)
                ("account_vshares", account_vshares)
@@ -458,7 +458,7 @@ namespace detail {
          }
 
          std::shared_ptr< exp_witness_data_object > export_data =
-            dpay::plugins::block_data_export::find_export_data< exp_witness_data_object >( STEEM_WITNESS_PLUGIN_NAME );
+            dpay::plugins::block_data_export::find_export_data< exp_witness_data_object >( DPAY_WITNESS_PLUGIN_NAME );
          if( export_data )
             export_data->bandwidth_updates.emplace_back( *band, trx_size );
       }
@@ -478,9 +478,9 @@ namespace detail {
 
    block_production_condition::block_production_condition_enum witness_plugin_impl::block_production_loop()
    {
-      if( fc::time_point::now() < fc::time_point(STEEM_GENESIS_TIME) )
+      if( fc::time_point::now() < fc::time_point(DPAY_GENESIS_TIME) )
       {
-         wlog( "waiting until genesis time to produce block: ${t}", ("t",STEEM_GENESIS_TIME) );
+         wlog( "waiting until genesis time to produce block: ${t}", ("t",DPAY_GENESIS_TIME) );
          schedule_production_loop();
          return block_production_condition::wait_for_genesis;
       }
@@ -599,7 +599,7 @@ namespace detail {
       uint32_t prate = _db.witness_participation_rate();
       if( prate < _required_witness_participation )
       {
-         capture("pct", uint32_t(100*uint64_t(prate) / STEEM_1_PERCENT));
+         capture("pct", uint32_t(100*uint64_t(prate) / DPAY_1_PERCENT));
          return block_production_condition::low_participation;
       }
 
@@ -651,11 +651,11 @@ void witness_plugin::plugin_initialize(const boost::program_options::variables_m
    if( export_plugin != nullptr )
    {
       ilog( "Registering witness export data factory" );
-      export_plugin->register_export_data_factory( STEEM_WITNESS_PLUGIN_NAME,
+      export_plugin->register_export_data_factory( DPAY_WITNESS_PLUGIN_NAME,
          []() -> std::shared_ptr< exportable_block_data > { return std::make_shared< exp_witness_data_object >(); } );
    }
 
-   STEEM_LOAD_VALUE_SET( options, "witness", my->_witnesses, dpay::protocol::account_name_type )
+   DPAY_LOAD_VALUE_SET( options, "witness", my->_witnesses, dpay::protocol::account_name_type )
 
    if( options.count("private-key") )
    {
@@ -680,7 +680,7 @@ void witness_plugin::plugin_initialize(const boost::program_options::variables_m
 
    if( options.count( "required-participation" ) )
    {
-      my->_required_witness_participation = STEEM_1_PERCENT * options.at( "required-participation" ).as< uint32_t >();
+      my->_required_witness_participation = DPAY_1_PERCENT * options.at( "required-participation" ).as< uint32_t >();
    }
 
    my->_pre_apply_block_conn = my->_db.add_post_apply_block_handler(

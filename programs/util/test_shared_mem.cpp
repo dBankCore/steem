@@ -8,12 +8,12 @@
 #include <fc/reflect/reflect.hpp>
 #include <fc/variant.hpp>
 
-#include <steem/utilities/key_conversion.hpp>
+#include <dpay/utilities/key_conversion.hpp>
 
-#include <steem/protocol/types.hpp>
-#include <steem/protocol/authority.hpp>
+#include <dpay/protocol/types.hpp>
+#include <dpay/protocol/authority.hpp>
 
-#include <steem/chain/shared_authority.hpp>
+#include <dpay/chain/shared_authority.hpp>
 
 #include <boost/interprocess/managed_mapped_file.hpp>
 #include <boost/interprocess/allocators/allocator.hpp>

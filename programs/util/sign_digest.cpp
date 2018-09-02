@@ -8,9 +8,9 @@
 #include <fc/reflect/reflect.hpp>
 #include <fc/variant.hpp>
 
-#include <steem/utilities/key_conversion.hpp>
+#include <dpay/utilities/key_conversion.hpp>
 
-#include <steem/protocol/types.hpp>
+#include <dpay/protocol/types.hpp>
 
 struct signing_request
 {

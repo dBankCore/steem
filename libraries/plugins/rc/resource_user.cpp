@@ -1,7 +1,7 @@
 
-#include <steem/plugins/rc/resource_user.hpp>
+#include <dpay/plugins/rc/resource_user.hpp>
 
-#include <steem/protocol/transaction.hpp>
+#include <dpay/protocol/transaction.hpp>
 
 namespace dpay { namespace plugins { namespace rc {
 

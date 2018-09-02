@@ -1,9 +1,9 @@
 #include <appbase/application.hpp>
 
-#include <steem/plugins/block_api/block_api.hpp>
-#include <steem/plugins/block_api/block_api_plugin.hpp>
+#include <dpay/plugins/block_api/block_api.hpp>
+#include <dpay/plugins/block_api/block_api_plugin.hpp>
 
-#include <steem/protocol/get_config.hpp>
+#include <dpay/protocol/get_config.hpp>
 
 namespace dpay { namespace plugins { namespace block_api {
 
@@ -30,7 +30,7 @@ class block_api_impl
 block_api::block_api()
    : my( new block_api_impl() )
 {
-   JSON_RPC_REGISTER_API( STEEM_BLOCK_API_PLUGIN_NAME );
+   JSON_RPC_REGISTER_API( DPAY_BLOCK_API_PLUGIN_NAME );
 }
 
 block_api::~block_api() {}

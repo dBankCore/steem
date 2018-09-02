@@ -13,8 +13,8 @@ my $outFile = new IO::File($outputFileName, "w")
 my $fileHeader = <<'END';
 /** GENERATED FILE **/
 #include <set>
-#include <steem/wallet/api_documentation.hpp>
-#include <steem/wallet/wallet.hpp>
+#include <dpay/wallet/api_documentation.hpp>
+#include <dpay/wallet/wallet.hpp>
 
 namespace dpay { namespace wallet {
    namespace detail

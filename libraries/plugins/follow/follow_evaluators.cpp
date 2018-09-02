@@ -1,10 +1,10 @@
-#include <steem/plugins/follow/follow_plugin.hpp>
-#include <steem/plugins/follow/follow_operations.hpp>
-#include <steem/plugins/follow/follow_objects.hpp>
-#include <steem/plugins/follow/inc_performance.hpp>
+#include <dpay/plugins/follow/follow_plugin.hpp>
+#include <dpay/plugins/follow/follow_operations.hpp>
+#include <dpay/plugins/follow/follow_objects.hpp>
+#include <dpay/plugins/follow/inc_performance.hpp>
 
-#include <steem/chain/account_object.hpp>
-#include <steem/chain/comment_object.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/comment_object.hpp>
 
 namespace dpay { namespace plugins { namespace follow {
 

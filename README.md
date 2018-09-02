@@ -90,7 +90,7 @@ Just want to get up and running quickly? We have pre-built docker images for you
 
 We strongly recommend using one of our pre-built Docker images or using Docker to build dPay. Both of these processes are described in the [quickstart guide](https://github.com/dpays/dpays/blob/master/doc/exchangequickstart.md).
 
-If you would still like to build from source, we do have [build instructions](https://github.com/dpays/dpay/blob/master/doc/building.md) for Linux (Ubuntu LTS) and macOS.
+If you would still like to build from source, we do have [build instructions](https://github.com/dpays/dpays/blob/master/doc/building.md) for Linux (Ubuntu LTS) and macOS.
 
 ## Dockerized p2p Node
 

@@ -22,13 +22,13 @@
  * THE SOFTWARE.
  */
 
-#include <steem/delayed_node/delayed_node_plugin.hpp>
+#include <dpay/delayed_node/delayed_node_plugin.hpp>
 
-#include <steem/protocol/types.hpp>
+#include <dpay/protocol/types.hpp>
 
-#include <steem/chain/database.hpp>
-#include <steem/app/api.hpp>
-#include <steem/app/database_api.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/app/api.hpp>
+#include <dpay/app/database_api.hpp>
 
 #include <fc/network/http/websocket.hpp>
 #include <fc/rpc/websocket_api.hpp>
@@ -165,4 +165,4 @@ void delayed_node_plugin::connection_failed()
 
 } }
 
-STEEM_DEFINE_PLUGIN( delayed_node, dpay::delayed_node::delayed_node_plugin )
+DPAY_DEFINE_PLUGIN( delayed_node, dpay::delayed_node::delayed_node_plugin )

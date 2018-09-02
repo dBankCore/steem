@@ -1,4 +1,4 @@
-#include<steem/wallet/remote_node_api.hpp>
+#include<dpay/wallet/remote_node_api.hpp>
 
 namespace dpay { namespace wallet{
 

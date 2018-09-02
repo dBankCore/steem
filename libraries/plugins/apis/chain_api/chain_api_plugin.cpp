@@ -1,5 +1,5 @@
-#include <steem/plugins/chain_api/chain_api_plugin.hpp>
-#include <steem/plugins/chain_api/chain_api.hpp>
+#include <dpay/plugins/chain_api/chain_api_plugin.hpp>
+#include <dpay/plugins/chain_api/chain_api.hpp>
 
 
 namespace dpay { namespace plugins { namespace chain {

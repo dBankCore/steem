@@ -1,14 +1,14 @@
 
-#include <steem/plugins/block_data_export/block_data_export_plugin.hpp>
-#include <steem/plugins/block_data_export/exportable_block_data.hpp>
+#include <dpay/plugins/block_data_export/block_data_export_plugin.hpp>
+#include <dpay/plugins/block_data_export/exportable_block_data.hpp>
 
-#include <steem/plugins/stats_export/stats_export_plugin.hpp>
+#include <dpay/plugins/stats_export/stats_export_plugin.hpp>
 
-#include <steem/chain/account_object.hpp>
-#include <steem/chain/database.hpp>
-#include <steem/chain/global_property_object.hpp>
-#include <steem/chain/index.hpp>
-#include <steem/chain/operation_notification.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/global_property_object.hpp>
+#include <dpay/chain/index.hpp>
+#include <dpay/chain/operation_notification.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -99,7 +99,7 @@ account_name_type get_transaction_user( const signed_transaction& tx )
 
 void stats_export_plugin_impl::on_post_apply_block( const block_notification& note )
 {
-   std::shared_ptr< api_stats_export_data_object > stats = _export_plugin.find_export_data< api_stats_export_data_object >( STEEM_STATS_EXPORT_PLUGIN_NAME );
+   std::shared_ptr< api_stats_export_data_object > stats = _export_plugin.find_export_data< api_stats_export_data_object >( DPAY_STATS_EXPORT_PLUGIN_NAME );
    if( !stats )
       return;
 
@@ -140,7 +140,7 @@ void stats_export_plugin::plugin_initialize( const boost::program_options::varia
       ilog( "Initializing stats_export plugin" );
       my->_post_apply_block_conn = my->_db.add_post_apply_block_handler(
          [&]( const block_notification& note ){ my->on_post_apply_block( note ); }, *this );
-      my->_export_plugin.register_export_data_factory( STEEM_STATS_EXPORT_PLUGIN_NAME,
+      my->_export_plugin.register_export_data_factory( DPAY_STATS_EXPORT_PLUGIN_NAME,
          []() -> std::shared_ptr< exportable_block_data > { return std::make_shared< detail::api_stats_export_data_object >(); } );
    }
    FC_CAPTURE_AND_RETHROW()

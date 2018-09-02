@@ -1,6 +1,6 @@
-#include <steem/chain/fork_database.hpp>
+#include <dpay/chain/fork_database.hpp>
 
-#include <steem/chain/database_exceptions.hpp>
+#include <dpay/chain/database_exceptions.hpp>
 
 namespace dpay { namespace chain {
 
@@ -61,7 +61,7 @@ void  fork_database::_push_block(const item_ptr& item)
    {
       auto& index = _index.get<block_id>();
       auto itr = index.find(item->previous_id());
-      STEEM_ASSERT(itr != index.end(), unlinkable_block_exception, "block does not link to known chain");
+      DPAY_ASSERT(itr != index.end(), unlinkable_block_exception, "block does not link to known chain");
       FC_ASSERT(!(*itr)->invalid);
       item->prev = *itr;
    }

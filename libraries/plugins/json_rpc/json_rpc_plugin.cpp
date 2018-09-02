@@ -1,7 +1,7 @@
-#include <steem/plugins/json_rpc/json_rpc_plugin.hpp>
-#include <steem/plugins/json_rpc/utility.hpp>
+#include <dpay/plugins/json_rpc/json_rpc_plugin.hpp>
+#include <dpay/plugins/json_rpc/utility.hpp>
 
-#include <steem/plugins/statsd/utility.hpp>
+#include <dpay/plugins/statsd/utility.hpp>
 
 #include <boost/algorithm/string.hpp>
 

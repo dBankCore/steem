@@ -1,6 +1,6 @@
 
-#include <steem/plugins/network_broadcast_api/network_broadcast_api.hpp>
-#include <steem/plugins/network_broadcast_api/network_broadcast_api_plugin.hpp>
+#include <dpay/plugins/network_broadcast_api/network_broadcast_api.hpp>
+#include <dpay/plugins/network_broadcast_api/network_broadcast_api_plugin.hpp>
 
 #include <appbase/application.hpp>
 
@@ -61,7 +61,7 @@ namespace detail
 
 network_broadcast_api::network_broadcast_api() : my( new detail::network_broadcast_api_impl() )
 {
-   JSON_RPC_REGISTER_API( STEEM_NETWORK_BROADCAST_API_PLUGIN_NAME );
+   JSON_RPC_REGISTER_API( DPAY_NETWORK_BROADCAST_API_PLUGIN_NAME );
 }
 
 network_broadcast_api::~network_broadcast_api() {}

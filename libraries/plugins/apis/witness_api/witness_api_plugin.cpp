@@ -1,5 +1,5 @@
-#include <steem/plugins/witness_api/witness_api_plugin.hpp>
-#include <steem/plugins/witness_api/witness_api.hpp>
+#include <dpay/plugins/witness_api/witness_api_plugin.hpp>
+#include <dpay/plugins/witness_api/witness_api.hpp>
 
 
 namespace dpay { namespace plugins { namespace witness {

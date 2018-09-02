@@ -1,15 +1,15 @@
 
-#include <steem/app/api_context.hpp>
-#include <steem/app/application.hpp>
+#include <dpay/app/api_context.hpp>
+#include <dpay/app/application.hpp>
 
-#include <steem/protocol/authority.hpp>
-#include <steem/protocol/sign_state.hpp>
+#include <dpay/protocol/authority.hpp>
+#include <dpay/protocol/sign_state.hpp>
 
-#include <steem/chain/account_object.hpp>
-#include <steem/chain/database.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/database.hpp>
 
-#include <steem/plugins/auth_util/auth_util_api.hpp>
-#include <steem/plugins/auth_util/auth_util_plugin.hpp>
+#include <dpay/plugins/auth_util/auth_util_api.hpp>
+#include <dpay/plugins/auth_util/auth_util_plugin.hpp>
 
 #include <fc/container/flat.hpp>
 

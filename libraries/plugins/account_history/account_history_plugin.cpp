@@ -1,13 +1,13 @@
-#include <steem/plugins/account_history/account_history_plugin.hpp>
+#include <dpay/plugins/account_history/account_history_plugin.hpp>
 
-#include <steem/chain/util/impacted.hpp>
+#include <dpay/chain/util/impacted.hpp>
 
-#include <steem/protocol/config.hpp>
+#include <dpay/protocol/config.hpp>
 
-#include <steem/chain/operation_notification.hpp>
-#include <steem/chain/history_object.hpp>
+#include <dpay/chain/operation_notification.hpp>
+#include <dpay/chain/history_object.hpp>
 
-#include <steem/utilities/plugin_utilities.hpp>
+#include <dpay/utilities/plugin_utilities.hpp>
 
 #include <fc/io/json.hpp>
 #include <fc/smart_ref_impl.hpp>
@@ -15,7 +15,7 @@
 #include <boost/algorithm/string.hpp>
 
 
-#define STEEM_NAMESPACE_PREFIX "dpay::protocol::"
+#define DPAY_NAMESPACE_PREFIX "dpay::protocol::"
 
 namespace dpay { namespace plugins { namespace account_history {
 
@@ -224,12 +224,12 @@ void account_history_plugin::plugin_initialize( const boost::program_options::va
       [&]( const operation_notification& note ){ my->on_pre_apply_operation(note); }, *this, 0 );
 
    typedef pair< account_name_type, account_name_type > pairstring;
-   STEEM_LOAD_VALUE_SET(options, "account-history-track-account-range", my->_tracked_accounts, pairstring);
+   DPAY_LOAD_VALUE_SET(options, "account-history-track-account-range", my->_tracked_accounts, pairstring);
 
    if( options.count( "track-account-range" ) )
    {
       wlog( "track-account-range is deprecated in favor of account-history-track-account-range" );
-      STEEM_LOAD_VALUE_SET( options, "track-account-range", my->_tracked_accounts, pairstring );
+      DPAY_LOAD_VALUE_SET( options, "track-account-range", my->_tracked_accounts, pairstring );
    }
 
 
@@ -248,7 +248,7 @@ void account_history_plugin::plugin_initialize( const boost::program_options::va
             for( const string& op : ops )
             {
                if( op.size() )
-                  my->_op_list.insert( STEEM_NAMESPACE_PREFIX + op );
+                  my->_op_list.insert( DPAY_NAMESPACE_PREFIX + op );
             }
          }
       }
@@ -265,7 +265,7 @@ void account_history_plugin::plugin_initialize( const boost::program_options::va
             for( const string& op : ops )
             {
                if( op.size() )
-                  my->_op_list.insert( STEEM_NAMESPACE_PREFIX + op );
+                  my->_op_list.insert( DPAY_NAMESPACE_PREFIX + op );
             }
          }
       }
@@ -287,7 +287,7 @@ void account_history_plugin::plugin_initialize( const boost::program_options::va
             for( const string& op : ops )
             {
                if( op.size() )
-                  my->_op_list.insert( STEEM_NAMESPACE_PREFIX + op );
+                  my->_op_list.insert( DPAY_NAMESPACE_PREFIX + op );
             }
          }
       }
@@ -304,7 +304,7 @@ void account_history_plugin::plugin_initialize( const boost::program_options::va
             for( const string& op : ops )
             {
                if( op.size() )
-                  my->_op_list.insert( STEEM_NAMESPACE_PREFIX + op );
+                  my->_op_list.insert( DPAY_NAMESPACE_PREFIX + op );
             }
          }
       }

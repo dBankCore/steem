@@ -1,5 +1,5 @@
-#include <steem/chain/database.hpp>
-#include <steem/protocol/block.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/protocol/block.hpp>
 #include <fc/io/raw.hpp>
 
 int main( int argc, char** argv, char** envp )

@@ -1,4 +1,4 @@
-# Building Steem
+# Building dPay
 
 ## Compile-Time Options (cmake)
 
@@ -18,7 +18,7 @@ recommended for witnesses and seed-nodes.
 
 Clears old votes from memory that are no longer required for consensus.
 
-### BUILD_STEEM_TESTNET=[OFF/ON]
+### BUILD_DPAY_TESTNET=[OFF/ON]
 
 Builds dpayd for use in a private testnet. Also required for building unit tests.
 
@@ -32,7 +32,7 @@ huge gain if you do not need this functionality.
 
 We ship a Dockerfile.  This builds both common node type binaries.
 
-    git clone https://github.com/dpays/dpay
+    git clone https://github.com/dpays/dpays
     cd dpay
     docker build -t dpays/dpay .
 
@@ -80,7 +80,7 @@ will build out of the box without further effort:
         libreadline-dev \
         perl
 
-    git clone https://github.com/dpays/dpay
+    git clone https://github.com/dpays/dpays
     cd dpay
     git checkout stable
     git submodule update --init --recursive
@@ -120,14 +120,14 @@ Here are the required packages:
         python3-jinja2
 
 The Boost provided in the Ubuntu 14.04 package manager (Boost 1.55) is too old.
-Steem requires Boost 1.58 (as in Ubuntu 16.04) and works with versions up to 1.60 (including).
-So building Steem on Ubuntu 14.04 requires downloading and installing a more recent
+dPay requires Boost 1.58 (as in Ubuntu 16.04) and works with versions up to 1.60 (including).
+So building dPay on Ubuntu 14.04 requires downloading and installing a more recent
 version of Boost.
 
 According to [this mailing list
 post](http://boost.2283326.n4.nabble.com/1-58-1-bugfix-release-necessary-td4674686.html),
 Boost 1.58 is not compatible with gcc 4.8 (the default C++ compiler for
-Ubuntu 14.04) when compiling in C++11 mode (which Steem does).
+Ubuntu 14.04) when compiling in C++11 mode (which dPay does).
 So we will use Boost 1.60.
 
 Here is how to build and install Boost 1.60 into your user's home directory
@@ -146,7 +146,7 @@ Here is how to build and install Boost 1.60 into your user's home directory
 
 Then the instructions are the same as for dpay:
 
-    git clone https://github.com/dpays/dpay
+    git clone https://github.com/dpays/dpays
     cd dpay
     git checkout stable
     git submodule update --init --recursive
@@ -203,7 +203,7 @@ dpay. Until then, this will allow you to install boost 1.60.0.
 
 ### Clone the Repository
 
-    git clone https://github.com/dpays/dpay.git
+    git clone https://github.com/dpays/dpays.git
     cd dpay
 
 ### Compile

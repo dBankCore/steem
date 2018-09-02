@@ -1,8 +1,8 @@
 
-#ifdef STEEM_ENABLE_SDC
+#ifdef DPAY_ENABLE_SDC
 
-#include <steem/jsonball/jsonball.hpp>
-#include <steem/chain/sdc_objects/sdc_market_maker.hpp>
+#include <dpay/jsonball/jsonball.hpp>
+#include <dpay/chain/sdc_objects/sdc_market_maker.hpp>
 
 #include <fc/variant.hpp>
 #include <fc/io/json.hpp>

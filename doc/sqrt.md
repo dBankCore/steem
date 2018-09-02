@@ -2,7 +2,7 @@
 # Introduction
 
 In this document we derive the approximate integer square root function used by dPay for the curation curve
-[here](https://github.com/dpays/dpay/issues/1052).
+[here](https://github.com/dpays/dpays/issues/1052).
 
 # MSB function
 

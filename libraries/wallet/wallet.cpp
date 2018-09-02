@@ -1,14 +1,14 @@
-#include <steem/utilities/git_revision.hpp>
-#include <steem/utilities/key_conversion.hpp>
-#include <steem/utilities/words.hpp>
+#include <dpay/utilities/git_revision.hpp>
+#include <dpay/utilities/key_conversion.hpp>
+#include <dpay/utilities/words.hpp>
 
-#include <steem/protocol/base.hpp>
-#include <steem/wallet/wallet.hpp>
-#include <steem/wallet/api_documentation.hpp>
-#include <steem/wallet/reflect_util.hpp>
-#include <steem/wallet/remote_node_api.hpp>
+#include <dpay/protocol/base.hpp>
+#include <dpay/wallet/wallet.hpp>
+#include <dpay/wallet/api_documentation.hpp>
+#include <dpay/wallet/reflect_util.hpp>
+#include <dpay/wallet/remote_node_api.hpp>
 
-#include <steem/plugins/follow/follow_operations.hpp>
+#include <dpay/plugins/follow/follow_operations.hpp>
 
 #include <algorithm>
 #include <cctype>
@@ -219,14 +219,14 @@ class wallet_api_impl
 
 public:
    wallet_api& self;
-   wallet_api_impl( wallet_api& s, const wallet_data& initial_data, const dpay::protocol::chain_id_type& _steem_chain_id, fc::api< remote_node_api > rapi )
+   wallet_api_impl( wallet_api& s, const wallet_data& initial_data, const dpay::protocol::chain_id_type& _dpay_chain_id, fc::api< remote_node_api > rapi )
       : self( s ),
         _remote_api( rapi )
    {
       init_prototype_ops();
 
       _wallet.ws_server = initial_data.ws_server;
-      steem_chain_id = _steem_chain_id;
+      dpay_chain_id = _dpay_chain_id;
    }
    virtual ~wallet_api_impl()
    {}
@@ -293,9 +293,9 @@ public:
                                                                           time_point_sec(time_point::now()),
                                                                           " old");
       result["participation"] = (100*dynamic_props.recent_slots_filled.popcount()) / 128.0;
-      result["median_sbd_price"] = _remote_api->get_current_median_history_price();
+      result["median_bbd_price"] = _remote_api->get_current_median_history_price();
       result["account_creation_fee"] = _remote_api->get_chain_properties().account_creation_fee;
-      result["post_reward_fund"] = fc::variant(_remote_api->get_reward_fund( STEEM_POST_REWARD_FUND_NAME )).get_object();
+      result["post_reward_fund"] = fc::variant(_remote_api->get_reward_fund( DPAY_POST_REWARD_FUND_NAME )).get_object();
       return result;
    }
 
@@ -307,10 +307,10 @@ public:
          client_version = client_version.substr( pos + 1 );
 
       fc::mutable_variant_object result;
-      result["blockchain_version"]       = STEEM_BLOCKCHAIN_VERSION;
+      result["blockchain_version"]       = DPAY_BLOCKCHAIN_VERSION;
       result["client_version"]           = client_version;
-      result["steem_revision"]           = dpay::utilities::git_revision_sha;
-      result["steem_revision_age"]       = fc::get_approximate_relative_time_string( fc::time_point_sec( dpay::utilities::git_revision_unix_timestamp ) );
+      result["dpay_revision"]           = dpay::utilities::git_revision_sha;
+      result["dpay_revision_age"]       = fc::get_approximate_relative_time_string( fc::time_point_sec( dpay::utilities::git_revision_unix_timestamp ) );
       result["fc_revision"]              = fc::git_revision_sha;
       result["fc_revision_age"]          = fc::get_approximate_relative_time_string( fc::time_point_sec( fc::git_revision_unix_timestamp ) );
       result["compile_date"]             = "compiled on " __DATE__ " at " __TIME__;
@@ -333,7 +333,7 @@ public:
       {
          auto v = _remote_api->get_version();
          result["server_blockchain_version"] = v.blockchain_version;
-         result["server_steem_revision"] = v.steem_revision;
+         result["server_dpay_revision"] = v.dpay_revision;
          result["server_fc_revision"] = v.fc_revision;
       }
       catch( fc::exception& )
@@ -542,7 +542,7 @@ public:
 
    void set_transaction_expiration( uint32_t tx_expiration_seconds )
    {
-      FC_ASSERT( tx_expiration_seconds < STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      FC_ASSERT( tx_expiration_seconds < DPAY_MAX_TIME_UNTIL_EXPIRATION );
       _tx_expiration_seconds = tx_expiration_seconds;
    }
 
@@ -675,7 +675,7 @@ public:
       }
 
       auto minimal_signing_keys = tx.minimize_required_signatures(
-         steem_chain_id,
+         dpay_chain_id,
          available_keys,
          [&]( const string& account_name ) -> const authority&
          { return (get_account_from_lut( account_name ).active); },
@@ -683,9 +683,9 @@ public:
          { return (get_account_from_lut( account_name ).owner); },
          [&]( const string& account_name ) -> const authority&
          { return (get_account_from_lut( account_name ).posting); },
-         STEEM_MAX_SIG_CHECK_DEPTH,
-         STEEM_MAX_AUTHORITY_MEMBERSHIP,
-         STEEM_MAX_SIG_CHECK_ACCOUNTS,
+         DPAY_MAX_SIG_CHECK_DEPTH,
+         DPAY_MAX_AUTHORITY_MEMBERSHIP,
+         DPAY_MAX_SIG_CHECK_ACCOUNTS,
          fc::ecc::fc_canonical
          );
 
@@ -693,7 +693,7 @@ public:
       {
          auto it = available_private_keys.find(k);
          FC_ASSERT( it != available_private_keys.end() );
-         tx.sign( it->second, steem_chain_id, fc::ecc::fc_canonical );
+         tx.sign( it->second, dpay_chain_id, fc::ecc::fc_canonical );
       }
 
       if( broadcast )
@@ -732,23 +732,23 @@ public:
          std::stringstream out;
 
          auto accounts = result.as<vector<condenser_api::api_account_object>>();
-         asset total_steem;
+         asset total_dpay;
          asset total_vest(0, VESTS_SYMBOL );
-         asset total_sbd(0, BBD_SYMBOL );
+         asset total_bbd(0, BBD_SYMBOL );
          for( const auto& a : accounts ) {
-            total_steem += a.balance.to_asset();
+            total_dpay += a.balance.to_asset();
             total_vest  += a.vesting_shares.to_asset();
-            total_sbd  += a.sbd_balance.to_asset();
+            total_bbd  += a.bbd_balance.to_asset();
             out << std::left << std::setw( 17 ) << std::string(a.name)
                 << std::right << std::setw(18) << fc::variant(a.balance).as_string() <<" "
                 << std::right << std::setw(26) << fc::variant(a.vesting_shares).as_string() <<" "
-                << std::right << std::setw(16) << fc::variant(a.sbd_balance).as_string() <<"\n";
+                << std::right << std::setw(16) << fc::variant(a.bbd_balance).as_string() <<"\n";
          }
          out << "-------------------------------------------------------------------------\n";
             out << std::left << std::setw( 17 ) << "TOTAL"
-                << std::right << std::setw(18) << legacy_asset::from_asset(total_steem).to_string() <<" "
+                << std::right << std::setw(18) << legacy_asset::from_asset(total_dpay).to_string() <<" "
                 << std::right << std::setw(26) << legacy_asset::from_asset(total_vest).to_string() <<" "
-                << std::right << std::setw(16) << legacy_asset::from_asset(total_sbd).to_string() <<"\n";
+                << std::right << std::setw(16) << legacy_asset::from_asset(total_bbd).to_string() <<"\n";
          return out.str();
       };
       m["get_account_history"] = []( variant result, const fc::variants& a ) {
@@ -808,7 +808,7 @@ public:
             << setw( spacing + 1 ) << "Price"
             << setw( spacing + 1 ) << "Price"
             << setw( spacing + 1 ) << "BEX "
-            << setw( spacing + 1 ) << "BBD " << "Sum(SBD)"
+            << setw( spacing + 1 ) << "BBD " << "Sum(BBD)"
             << "\n====================================================================================================="
             << "|=====================================================================================================\n";
 
@@ -816,11 +816,11 @@ public:
          {
             if ( i < orders.bids.size() )
             {
-               bid_sum += asset( orders.bids[i].sbd, BBD_SYMBOL );
+               bid_sum += asset( orders.bids[i].bbd, BBD_SYMBOL );
                ss
                   << ' ' << setw( spacing ) << legacy_asset::from_asset( bid_sum ).to_string()
-                  << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.bids[i].sbd, BBD_SYMBOL ) ).to_string()
-                  << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.bids[i].steem, BEX_SYMBOL ) ).to_string()
+                  << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.bids[i].bbd, BBD_SYMBOL ) ).to_string()
+                  << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.bids[i].dpay, BEX_SYMBOL ) ).to_string()
                   << ' ' << setw( spacing ) << orders.bids[i].real_price;
             }
             else
@@ -832,10 +832,10 @@ public:
 
             if ( i < orders.asks.size() )
             {
-               ask_sum += asset( orders.asks[i].sbd, BBD_SYMBOL );
+               ask_sum += asset( orders.asks[i].bbd, BBD_SYMBOL );
                ss << ' ' << setw( spacing ) << orders.asks[i].real_price
-                  << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.asks[i].steem, BEX_SYMBOL ) ).to_string()
-                  << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.asks[i].sbd, BBD_SYMBOL ) ).to_string()
+                  << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.asks[i].dpay, BEX_SYMBOL ) ).to_string()
+                  << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.asks[i].bbd, BBD_SYMBOL ) ).to_string()
                   << ' ' << setw( spacing ) << legacy_asset::from_asset( ask_sum ).to_string();
             }
 
@@ -883,7 +883,7 @@ public:
 
    string                                  _wallet_filename;
    wallet_data                             _wallet;
-   dpay::protocol::chain_id_type          steem_chain_id;
+   dpay::protocol::chain_id_type          dpay_chain_id;
 
    map<public_key_type,string>             _keys;
    fc::sha512                              _checksum;
@@ -906,8 +906,8 @@ public:
 
 namespace dpay { namespace wallet {
 
-wallet_api::wallet_api(const wallet_data& initial_data, const dpay::protocol::chain_id_type& _steem_chain_id, fc::api< remote_node_api > rapi)
-   : my(new detail::wallet_api_impl(*this, initial_data, _steem_chain_id, rapi))
+wallet_api::wallet_api(const wallet_data& initial_data, const dpay::protocol::chain_id_type& _dpay_chain_id, fc::api< remote_node_api > rapi)
+   : my(new detail::wallet_api_impl(*this, initial_data, _dpay_chain_id, rapi))
 {}
 
 wallet_api::~wallet_api(){}
@@ -1214,7 +1214,7 @@ condenser_api::legacy_signed_transaction wallet_api::create_account_with_keys(
    op.posting = authority( 1, posting, 1 );
    op.memo_key = memo;
    op.json_metadata = json_meta;
-   op.fee = my->_remote_api->get_chain_properties().account_creation_fee * asset( STEEM_CREATE_ACCOUNT_WITH_STEEM_MODIFIER, BEX_SYMBOL );
+   op.fee = my->_remote_api->get_chain_properties().account_creation_fee * asset( DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER, BEX_SYMBOL );
 
    signed_transaction tx;
    tx.operations.push_back(op);
@@ -1230,7 +1230,7 @@ condenser_api::legacy_signed_transaction wallet_api::create_account_with_keys(
  */
 condenser_api::legacy_signed_transaction wallet_api::create_account_with_keys_delegated(
    string creator,
-   condenser_api::legacy_asset steem_fee,
+   condenser_api::legacy_asset dpay_fee,
    condenser_api::legacy_asset delegated_vests,
    string new_account_name,
    string json_meta,
@@ -1249,7 +1249,7 @@ condenser_api::legacy_signed_transaction wallet_api::create_account_with_keys_de
    op.posting = authority( 1, posting, 1 );
    op.memo_key = memo;
    op.json_metadata = json_meta;
-   op.fee = steem_fee.to_asset();
+   op.fee = dpay_fee.to_asset();
    op.delegation = delegated_vests.to_asset();
 
    signed_transaction tx;
@@ -1646,7 +1646,7 @@ condenser_api::legacy_signed_transaction wallet_api::create_account(
  */
 condenser_api::legacy_signed_transaction wallet_api::create_account_delegated(
    string creator,
-   condenser_api::legacy_asset steem_fee,
+   condenser_api::legacy_asset dpay_fee,
    condenser_api::legacy_asset delegated_vests,
    string new_account_name,
    string json_meta,
@@ -1661,7 +1661,7 @@ condenser_api::legacy_signed_transaction wallet_api::create_account_delegated(
    import_key( active.wif_priv_key );
    import_key( posting.wif_priv_key );
    import_key( memo.wif_priv_key );
-   return create_account_with_keys_delegated( creator, steem_fee, delegated_vests, new_account_name, json_meta,  owner.pub_key, active.pub_key, posting.pub_key, memo.pub_key, broadcast );
+   return create_account_with_keys_delegated( creator, dpay_fee, delegated_vests, new_account_name, json_meta,  owner.pub_key, active.pub_key, posting.pub_key, memo.pub_key, broadcast );
 } FC_CAPTURE_AND_RETHROW( (creator)(new_account_name)(json_meta) ) }
 
 
@@ -1839,8 +1839,8 @@ condenser_api::legacy_signed_transaction wallet_api::escrow_transfer(
    string to,
    string agent,
    uint32_t escrow_id,
-   condenser_api::legacy_asset sbd_amount,
-   condenser_api::legacy_asset steem_amount,
+   condenser_api::legacy_asset bbd_amount,
+   condenser_api::legacy_asset dpay_amount,
    condenser_api::legacy_asset fee,
    time_point_sec ratification_deadline,
    time_point_sec escrow_expiration,
@@ -1853,8 +1853,8 @@ condenser_api::legacy_signed_transaction wallet_api::escrow_transfer(
    op.to = to;
    op.agent = agent;
    op.escrow_id = escrow_id;
-   op.sbd_amount = sbd_amount.to_asset();
-   op.steem_amount = steem_amount.to_asset();
+   op.bbd_amount = bbd_amount.to_asset();
+   op.dpay_amount = dpay_amount.to_asset();
    op.fee = fee.to_asset();
    op.ratification_deadline = ratification_deadline;
    op.escrow_expiration = escrow_expiration;
@@ -1921,8 +1921,8 @@ condenser_api::legacy_signed_transaction wallet_api::escrow_release(
    string who,
    string receiver,
    uint32_t escrow_id,
-   condenser_api::legacy_asset sbd_amount,
-   condenser_api::legacy_asset steem_amount,
+   condenser_api::legacy_asset bbd_amount,
+   condenser_api::legacy_asset dpay_amount,
    bool broadcast )
 {
    FC_ASSERT( !is_locked() );
@@ -1933,8 +1933,8 @@ condenser_api::legacy_signed_transaction wallet_api::escrow_release(
    op.who = who;
    op.receiver = receiver;
    op.escrow_id = escrow_id;
-   op.sbd_amount = sbd_amount.to_asset();
-   op.steem_amount = steem_amount.to_asset();
+   op.bbd_amount = bbd_amount.to_asset();
+   op.dpay_amount = dpay_amount.to_asset();
 
    signed_transaction tx;
    tx.operations.push_back( op );
@@ -2071,7 +2071,7 @@ condenser_api::legacy_signed_transaction wallet_api::set_withdraw_vesting_route(
    return my->sign_transaction( tx, broadcast );
 }
 
-condenser_api::legacy_signed_transaction wallet_api::convert_sbd(
+condenser_api::legacy_signed_transaction wallet_api::convert_bbd(
    string from,
    condenser_api::legacy_asset amount,
    bool broadcast )
@@ -2172,16 +2172,16 @@ condenser_api::legacy_signed_transaction wallet_api::decline_voting_rights(
 
 condenser_api::legacy_signed_transaction wallet_api::claim_reward_balance(
    string account,
-   condenser_api::legacy_asset reward_steem,
-   condenser_api::legacy_asset reward_sbd,
+   condenser_api::legacy_asset reward_dpay,
+   condenser_api::legacy_asset reward_bbd,
    condenser_api::legacy_asset reward_vests,
    bool broadcast )
 {
    FC_ASSERT( !is_locked() );
    claim_reward_balance_operation op;
    op.account = account;
-   op.reward_steem = reward_steem.to_asset();
-   op.reward_sbd = reward_sbd.to_asset();
+   op.reward_dpay = reward_dpay.to_asset();
+   op.reward_bbd = reward_bbd.to_asset();
    op.reward_vests = reward_vests.to_asset();
 
    signed_transaction tx;
@@ -2322,7 +2322,7 @@ condenser_api::legacy_signed_transaction wallet_api::vote(
    op.voter = voter;
    op.author = author;
    op.permlink = permlink;
-   op.weight = weight * STEEM_1_PERCENT;
+   op.weight = weight * DPAY_1_PERCENT;
 
    signed_transaction tx;
    tx.operations.push_back( op );

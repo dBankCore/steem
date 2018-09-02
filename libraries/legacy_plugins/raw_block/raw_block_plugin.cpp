@@ -1,7 +1,7 @@
 
 
-#include <steem/plugins/raw_block/raw_block_api.hpp>
-#include <steem/plugins/raw_block/raw_block_plugin.hpp>
+#include <dpay/plugins/raw_block/raw_block_api.hpp>
+#include <dpay/plugins/raw_block/raw_block_plugin.hpp>
 
 #include <string>
 
@@ -30,4 +30,4 @@ void raw_block_plugin::plugin_shutdown()
 
 } } } // dpay::plugin::raw_block
 
-STEEM_DEFINE_PLUGIN( raw_block, dpay::plugin::raw_block::raw_block_plugin )
+DPAY_DEFINE_PLUGIN( raw_block, dpay::plugin::raw_block::raw_block_plugin )

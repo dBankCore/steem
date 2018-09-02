@@ -1,5 +1,5 @@
-#include <steem/plugins/tags_api/tags_api_plugin.hpp>
-#include <steem/plugins/tags_api/tags_api.hpp>
+#include <dpay/plugins/tags_api/tags_api_plugin.hpp>
+#include <dpay/plugins/tags_api/tags_api.hpp>
 
 
 namespace dpay { namespace plugins { namespace tags {

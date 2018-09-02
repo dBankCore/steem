@@ -1,7 +1,7 @@
 
-#include <steem/protocol/sdc_operations.hpp>
-#include <steem/protocol/validation.hpp>
-#ifdef STEEM_ENABLE_SDC
+#include <dpay/protocol/sdc_operations.hpp>
+#include <dpay/protocol/validation.hpp>
+#ifdef DPAY_ENABLE_SDC
 
 namespace dpay { namespace protocol {
 
@@ -28,7 +28,7 @@ void sdc_create_operation::validate()const
 {
    sdc_base_operation::validate();
    FC_ASSERT( sdc_creation_fee.amount >= 0, "fee cannot be negative" );
-   FC_ASSERT( sdc_creation_fee.amount <= STEEM_MAX_SHARE_SUPPLY, "Fee must be smaller than STEEM_MAX_SHARE_SUPPLY" );
+   FC_ASSERT( sdc_creation_fee.amount <= DPAY_MAX_SHARE_SUPPLY, "Fee must be smaller than DPAY_MAX_SHARE_SUPPLY" );
    FC_ASSERT( is_asset_type( sdc_creation_fee, BEX_SYMBOL ) || is_asset_type( sdc_creation_fee, BBD_SYMBOL ), "Fee must be BEX or BBD" );
    FC_ASSERT( symbol.decimals() == precision, "Mismatch between redundantly provided precision ${prec1} vs ${prec2}",
       ("prec1",symbol.decimals())("prec2",precision) );
@@ -45,10 +45,10 @@ bool is_valid_unit_target( const account_name_type& name )
    return false;
 }
 
-uint32_t sdc_generation_unit::steem_unit_sum()const
+uint32_t sdc_generation_unit::dpay_unit_sum()const
 {
    uint32_t result = 0;
-   for(const std::pair< account_name_type, uint16_t >& e : steem_unit )
+   for(const std::pair< account_name_type, uint16_t >& e : dpay_unit )
       result += e.second;
    return result;
 }
@@ -63,8 +63,8 @@ uint32_t sdc_generation_unit::token_unit_sum()const
 
 void sdc_generation_unit::validate()const
 {
-   FC_ASSERT( steem_unit.size() <= SDC_MAX_UNIT_ROUTES );
-   for(const std::pair< account_name_type, uint16_t >& e : steem_unit )
+   FC_ASSERT( dpay_unit.size() <= SDC_MAX_UNIT_ROUTES );
+   for(const std::pair< account_name_type, uint16_t >& e : dpay_unit )
    {
       FC_ASSERT( is_valid_unit_target( e.first ) );
       FC_ASSERT( e.second > 0 );
@@ -94,7 +94,7 @@ void sdc_cap_commitment::fillin_nonhidden_value( share_type value )
 void sdc_cap_commitment::validate()const
 {
    FC_ASSERT( lower_bound > 0 );
-   FC_ASSERT( upper_bound <= STEEM_MAX_SHARE_SUPPLY );
+   FC_ASSERT( upper_bound <= DPAY_MAX_SHARE_SUPPLY );
    FC_ASSERT( lower_bound <= upper_bound );
    if( lower_bound == upper_bound )
    {
@@ -118,67 +118,67 @@ void sdc_capped_generation_policy::validate()const
    post_soft_cap_unit.validate();
 
    FC_ASSERT( soft_cap_percent > 0 );
-   FC_ASSERT( soft_cap_percent <= STEEM_100_PERCENT );
+   FC_ASSERT( soft_cap_percent <= DPAY_100_PERCENT );
 
-   FC_ASSERT( pre_soft_cap_unit.steem_unit.size() > 0 );
+   FC_ASSERT( pre_soft_cap_unit.dpay_unit.size() > 0 );
    FC_ASSERT( pre_soft_cap_unit.token_unit.size() > 0 );
 
-   FC_ASSERT( pre_soft_cap_unit.steem_unit.size() <= SDC_MAX_UNIT_COUNT );
+   FC_ASSERT( pre_soft_cap_unit.dpay_unit.size() <= SDC_MAX_UNIT_COUNT );
    FC_ASSERT( pre_soft_cap_unit.token_unit.size() <= SDC_MAX_UNIT_COUNT );
-   FC_ASSERT( post_soft_cap_unit.steem_unit.size() <= SDC_MAX_UNIT_COUNT );
+   FC_ASSERT( post_soft_cap_unit.dpay_unit.size() <= SDC_MAX_UNIT_COUNT );
    FC_ASSERT( post_soft_cap_unit.token_unit.size() <= SDC_MAX_UNIT_COUNT );
 
    // TODO : Check account name
 
-   if( soft_cap_percent == STEEM_100_PERCENT )
+   if( soft_cap_percent == DPAY_100_PERCENT )
    {
-      FC_ASSERT( post_soft_cap_unit.steem_unit.size() == 0 );
+      FC_ASSERT( post_soft_cap_unit.dpay_unit.size() == 0 );
       FC_ASSERT( post_soft_cap_unit.token_unit.size() == 0 );
    }
    else
    {
-      FC_ASSERT( post_soft_cap_unit.steem_unit.size() > 0 );
+      FC_ASSERT( post_soft_cap_unit.dpay_unit.size() > 0 );
    }
 
-   min_steem_units_commitment.validate();
-   hard_cap_steem_units_commitment.validate();
+   min_dpay_units_commitment.validate();
+   hard_cap_dpay_units_commitment.validate();
 
-   FC_ASSERT( min_steem_units_commitment.lower_bound <= hard_cap_steem_units_commitment.lower_bound );
-   FC_ASSERT( min_steem_units_commitment.upper_bound <= hard_cap_steem_units_commitment.upper_bound );
+   FC_ASSERT( min_dpay_units_commitment.lower_bound <= hard_cap_dpay_units_commitment.lower_bound );
+   FC_ASSERT( min_dpay_units_commitment.upper_bound <= hard_cap_dpay_units_commitment.upper_bound );
 
    // Following are non-trivial numerical bounds
    // TODO:  Discuss these restrictions in the whitepaper
 
    // we want hard cap to be large enough we don't see quantization effects
-   FC_ASSERT( hard_cap_steem_units_commitment.lower_bound >= SDC_MIN_HARD_CAP_STEEM_UNITS );
+   FC_ASSERT( hard_cap_dpay_units_commitment.lower_bound >= SDC_MIN_HARD_CAP_DPAY_UNITS );
 
    // we want saturation point to be large enough we don't see quantization effects
-   FC_ASSERT( hard_cap_steem_units_commitment.lower_bound >= SDC_MIN_SATURATION_STEEM_UNITS * uint64_t( max_unit_ratio ) );
+   FC_ASSERT( hard_cap_dpay_units_commitment.lower_bound >= SDC_MIN_SATURATION_DPAY_UNITS * uint64_t( max_unit_ratio ) );
 
    // this static_assert checks to be sure min_soft_cap / max_soft_cap computation can't overflow uint64_t
-   static_assert( uint64_t( STEEM_MAX_SHARE_SUPPLY ) < (std::numeric_limits< uint64_t >::max() / STEEM_100_PERCENT), "Overflow check failed" );
-   uint64_t min_soft_cap = (uint64_t( hard_cap_steem_units_commitment.lower_bound.value ) * soft_cap_percent) / STEEM_100_PERCENT;
-   uint64_t max_soft_cap = (uint64_t( hard_cap_steem_units_commitment.upper_bound.value ) * soft_cap_percent) / STEEM_100_PERCENT;
+   static_assert( uint64_t( DPAY_MAX_SHARE_SUPPLY ) < (std::numeric_limits< uint64_t >::max() / DPAY_100_PERCENT), "Overflow check failed" );
+   uint64_t min_soft_cap = (uint64_t( hard_cap_dpay_units_commitment.lower_bound.value ) * soft_cap_percent) / DPAY_100_PERCENT;
+   uint64_t max_soft_cap = (uint64_t( hard_cap_dpay_units_commitment.upper_bound.value ) * soft_cap_percent) / DPAY_100_PERCENT;
 
    // we want soft cap to be large enough we don't see quantization effects
-   FC_ASSERT( min_soft_cap >= SDC_MIN_SOFT_CAP_STEEM_UNITS );
+   FC_ASSERT( min_soft_cap >= SDC_MIN_SOFT_CAP_DPAY_UNITS );
 
-   // We want to prevent the following from overflowing STEEM_MAX_SHARE_SUPPLY:
+   // We want to prevent the following from overflowing DPAY_MAX_SHARE_SUPPLY:
    // max_tokens_created = (u1.tt * sc + u2.tt * (hc-sc)) * min_unit_ratio
-   // max_steem_accepted =  u1.st * sc + u2.st * (hc-sc)
+   // max_dpay_accepted =  u1.st * sc + u2.st * (hc-sc)
 
    // hc / max_unit_ratio is the saturation point
 
    uint128_t sc = max_soft_cap;
-   uint128_t hc_sc = hard_cap_steem_units_commitment.upper_bound.value - max_soft_cap;
+   uint128_t hc_sc = hard_cap_dpay_units_commitment.upper_bound.value - max_soft_cap;
 
    uint128_t max_tokens_created = (pre_soft_cap_unit.token_unit_sum() * sc + post_soft_cap_unit.token_unit_sum() * hc_sc) * min_unit_ratio;
-   uint128_t max_share_supply_u128 = uint128_t( STEEM_MAX_SHARE_SUPPLY );
+   uint128_t max_share_supply_u128 = uint128_t( DPAY_MAX_SHARE_SUPPLY );
 
    FC_ASSERT( max_tokens_created <= max_share_supply_u128 );
 
-   uint128_t max_steem_accepted = (pre_soft_cap_unit.steem_unit_sum() * sc + post_soft_cap_unit.steem_unit_sum() * hc_sc);
-   FC_ASSERT( max_steem_accepted <= max_share_supply_u128 );
+   uint128_t max_dpay_accepted = (pre_soft_cap_unit.dpay_unit_sum() * sc + post_soft_cap_unit.dpay_unit_sum() * hc_sc);
+   FC_ASSERT( max_dpay_accepted <= max_share_supply_u128 );
 }
 
 struct validate_visitor
@@ -196,7 +196,7 @@ void sdc_setup_emissions_operation::validate()const
 {
    sdc_base_operation::validate();
 
-   FC_ASSERT( schedule_time > STEEM_GENESIS_TIME );
+   FC_ASSERT( schedule_time > DPAY_GENESIS_TIME );
    FC_ASSERT( emissions_unit.token_unit.empty() == false );
 
    //interval_seconds <- any value of unsigned int is OK
@@ -224,10 +224,10 @@ void sdc_setup_operation::validate()const
    sdc_base_operation::validate();
    FC_ASSERT( decimal_places <= SDC_MAX_DECIMAL_PLACES );
    FC_ASSERT( max_supply > 0 );
-   FC_ASSERT( max_supply <= STEEM_MAX_SHARE_SUPPLY );
+   FC_ASSERT( max_supply <= DPAY_MAX_SHARE_SUPPLY );
    validate_visitor vtor;
    initial_generation_policy.visit( vtor );
-   FC_ASSERT( generation_begin_time > STEEM_GENESIS_TIME );
+   FC_ASSERT( generation_begin_time > DPAY_GENESIS_TIME );
    FC_ASSERT( generation_end_time > generation_begin_time );
    FC_ASSERT( announced_launch_time >= generation_end_time );
    FC_ASSERT( launch_expiration_time >= announced_launch_time );

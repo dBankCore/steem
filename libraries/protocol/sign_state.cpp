@@ -1,5 +1,5 @@
 
-#include <steem/protocol/sign_state.hpp>
+#include <dpay/protocol/sign_state.hpp>
 
 namespace dpay { namespace protocol {
 

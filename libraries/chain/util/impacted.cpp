@@ -1,6 +1,6 @@
-#include <steem/protocol/authority.hpp>
+#include <dpay/protocol/authority.hpp>
 
-#include <steem/chain/util/impacted.hpp>
+#include <dpay/chain/util/impacted.hpp>
 
 #include <fc/utility.hpp>
 
@@ -254,7 +254,7 @@ struct get_impacted_account_visitor
 
    void operator()( const hardfork_operation& op )
    {
-      _impacted.insert( STEEM_INIT_MINER_NAME );
+      _impacted.insert( DPAY_INIT_MINER_NAME );
    }
 
    //void operator()( const operation& op ){}

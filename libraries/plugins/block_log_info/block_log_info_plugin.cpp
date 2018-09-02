@@ -1,11 +1,11 @@
-#include <steem/plugins/block_log_info/block_log_info_plugin.hpp>
-#include <steem/plugins/block_log_info/block_log_info_objects.hpp>
+#include <dpay/plugins/block_log_info/block_log_info_plugin.hpp>
+#include <dpay/plugins/block_log_info/block_log_info_objects.hpp>
 
-#include <steem/chain/account_object.hpp>
-#include <steem/chain/database.hpp>
-#include <steem/chain/global_property_object.hpp>
-#include <steem/chain/index.hpp>
-#include <steem/chain/operation_notification.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/global_property_object.hpp>
+#include <dpay/chain/index.hpp>
+#include <dpay/chain/operation_notification.hpp>
 
 #include <fstream>
 #include <iostream>

@@ -1,4 +1,4 @@
-#include <steem/utilities/logging_config.hpp>
+#include <dpay/utilities/logging_config.hpp>
 
 #include <fc/exception/exception.hpp>
 

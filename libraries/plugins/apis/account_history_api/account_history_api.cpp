@@ -1,7 +1,7 @@
-#include <steem/plugins/account_history_api/account_history_api_plugin.hpp>
-#include <steem/plugins/account_history_api/account_history_api.hpp>
+#include <dpay/plugins/account_history_api/account_history_api_plugin.hpp>
+#include <dpay/plugins/account_history_api/account_history_api.hpp>
 
-#include <steem/plugins/account_history_rocksdb/account_history_rocksdb_plugin.hpp>
+#include <dpay/plugins/account_history_rocksdb/account_history_rocksdb_plugin.hpp>
 
 namespace dpay { namespace plugins { namespace account_history {
 
@@ -207,7 +207,7 @@ account_history_api::account_history_api()
       FC_ASSERT( false, "Account History API only works if account_history or account_history_rocksdb plugins are enabled" );
    }
 
-   JSON_RPC_REGISTER_API( STEEM_ACCOUNT_HISTORY_API_PLUGIN_NAME );
+   JSON_RPC_REGISTER_API( DPAY_ACCOUNT_HISTORY_API_PLUGIN_NAME );
 }
 
 account_history_api::~account_history_api() {}

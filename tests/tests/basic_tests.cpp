@@ -24,10 +24,10 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <steem/chain/database.hpp>
-#include <steem/protocol/protocol.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/protocol/protocol.hpp>
 
-#include <steem/protocol/steem_operations.hpp>
+#include <dpay/protocol/dpay_operations.hpp>
 
 #include <fc/crypto/digest.hpp>
 #include <fc/crypto/hex.hpp>

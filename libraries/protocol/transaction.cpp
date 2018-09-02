@@ -1,6 +1,6 @@
 
-#include <steem/protocol/transaction.hpp>
-#include <steem/protocol/transaction_util.hpp>
+#include <dpay/protocol/transaction.hpp>
+#include <dpay/protocol/transaction_util.hpp>
 
 #include <fc/io/raw.hpp>
 #include <fc/bitutil.hpp>
@@ -88,7 +88,7 @@ flat_set<public_key_type> signed_transaction::get_signature_keys( const chain_id
    flat_set<public_key_type> result;
    for( const auto&  sig : signatures )
    {
-      STEEM_ASSERT(
+      DPAY_ASSERT(
          result.insert( fc::ecc::public_key( sig, d, canon_type ) ).second,
          tx_duplicate_sig,
          "Duplicate Signature detected" );

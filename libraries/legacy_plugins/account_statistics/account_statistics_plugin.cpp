@@ -1,9 +1,9 @@
-#include <steem/account_statistics/account_statistics_api.hpp>
+#include <dpay/account_statistics/account_statistics_api.hpp>
 
-#include <steem/chain/account_object.hpp>
-#include <steem/chain/comment_object.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/comment_object.hpp>
 
-#include <steem/chain/database.hpp>
+#include <dpay/chain/database.hpp>
 
 namespace dpay { namespace account_statistics {
 
@@ -107,4 +107,4 @@ const flat_set< std::string >& account_statistics_plugin::get_tracked_accounts()
 
 } } // dpay::account_statistics
 
-STEEM_DEFINE_PLUGIN( account_statistics, dpay::account_statistics::account_statistics_plugin );
+DPAY_DEFINE_PLUGIN( account_statistics, dpay::account_statistics::account_statistics_plugin );

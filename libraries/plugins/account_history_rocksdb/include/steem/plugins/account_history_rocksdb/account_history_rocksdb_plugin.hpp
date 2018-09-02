@@ -1,7 +1,7 @@
 #pragma once
-#include <steem/plugins/account_history_rocksdb/account_history_rocksdb_objects.hpp>
+#include <dpay/plugins/account_history_rocksdb/account_history_rocksdb_objects.hpp>
 
-#include <steem/plugins/chain/chain_plugin.hpp>
+#include <dpay/plugins/chain/chain_plugin.hpp>
 
 #include <appbase/application.hpp>
 

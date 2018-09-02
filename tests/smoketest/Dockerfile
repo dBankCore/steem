@@ -1,7 +1,7 @@
 FROM phusion/baseimage:0.9.19
 
 ENV LANG=en_US.UTF-8
-ENV WDIR=/usr/local/steem
+ENV WDIR=/usr/local/dpay
 ENV SMOKETEST=$WDIR/smoketest
 
 RUN apt-get update

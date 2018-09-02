@@ -1,8 +1,8 @@
 
-#include <steem/plugins/rc/resource_count.hpp>
+#include <dpay/plugins/rc/resource_count.hpp>
 
-#include <steem/protocol/operations.hpp>
-#include <steem/protocol/transaction.hpp>
+#include <dpay/protocol/operations.hpp>
+#include <dpay/protocol/transaction.hpp>
 
 #define STATE_BYTES_SCALE                       10000
 
@@ -127,7 +127,7 @@ struct operation_exec_info
    int64_t witness_set_properties_operation_exec_time          =   9500;
    int64_t witness_update_operation_exec_time                  =   9500;
 
-#ifdef STEEM_ENABLE_SDC
+#ifdef DPAY_ENABLE_SDC
    int64_t claim_reward_balance2_operation_exec_time           = 0;
    int64_t sdc_setup_operation_exec_time                       = 0;
    int64_t sdc_cap_reveal_operation_exec_time                  = 0;
@@ -411,7 +411,7 @@ struct count_operation_visitor
       execution_time_count += _e.witness_set_properties_operation_exec_time;
    }
 
-#ifdef STEEM_ENABLE_SDC
+#ifdef DPAY_ENABLE_SDC
    void operator()( const claim_reward_balance2_operation& op )const
    {
       FC_TODO( "Change RC state bytes computation to take SDC's into account" )

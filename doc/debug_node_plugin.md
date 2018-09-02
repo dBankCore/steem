@@ -73,7 +73,7 @@ The API's configured with `public-api` are assigned numbers starting at zero.  S
 API number 2 (TODO:  Explain about resolving names to API's and get it working).
 
 The API provides the following methods
-(see `libraries/plugins/debug_node/include/steem/plugins/debug_node/debug_node_api.hpp`
+(see `libraries/plugins/debug_node/include/dpay/plugins/debug_node/debug_node_api.hpp`
 for these definitions):
 
     void debug_push_blocks( std::string src_filename, uint32_t count );
@@ -122,9 +122,9 @@ Now that we've reset its key, we can take control of it in the wallet:
     unlock abc
     import_key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
     list_my_accounts
-    transfer steemit dantheman "1.234 BEX" "make -j100 money" true
+    transfer jared dantheman "1.234 BEX" "make -j100 money" true
     list_my_accounts
-    get_account_history steemit -1 1000
+    get_account_history jared -1 1000
 
 (For some unknown reason, the current version of the wallet hangs after the transfer command -- why?)
 

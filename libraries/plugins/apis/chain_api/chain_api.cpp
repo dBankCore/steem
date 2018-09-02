@@ -1,5 +1,5 @@
-#include <steem/plugins/chain_api/chain_api_plugin.hpp>
-#include <steem/plugins/chain_api/chain_api.hpp>
+#include <dpay/plugins/chain_api/chain_api_plugin.hpp>
+#include <dpay/plugins/chain_api/chain_api.hpp>
 
 namespace dpay { namespace plugins { namespace chain {
 
@@ -76,7 +76,7 @@ DEFINE_API_IMPL( chain_api_impl, push_transaction )
 
 chain_api::chain_api(): my( new detail::chain_api_impl() )
 {
-   JSON_RPC_REGISTER_API( STEEM_CHAIN_API_PLUGIN_NAME );
+   JSON_RPC_REGISTER_API( DPAY_CHAIN_API_PLUGIN_NAME );
 }
 
 chain_api::~chain_api() {}

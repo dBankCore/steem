@@ -22,7 +22,7 @@ sh get-docker.sh
 
 Pull in the dPay repo from the official source on github and then change into the directory that's created for it.
 ```
-git clone https://github.com/dpays/dpay
+git clone https://github.com/dpays/dpays
 cd dpay
 ```
 

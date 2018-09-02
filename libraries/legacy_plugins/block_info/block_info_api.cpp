@@ -1,9 +1,9 @@
 
-#include <steem/app/api_context.hpp>
-#include <steem/app/application.hpp>
+#include <dpay/app/api_context.hpp>
+#include <dpay/app/application.hpp>
 
-#include <steem/plugins/block_info/block_info_api.hpp>
-#include <steem/plugins/block_info/block_info_plugin.hpp>
+#include <dpay/plugins/block_info/block_info_api.hpp>
+#include <dpay/plugins/block_info/block_info_plugin.hpp>
 
 namespace dpay { namespace plugin { namespace block_info {
 

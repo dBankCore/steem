@@ -1,4 +1,4 @@
-#include <steem/protocol/steem_operations.hpp>
+#include <dpay/protocol/dpay_operations.hpp>
 
 #include <fc/macros.hpp>
 #include <fc/io/json.hpp>
@@ -11,7 +11,7 @@ namespace dpay { namespace protocol {
    void validate_auth_size( const authority& a )
    {
       size_t size = a.account_auths.size() + a.key_auths.size();
-      FC_ASSERT( size <= STEEM_MAX_AUTHORITY_MEMBERSHIP, "Authority membership exceeded. Max: 10 Current: ${n}", ("n", size) );
+      FC_ASSERT( size <= DPAY_MAX_AUTHORITY_MEMBERSHIP, "Authority membership exceeded. Max: 10 Current: ${n}", ("n", size) );
    }
 
    void account_create_operation::validate() const
@@ -91,7 +91,7 @@ namespace dpay { namespace protocol {
    {
       typedef void result_type;
 
-#ifdef STEEM_ENABLE_SDC
+#ifdef DPAY_ENABLE_SDC
       void operator()( const allowed_vote_assets& va) const
       {
          va.validate();
@@ -111,16 +111,16 @@ namespace dpay { namespace protocol {
       FC_ASSERT( beneficiaries.size() < 128, "Cannot specify more than 127 beneficiaries." ); // Require size serializtion fits in one byte.
 
       validate_account_name( beneficiaries[0].account );
-      FC_ASSERT( beneficiaries[0].weight <= STEEM_100_PERCENT, "Cannot allocate more than 100% of rewards to one account" );
+      FC_ASSERT( beneficiaries[0].weight <= DPAY_100_PERCENT, "Cannot allocate more than 100% of rewards to one account" );
       sum += beneficiaries[0].weight;
-      FC_ASSERT( sum <= STEEM_100_PERCENT, "Cannot allocate more than 100% of rewards to a comment" ); // Have to check incrementally to avoid overflow
+      FC_ASSERT( sum <= DPAY_100_PERCENT, "Cannot allocate more than 100% of rewards to a comment" ); // Have to check incrementally to avoid overflow
 
       for( size_t i = 1; i < beneficiaries.size(); i++ )
       {
          validate_account_name( beneficiaries[i].account );
-         FC_ASSERT( beneficiaries[i].weight <= STEEM_100_PERCENT, "Cannot allocate more than 100% of rewards to one account" );
+         FC_ASSERT( beneficiaries[i].weight <= DPAY_100_PERCENT, "Cannot allocate more than 100% of rewards to one account" );
          sum += beneficiaries[i].weight;
-         FC_ASSERT( sum <= STEEM_100_PERCENT, "Cannot allocate more than 100% of rewards to a comment" ); // Have to check incrementally to avoid overflow
+         FC_ASSERT( sum <= DPAY_100_PERCENT, "Cannot allocate more than 100% of rewards to a comment" ); // Have to check incrementally to avoid overflow
          FC_ASSERT( beneficiaries[i - 1] < beneficiaries[i], "Benficiaries must be specified in sorted order (account ascending)" );
       }
    }
@@ -128,7 +128,7 @@ namespace dpay { namespace protocol {
    void comment_options_operation::validate()const
    {
       validate_account_name( author );
-      FC_ASSERT( percent_steem_dollars <= STEEM_100_PERCENT, "Percent cannot exceed 100%" );
+      FC_ASSERT( percent_dpay_dollars <= DPAY_100_PERCENT, "Percent cannot exceed 100%" );
       FC_ASSERT( max_accepted_payout.symbol == BBD_SYMBOL, "Max accepted payout must be in BBD" );
       FC_ASSERT( max_accepted_payout.amount.value >= 0, "Cannot accept less than 0 payout" );
       validate_permlink( permlink );
@@ -147,7 +147,7 @@ namespace dpay { namespace protocol {
       validate_account_name( creator );
       FC_ASSERT( is_asset_type( fee, BEX_SYMBOL ), "Account creation fee must be BEX" );
       FC_ASSERT( fee >= asset( 0, BEX_SYMBOL ), "Account creation fee cannot be negative" );
-      FC_ASSERT( fee <= asset( STEEM_MAX_ACCOUNT_CREATION_FEE, BEX_SYMBOL ), "Account creation fee cannot be too large" );
+      FC_ASSERT( fee <= asset( DPAY_MAX_ACCOUNT_CREATION_FEE, BEX_SYMBOL ), "Account creation fee cannot be too large" );
 
       FC_ASSERT( extensions.size() == 0, "There are no extensions for claim_account_operation." );
    }
@@ -176,7 +176,7 @@ namespace dpay { namespace protocol {
    {
       validate_account_name( voter );
       validate_account_name( author );\
-      FC_ASSERT( abs(weight) <= STEEM_100_PERCENT, "Weight is not a dPay percentage" );
+      FC_ASSERT( abs(weight) <= DPAY_100_PERCENT, "Weight is not a dPay percentage" );
       validate_permlink( permlink );
    }
 
@@ -186,7 +186,7 @@ namespace dpay { namespace protocol {
       validate_account_name( to );
       FC_ASSERT( amount.symbol != VESTS_SYMBOL, "transferring of BEX Power (STMP) is not allowed." );
       FC_ASSERT( amount.amount > 0, "Cannot transfer a negative amount (aka: stealing)" );
-      FC_ASSERT( memo.size() < STEEM_MAX_MEMO_SIZE, "Memo is too large" );
+      FC_ASSERT( memo.size() < DPAY_MAX_MEMO_SIZE, "Memo is too large" );
       FC_ASSERT( fc::is_utf8( memo ), "Memo is not UTF8" );
    } FC_CAPTURE_AND_RETHROW( (*this) ) }
 
@@ -210,14 +210,14 @@ namespace dpay { namespace protocol {
    {
       validate_account_name( from_account );
       validate_account_name( to_account );
-      FC_ASSERT( 0 <= percent && percent <= STEEM_100_PERCENT, "Percent must be valid steem percent" );
+      FC_ASSERT( 0 <= percent && percent <= DPAY_100_PERCENT, "Percent must be valid dPay percent" );
    }
 
    void witness_update_operation::validate() const
    {
       validate_account_name( owner );
 
-      FC_ASSERT( url.size() <= STEEM_MAX_WITNESS_URL_LENGTH, "URL is too long" );
+      FC_ASSERT( url.size() <= DPAY_MAX_WITNESS_URL_LENGTH, "URL is too long" );
 
       FC_ASSERT( url.size() > 0, "URL size must be greater than 0" );
       FC_ASSERT( fc::is_utf8( url ), "URL is not valid UTF8" );
@@ -238,7 +238,7 @@ namespace dpay { namespace protocol {
          asset account_creation_fee;
          fc::raw::unpack_from_vector( itr->second, account_creation_fee );
          FC_ASSERT( account_creation_fee.symbol == BEX_SYMBOL, "account_creation_fee must be in BEX" );
-         FC_ASSERT( account_creation_fee.amount >= STEEM_MIN_ACCOUNT_CREATION_FEE, "account_creation_fee smaller than minimum account creation fee" );
+         FC_ASSERT( account_creation_fee.amount >= DPAY_MIN_ACCOUNT_CREATION_FEE, "account_creation_fee smaller than minimum account creation fee" );
       }
 
       itr = props.find( "maximum_block_size" );
@@ -246,16 +246,16 @@ namespace dpay { namespace protocol {
       {
          uint32_t maximum_block_size;
          fc::raw::unpack_from_vector( itr->second, maximum_block_size );
-         FC_ASSERT( maximum_block_size >= STEEM_MIN_BLOCK_SIZE_LIMIT, "maximum_block_size smaller than minimum max block size" );
+         FC_ASSERT( maximum_block_size >= DPAY_MIN_BLOCK_SIZE_LIMIT, "maximum_block_size smaller than minimum max block size" );
       }
 
-      itr = props.find( "sbd_interest_rate" );
+      itr = props.find( "bbd_interest_rate" );
       if( itr != props.end() )
       {
-         uint16_t sbd_interest_rate;
-         fc::raw::unpack_from_vector( itr->second, sbd_interest_rate );
-         FC_ASSERT( sbd_interest_rate >= 0, "sbd_interest_rate must be positive" );
-         FC_ASSERT( sbd_interest_rate <= STEEM_100_PERCENT, "sbd_interest_rate must not exceed 100%" );
+         uint16_t bbd_interest_rate;
+         fc::raw::unpack_from_vector( itr->second, bbd_interest_rate );
+         FC_ASSERT( bbd_interest_rate >= 0, "bbd_interest_rate must be positive" );
+         FC_ASSERT( bbd_interest_rate <= DPAY_100_PERCENT, "bbd_interest_rate must not exceed 100%" );
       }
 
       itr = props.find( "new_signing_key" );
@@ -266,14 +266,14 @@ namespace dpay { namespace protocol {
          FC_UNUSED( signing_key ); // This tests the deserialization of the key
       }
 
-      itr = props.find( "sbd_exchange_rate" );
+      itr = props.find( "bbd_exchange_rate" );
       if( itr != props.end() )
       {
-         price sbd_exchange_rate;
-         fc::raw::unpack_from_vector( itr->second, sbd_exchange_rate );
-         FC_ASSERT( ( is_asset_type( sbd_exchange_rate.base, BBD_SYMBOL ) && is_asset_type( sbd_exchange_rate.quote, BEX_SYMBOL ) ),
+         price bbd_exchange_rate;
+         fc::raw::unpack_from_vector( itr->second, bbd_exchange_rate );
+         FC_ASSERT( ( is_asset_type( bbd_exchange_rate.base, BBD_SYMBOL ) && is_asset_type( bbd_exchange_rate.quote, BEX_SYMBOL ) ),
             "Price feed must be a BEX/BBD price" );
-         sbd_exchange_rate.validate();
+         bbd_exchange_rate.validate();
       }
 
       itr = props.find( "url" );
@@ -282,7 +282,7 @@ namespace dpay { namespace protocol {
          std::string url;
          fc::raw::unpack_from_vector< std::string >( itr->second, url );
 
-         FC_ASSERT( url.size() <= STEEM_MAX_WITNESS_URL_LENGTH, "URL is too long" );
+         FC_ASSERT( url.size() <= DPAY_MAX_WITNESS_URL_LENGTH, "URL is too long" );
          FC_ASSERT( url.size() > 0, "URL size must be greater than 0" );
          FC_ASSERT( fc::is_utf8( url ), "URL is not valid UTF8" );
       }
@@ -292,8 +292,8 @@ namespace dpay { namespace protocol {
       {
          int32_t account_subsidy_budget;
          fc::raw::unpack_from_vector( itr->second, account_subsidy_budget ); // Checks that the value can be deserialized
-         FC_ASSERT( account_subsidy_budget >= STEEM_RD_MIN_BUDGET, "Budget must be at least ${n}", ("n", STEEM_RD_MIN_BUDGET) );
-         FC_ASSERT( account_subsidy_budget <= STEEM_RD_MAX_BUDGET, "Budget must be at most ${n}", ("n", STEEM_RD_MAX_BUDGET) );
+         FC_ASSERT( account_subsidy_budget >= DPAY_RD_MIN_BUDGET, "Budget must be at least ${n}", ("n", DPAY_RD_MIN_BUDGET) );
+         FC_ASSERT( account_subsidy_budget <= DPAY_RD_MAX_BUDGET, "Budget must be at most ${n}", ("n", DPAY_RD_MAX_BUDGET) );
       }
 
       itr = props.find( "account_subsidy_decay" );
@@ -301,8 +301,8 @@ namespace dpay { namespace protocol {
       {
          uint32_t account_subsidy_decay;
          fc::raw::unpack_from_vector( itr->second, account_subsidy_decay ); // Checks that the value can be deserialized
-         FC_ASSERT( account_subsidy_decay >= STEEM_RD_MIN_DECAY, "Decay must be at least ${n}", ("n", STEEM_RD_MIN_DECAY) );
-         FC_ASSERT( account_subsidy_decay <= STEEM_RD_MAX_DECAY, "Decay must be at most ${n}", ("n", STEEM_RD_MAX_DECAY) );
+         FC_ASSERT( account_subsidy_decay >= DPAY_RD_MIN_DECAY, "Decay must be at least ${n}", ("n", DPAY_RD_MIN_DECAY) );
+         FC_ASSERT( account_subsidy_decay <= DPAY_RD_MAX_DECAY, "Decay must be at most ${n}", ("n", DPAY_RD_MAX_DECAY) );
       }
    }
 
@@ -431,7 +431,7 @@ namespace dpay { namespace protocol {
       input.nonce = nonce;
 
       auto seed = fc::sha256::hash( input );
-      proof = fc::equihash::proof::hash( STEEM_EQUIHASH_N, STEEM_EQUIHASH_K, seed );
+      proof = fc::equihash::proof::hash( DPAY_EQUIHASH_N, DPAY_EQUIHASH_K, seed );
       pow_summary = fc::sha256::hash( proof.inputs ).approx_log_32();
    }
 
@@ -455,8 +455,8 @@ namespace dpay { namespace protocol {
    {
       validate_account_name( input.worker_account );
       auto seed = fc::sha256::hash( input );
-      FC_ASSERT( proof.n == STEEM_EQUIHASH_N, "proof of work 'n' value is incorrect" );
-      FC_ASSERT( proof.k == STEEM_EQUIHASH_K, "proof of work 'k' value is incorrect" );
+      FC_ASSERT( proof.n == DPAY_EQUIHASH_N, "proof of work 'n' value is incorrect" );
+      FC_ASSERT( proof.k == DPAY_EQUIHASH_K, "proof of work 'k' value is incorrect" );
       FC_ASSERT( proof.seed == seed, "proof of work seed does not match expected seed" );
       FC_ASSERT( proof.is_valid(), "proof of work is not a solution", ("block_id", input.prev_block)("worker_account", input.worker_account)("nonce", input.nonce) );
       FC_ASSERT( pow_summary == fc::sha256::hash( proof.inputs ).approx_log_32() );
@@ -523,7 +523,7 @@ namespace dpay { namespace protocol {
       /// only allow conversion from BBD to BEX, allowing the opposite can enable traders to abuse
       /// market fluxuations through converting large quantities without moving the price.
       FC_ASSERT( is_asset_type( amount, BBD_SYMBOL ), "Can only convert BBD to BEX" );
-      FC_ASSERT( amount.amount > 0, "Must convert some SBD" );
+      FC_ASSERT( amount.amount > 0, "Must convert some BBD" );
    }
 
    void report_over_production_operation::validate()const
@@ -542,13 +542,13 @@ namespace dpay { namespace protocol {
       validate_account_name( to );
       validate_account_name( agent );
       FC_ASSERT( fee.amount >= 0, "fee cannot be negative" );
-      FC_ASSERT( sbd_amount.amount >= 0, "sbd amount cannot be negative" );
-      FC_ASSERT( steem_amount.amount >= 0, "steem amount cannot be negative" );
-      FC_ASSERT( sbd_amount.amount > 0 || steem_amount.amount > 0, "escrow must transfer a non-zero amount" );
+      FC_ASSERT( bbd_amount.amount >= 0, "bbd amount cannot be negative" );
+      FC_ASSERT( dpay_amount.amount >= 0, "dPay amount cannot be negative" );
+      FC_ASSERT( bbd_amount.amount > 0 || dpay_amount.amount > 0, "escrow must transfer a non-zero amount" );
       FC_ASSERT( from != agent && to != agent, "agent must be a third party" );
       FC_ASSERT( (fee.symbol == BEX_SYMBOL) || (fee.symbol == BBD_SYMBOL), "fee must be BEX or BBD" );
-      FC_ASSERT( sbd_amount.symbol == BBD_SYMBOL, "BBD amount must contain SBD" );
-      FC_ASSERT( steem_amount.symbol == BEX_SYMBOL, "dPay amount must contain BEX" );
+      FC_ASSERT( bbd_amount.symbol == BBD_SYMBOL, "BBD amount must contain BBD" );
+      FC_ASSERT( dpay_amount.symbol == BEX_SYMBOL, "dPay amount must contain BEX" );
       FC_ASSERT( ratification_deadline < escrow_expiration, "ratification deadline must be before escrow expiration" );
       if ( json_meta.size() > 0 )
       {
@@ -584,11 +584,11 @@ namespace dpay { namespace protocol {
       validate_account_name( receiver );
       FC_ASSERT( who == from || who == to || who == agent, "who must be from or to or agent" );
       FC_ASSERT( receiver == from || receiver == to, "receiver must be from or to" );
-      FC_ASSERT( sbd_amount.amount >= 0, "sbd amount cannot be negative" );
-      FC_ASSERT( steem_amount.amount >= 0, "steem amount cannot be negative" );
-      FC_ASSERT( sbd_amount.amount > 0 || steem_amount.amount > 0, "escrow must release a non-zero amount" );
-      FC_ASSERT( sbd_amount.symbol == BBD_SYMBOL, "SBD amount must contain SBD" );
-      FC_ASSERT( steem_amount.symbol == BEX_SYMBOL, "BEX amount must contain BEX" );
+      FC_ASSERT( bbd_amount.amount >= 0, "bbd amount cannot be negative" );
+      FC_ASSERT( dpay_amount.amount >= 0, "dPay amount cannot be negative" );
+      FC_ASSERT( bbd_amount.amount > 0 || dpay_amount.amount > 0, "escrow must release a non-zero amount" );
+      FC_ASSERT( bbd_amount.symbol == BBD_SYMBOL, "BBD amount must contain BBD" );
+      FC_ASSERT( dpay_amount.symbol == BEX_SYMBOL, "BEX amount must contain BEX" );
    }
 
    void request_account_recovery_operation::validate()const
@@ -620,7 +620,7 @@ namespace dpay { namespace protocol {
       validate_account_name( to );
       FC_ASSERT( amount.amount > 0 );
       FC_ASSERT( amount.symbol == BEX_SYMBOL || amount.symbol == BBD_SYMBOL );
-      FC_ASSERT( memo.size() < STEEM_MAX_MEMO_SIZE, "Memo is too large" );
+      FC_ASSERT( memo.size() < DPAY_MAX_MEMO_SIZE, "Memo is too large" );
       FC_ASSERT( fc::is_utf8( memo ), "Memo is not UTF8" );
    }
    void transfer_from_savings_operation::validate()const {
@@ -628,7 +628,7 @@ namespace dpay { namespace protocol {
       validate_account_name( to );
       FC_ASSERT( amount.amount > 0 );
       FC_ASSERT( amount.symbol == BEX_SYMBOL || amount.symbol == BBD_SYMBOL );
-      FC_ASSERT( memo.size() < STEEM_MAX_MEMO_SIZE, "Memo is too large" );
+      FC_ASSERT( memo.size() < DPAY_MAX_MEMO_SIZE, "Memo is too large" );
       FC_ASSERT( fc::is_utf8( memo ), "Memo is not UTF8" );
    }
    void cancel_transfer_from_savings_operation::validate()const {
@@ -661,16 +661,16 @@ namespace dpay { namespace protocol {
    void claim_reward_balance_operation::validate()const
    {
       validate_account_name( account );
-      FC_ASSERT( is_asset_type( reward_steem, BEX_SYMBOL ), "Reward BEX must be BEX" );
-      FC_ASSERT( is_asset_type( reward_sbd, BBD_SYMBOL ), "Reward BEX must be BBD" );
+      FC_ASSERT( is_asset_type( reward_dpay, BEX_SYMBOL ), "Reward BEX must be BEX" );
+      FC_ASSERT( is_asset_type( reward_bbd, BBD_SYMBOL ), "Reward BEX must be BBD" );
       FC_ASSERT( is_asset_type( reward_vests, VESTS_SYMBOL ), "Reward BEX must be VESTS" );
-      FC_ASSERT( reward_steem.amount >= 0, "Cannot claim a negative amount" );
-      FC_ASSERT( reward_sbd.amount >= 0, "Cannot claim a negative amount" );
+      FC_ASSERT( reward_dpay.amount >= 0, "Cannot claim a negative amount" );
+      FC_ASSERT( reward_bbd.amount >= 0, "Cannot claim a negative amount" );
       FC_ASSERT( reward_vests.amount >= 0, "Cannot claim a negative amount" );
-      FC_ASSERT( reward_steem.amount > 0 || reward_sbd.amount > 0 || reward_vests.amount > 0, "Must claim something." );
+      FC_ASSERT( reward_dpay.amount > 0 || reward_bbd.amount > 0 || reward_vests.amount > 0, "Must claim something." );
    }
 
-#ifdef STEEM_ENABLE_SDC
+#ifdef DPAY_ENABLE_SDC
    void claim_reward_balance2_operation::validate()const
    {
       validate_account_name( account );

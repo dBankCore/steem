@@ -1,4 +1,4 @@
-#include <steem/chain/shared_authority.hpp>
+#include <dpay/chain/shared_authority.hpp>
 
 namespace dpay { namespace chain {
 

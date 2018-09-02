@@ -1,20 +1,20 @@
 #include <appbase/application.hpp>
-#include <steem/manifest/plugins.hpp>
+#include <dpay/manifest/plugins.hpp>
 
-#include <steem/protocol/types.hpp>
-#include <steem/protocol/version.hpp>
+#include <dpay/protocol/types.hpp>
+#include <dpay/protocol/version.hpp>
 
-#include <steem/utilities/logging_config.hpp>
-#include <steem/utilities/key_conversion.hpp>
-#include <steem/utilities/git_revision.hpp>
+#include <dpay/utilities/logging_config.hpp>
+#include <dpay/utilities/key_conversion.hpp>
+#include <dpay/utilities/git_revision.hpp>
 
-#include <steem/plugins/account_by_key/account_by_key_plugin.hpp>
-#include <steem/plugins/account_by_key_api/account_by_key_api_plugin.hpp>
-#include <steem/plugins/chain/chain_plugin.hpp>
-#include <steem/plugins/condenser_api/condenser_api_plugin.hpp>
-#include <steem/plugins/p2p/p2p_plugin.hpp>
-#include <steem/plugins/webserver/webserver_plugin.hpp>
-#include <steem/plugins/witness/witness_plugin.hpp>
+#include <dpay/plugins/account_by_key/account_by_key_plugin.hpp>
+#include <dpay/plugins/account_by_key_api/account_by_key_api_plugin.hpp>
+#include <dpay/plugins/chain/chain_plugin.hpp>
+#include <dpay/plugins/condenser_api/condenser_api_plugin.hpp>
+#include <dpay/plugins/p2p/p2p_plugin.hpp>
+#include <dpay/plugins/webserver/webserver_plugin.hpp>
+#include <dpay/plugins/witness/witness_plugin.hpp>
 
 #include <fc/exception/exception.hpp>
 #include <fc/thread/thread.hpp>
@@ -37,8 +37,8 @@ using std::vector;
 string& version_string()
 {
    static string v_str =
-      "steem_blockchain_version: " + fc::string( STEEM_BLOCKCHAIN_VERSION ) + "\n" +
-      "steem_git_revision:       " + fc::string( dpay::utilities::git_revision_sha ) + "\n" +
+      "dpay_blockchain_version: " + fc::string( DPAY_BLOCKCHAIN_VERSION ) + "\n" +
+      "dpay_git_revision:       " + fc::string( dpay::utilities::git_revision_sha ) + "\n" +
       "fc_git_revision:          " + fc::string( fc::git_revision_sha ) + "\n";
    return v_str;
 }
@@ -49,18 +49,18 @@ void info()
       std::cerr << "------------------------------------------------------\n\n";
       std::cerr << "            STARTING TEST NETWORK\n\n";
       std::cerr << "------------------------------------------------------\n";
-      auto initminer_private_key = dpay::utilities::key_to_wif( STEEM_INIT_PRIVATE_KEY );
-      std::cerr << "initminer public key: " << STEEM_INIT_PUBLIC_KEY_STR << "\n";
+      auto initminer_private_key = dpay::utilities::key_to_wif( DPAY_INIT_PRIVATE_KEY );
+      std::cerr << "initminer public key: " << DPAY_INIT_PUBLIC_KEY_STR << "\n";
       std::cerr << "initminer private key: " << initminer_private_key << "\n";
-      std::cerr << "blockchain version: " << fc::string( STEEM_BLOCKCHAIN_VERSION ) << "\n";
+      std::cerr << "blockchain version: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
       std::cerr << "------------------------------------------------------\n";
 #else
       std::cerr << "------------------------------------------------------\n\n";
       std::cerr << "            STARTING DPAY NETWORK\n\n";
       std::cerr << "------------------------------------------------------\n";
-      std::cerr << "initminer public key: " << STEEM_INIT_PUBLIC_KEY_STR << "\n";
-      std::cerr << "chain id: " << std::string( STEEM_CHAIN_ID ) << "\n";
-      std::cerr << "blockchain version: " << fc::string( STEEM_BLOCKCHAIN_VERSION ) << "\n";
+      std::cerr << "initminer public key: " << DPAY_INIT_PUBLIC_KEY_STR << "\n";
+      std::cerr << "chain id: " << std::string( DPAY_CHAIN_ID ) << "\n";
+      std::cerr << "blockchain version: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
       std::cerr << "------------------------------------------------------\n";
 #endif
 }

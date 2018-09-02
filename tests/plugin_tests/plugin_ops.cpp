@@ -1,6 +1,6 @@
 #ifdef IS_TEST_NET
-#include <steem/chain/generic_custom_operation_interpreter.hpp>
-#include <steem/chain/account_object.hpp>
+#include <dpay/chain/generic_custom_operation_interpreter.hpp>
+#include <dpay/chain/account_object.hpp>
 
 #include <boost/test/unit_test.hpp>
 
@@ -42,8 +42,8 @@ class test_plugin : public plugin
       std::shared_ptr< generic_custom_operation_interpreter< test_op > > _evaluator_registry;
 };
 
-STEEM_DEFINE_PLUGIN_EVALUATOR( test_plugin, test_a_operation, test_a );
-STEEM_DEFINE_PLUGIN_EVALUATOR( test_plugin, test_b_operation, test_b );
+DPAY_DEFINE_PLUGIN_EVALUATOR( test_plugin, test_a_operation, test_a );
+DPAY_DEFINE_PLUGIN_EVALUATOR( test_plugin, test_b_operation, test_b );
 
 void test_a_evaluator::do_apply( const test_a_operation& o )
 {
@@ -77,14 +77,14 @@ test_plugin::test_plugin( application* app ) : plugin( app )
 
 } } // dpay::plugin_tests
 
-STEEM_DEFINE_PLUGIN( test, dpay::plugin_tests::test_plugin )
+DPAY_DEFINE_PLUGIN( test, dpay::plugin_tests::test_plugin )
 
 FC_REFLECT( dpay::plugin_tests::test_a_operation, (account) )
 FC_REFLECT( dpay::plugin_tests::test_b_operation, (account) )
 
-STEEM_DECLARE_OPERATION_TYPE( dpay::plugin_tests::test_op );
+DPAY_DECLARE_OPERATION_TYPE( dpay::plugin_tests::test_op );
 FC_REFLECT_TYPENAME( dpay::plugin_tests::test_op );
-STEEM_DEFINE_OPERATION_TYPE( dpay::plugin_tests::test_op );
+DPAY_DEFINE_OPERATION_TYPE( dpay::plugin_tests::test_op );
 */
 
 BOOST_FIXTURE_TEST_SUITE( plugin_ops, clean_database_fixture );

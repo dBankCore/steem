@@ -1,19 +1,19 @@
 
-#if defined IS_TEST_NET && defined STEEM_ENABLE_SDC
+#if defined IS_TEST_NET && defined DPAY_ENABLE_SDC
 
 #include <boost/test/unit_test.hpp>
 
-#include <steem/protocol/exceptions.hpp>
-#include <steem/protocol/hardfork.hpp>
+#include <dpay/protocol/exceptions.hpp>
+#include <dpay/protocol/hardfork.hpp>
 
-#include <steem/chain/block_summary_object.hpp>
-#include <steem/chain/database.hpp>
-#include <steem/chain/history_object.hpp>
-#include <steem/chain/steem_objects.hpp>
+#include <dpay/chain/block_summary_object.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/history_object.hpp>
+#include <dpay/chain/dpay_objects.hpp>
 
-#include <steem/chain/util/reward.hpp>
+#include <dpay/chain/util/reward.hpp>
 
-#include <steem/plugins/debug_node/debug_node_plugin.hpp>
+#include <dpay/plugins/debug_node/debug_node_plugin.hpp>
 
 #include <fc/crypto/digest.hpp>
 
@@ -42,10 +42,10 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       asset_symbol_type any_sdc_symbol = create_sdc( "sdccreator", sdccreator_private_key, 3);
 
       generate_block();
-      vest( STEEM_INIT_MINER_NAME, "alice", ASSET( "10.000 TESTS" ) );
-      vest( STEEM_INIT_MINER_NAME, "bob", ASSET( "10.000 TESTS" ) );
-      vest( STEEM_INIT_MINER_NAME, "sam", ASSET( "10.000 TESTS" ) );
-      vest( STEEM_INIT_MINER_NAME, "dave", ASSET( "10.000 TESTS" ) );
+      vest( DPAY_INIT_MINER_NAME, "alice", ASSET( "10.000 TESTS" ) );
+      vest( DPAY_INIT_MINER_NAME, "bob", ASSET( "10.000 TESTS" ) );
+      vest( DPAY_INIT_MINER_NAME, "sam", ASSET( "10.000 TESTS" ) );
+      vest( DPAY_INIT_MINER_NAME, "dave", ASSET( "10.000 TESTS" ) );
 
       tx.operations.clear();
       tx.signatures.clear();
@@ -64,37 +64,37 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       FUND( "dave", alice_sdc.amount );
 
       int64_t alice_sdc_volume = 0;
-      int64_t alice_steem_volume = 0;
+      int64_t alice_dpay_volume = 0;
       time_point_sec alice_reward_last_update = fc::time_point_sec::min();
       int64_t bob_sdc_volume = 0;
-      int64_t bob_steem_volume = 0;
+      int64_t bob_dpay_volume = 0;
       time_point_sec bob_reward_last_update = fc::time_point_sec::min();
       int64_t sam_sdc_volume = 0;
-      int64_t sam_steem_volume = 0;
+      int64_t sam_dpay_volume = 0;
       time_point_sec sam_reward_last_update = fc::time_point_sec::min();
       int64_t dave_sdc_volume = 0;
-      int64_t dave_steem_volume = 0;
+      int64_t dave_dpay_volume = 0;
       time_point_sec dave_reward_last_update = fc::time_point_sec::min();
 
-      BOOST_TEST_MESSAGE( "Creating Limit Order for STEEM that will stay on the books for 30 minutes exactly." );
+      BOOST_TEST_MESSAGE( "Creating Limit Order for DPAY that will stay on the books for 30 minutes exactly." );
 
       limit_order_create_operation op;
       op.owner = "alice";
       op.amount_to_sell = asset( alice_sdc.amount.value / 20, any_sdc_symbol ) ;
       op.min_to_receive = op.amount_to_sell * exchange_rate;
       op.orderid = 1;
-      op.expiration = db->head_block_time() + fc::seconds( STEEM_MAX_LIMIT_ORDER_EXPIRATION );
+      op.expiration = db->head_block_time() + fc::seconds( DPAY_MAX_LIMIT_ORDER_EXPIRATION );
 
       tx.signatures.clear();
       tx.operations.clear();
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
       db->push_transaction( tx, 0 );
 
       BOOST_TEST_MESSAGE( "Waiting 10 minutes" );
 
-      generate_blocks( db->head_block_time() + STEEM_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10, true );
+      generate_blocks( db->head_block_time() + DPAY_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10, true );
 
       BOOST_TEST_MESSAGE( "Creating Limit Order for SDC that will be filled immediately." );
 
@@ -106,14 +106,14 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
 
       tx.signatures.clear();
       tx.operations.clear();
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       tx.operations.push_back( op );
       sign( tx, bob_private_key );
       db->push_transaction( tx, 0 );
 
-      alice_steem_volume += ( asset( alice_sdc.amount / 20, any_sdc_symbol ) * exchange_rate ).amount.value;
+      alice_dpay_volume += ( asset( alice_sdc.amount / 20, any_sdc_symbol ) * exchange_rate ).amount.value;
       alice_reward_last_update = db->head_block_time();
-      bob_steem_volume -= ( asset( alice_sdc.amount / 20, any_sdc_symbol ) * exchange_rate ).amount.value;
+      bob_dpay_volume -= ( asset( alice_sdc.amount / 20, any_sdc_symbol ) * exchange_rate ).amount.value;
       bob_reward_last_update = db->head_block_time();
 
       auto ops = get_last_operations( 1 );
@@ -123,15 +123,15 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       auto reward = liquidity_idx.find( db->get_account( "alice" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "alice" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == alice_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == alice_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == alice_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == alice_dpay_volume );
       BOOST_CHECK( reward->last_update == alice_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "bob" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "bob" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == bob_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == bob_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == bob_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == bob_dpay_volume );
       BOOST_CHECK( reward->last_update == bob_reward_last_update );*/
 
       auto fill_order_op = ops[0].get< fill_order_operation >();
@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
 
       BOOST_TEST_MESSAGE( "Waiting 10 minutes" );
 
-      generate_blocks( db->head_block_time() + STEEM_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10, true );
+      generate_blocks( db->head_block_time() + DPAY_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10, true );
 
       BOOST_TEST_MESSAGE( "Creating Limit Order for SDC that will stay on the books for 30 minutes." );
 
@@ -172,14 +172,14 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
 
       tx.signatures.clear();
       tx.operations.clear();
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       tx.operations.push_back( op );
       sign( tx, bob_private_key );
       db->push_transaction( tx, 0 );
 
       BOOST_TEST_MESSAGE( "Waiting 30 minutes" );
 
-      generate_blocks( db->head_block_time() + STEEM_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10, true );
+      generate_blocks( db->head_block_time() + DPAY_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10, true );
 
       BOOST_TEST_MESSAGE( "Filling both limit orders." );
 
@@ -190,7 +190,7 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
 
       tx.signatures.clear();
       tx.operations.clear();
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
       db->push_transaction( tx, 0 );
@@ -222,22 +222,22 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       reward = liquidity_idx.find( db->get_account( "alice" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "alice" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == alice_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == alice_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == alice_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == alice_dpay_volume );
       BOOST_CHECK( reward->last_update == alice_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "bob" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "bob" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == bob_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == bob_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == bob_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == bob_dpay_volume );
       BOOST_CHECK( reward->last_update == bob_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "sam" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "sam" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == sam_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == sam_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == sam_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == sam_dpay_volume );
       BOOST_CHECK( reward->last_update == sam_reward_last_update );*/
 
       BOOST_TEST_MESSAGE( "Testing a partial fill before minimum time and full fill after minimum time" );
@@ -248,12 +248,12 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
 
       tx.signatures.clear();
       tx.operations.clear();
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       tx.operations.push_back( op );
       sign( tx, alice_private_key );
       db->push_transaction( tx, 0 );
 
-      generate_blocks( db->head_block_time() + fc::seconds( STEEM_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10.to_seconds() / 2 ), true );
+      generate_blocks( db->head_block_time() + fc::seconds( DPAY_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10.to_seconds() / 2 ), true );
 
       op.owner = "bob";
       op.orderid = 7;
@@ -262,12 +262,12 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
 
       tx.signatures.clear();
       tx.operations.clear();
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       tx.operations.push_back( op );
       sign( tx, bob_private_key );
       db->push_transaction( tx, 0 );
 
-      generate_blocks( db->head_block_time() + fc::seconds( STEEM_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10.to_seconds() / 2 ), true );
+      generate_blocks( db->head_block_time() + fc::seconds( DPAY_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10.to_seconds() / 2 ), true );
 
       ops = get_last_operations( 3 );
       fill_order_op = ops[2].get< fill_order_operation >();
@@ -282,39 +282,39 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       reward = liquidity_idx.find( db->get_account( "alice" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "alice" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == alice_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == alice_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == alice_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == alice_dpay_volume );
       BOOST_CHECK( reward->last_update == alice_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "bob" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "bob" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == bob_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == bob_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == bob_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == bob_dpay_volume );
       BOOST_CHECK( reward->last_update == bob_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "sam" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "sam" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == sam_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == sam_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == sam_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == sam_dpay_volume );
       BOOST_CHECK( reward->last_update == sam_reward_last_update );*/
 
-      generate_blocks( db->head_block_time() + STEEM_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10, true );
+      generate_blocks( db->head_block_time() + DPAY_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10, true );
 
       op.owner = "sam";
       op.orderid = 8;
 
       tx.signatures.clear();
       tx.operations.clear();
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       tx.operations.push_back( op );
       sign( tx, sam_private_key );
       db->push_transaction( tx, 0 );
 
-      alice_steem_volume += alice_sdc.amount.value / 20;
+      alice_dpay_volume += alice_sdc.amount.value / 20;
       alice_reward_last_update = db->head_block_time();
-      sam_steem_volume -= alice_sdc.amount.value / 20;
+      sam_dpay_volume -= alice_sdc.amount.value / 20;
       sam_reward_last_update = db->head_block_time();
 
       ops = get_last_operations( 2 );
@@ -330,22 +330,22 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       reward = liquidity_idx.find( db->get_account( "alice" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "alice" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == alice_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == alice_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == alice_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == alice_dpay_volume );
       BOOST_CHECK( reward->last_update == alice_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "bob" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "bob" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == bob_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == bob_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == bob_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == bob_dpay_volume );
       BOOST_CHECK( reward->last_update == bob_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "sam" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "sam" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == sam_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == sam_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == sam_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == sam_dpay_volume );
       BOOST_CHECK( reward->last_update == sam_reward_last_update );*/
 
       BOOST_TEST_MESSAGE( "Trading to give Alice and Bob positive volumes to receive rewards" );
@@ -358,7 +358,7 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       tx.operations.clear();
       tx.signatures.clear();
       tx.operations.push_back( transfer );
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       sign( tx, alice_private_key );
       db->push_transaction( tx, 0 );
 
@@ -372,7 +372,7 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       sign( tx, alice_private_key );
       db->push_transaction( tx, 0 );
 
-      generate_blocks( db->head_block_time() + STEEM_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10, true );
+      generate_blocks( db->head_block_time() + DPAY_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10, true );
 
       op.owner = "dave";
       op.amount_to_sell = asset( 7 * ( alice_sdc.amount.value / 20 ), any_sdc_symbol );;
@@ -381,7 +381,7 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       tx.operations.clear();
       tx.signatures.clear();
       tx.operations.push_back( op );
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       sign( tx, dave_private_key );
       db->push_transaction( tx, 0 );
 
@@ -403,29 +403,29 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       reward = liquidity_idx.find( db->get_account( "alice" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "alice" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == alice_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == alice_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == alice_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == alice_dpay_volume );
       BOOST_CHECK( reward->last_update == alice_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "bob" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "bob" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == bob_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == bob_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == bob_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == bob_dpay_volume );
       BOOST_CHECK( reward->last_update == bob_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "sam" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "sam" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == sam_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == sam_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == sam_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == sam_dpay_volume );
       BOOST_CHECK( reward->last_update == sam_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "dave" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "dave" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == dave_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == dave_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == dave_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == dave_dpay_volume );
       BOOST_CHECK( reward->last_update == dave_reward_last_update );*/
 
       op.owner = "bob";
@@ -456,29 +456,29 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       reward = liquidity_idx.find( db->get_account( "alice" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "alice" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == alice_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == alice_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == alice_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == alice_dpay_volume );
       BOOST_CHECK( reward->last_update == alice_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "bob" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "bob" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == bob_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == bob_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == bob_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == bob_dpay_volume );
       BOOST_CHECK( reward->last_update == bob_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "sam" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "sam" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == sam_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == sam_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == sam_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == sam_dpay_volume );
       BOOST_CHECK( reward->last_update == sam_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "dave" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "dave" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == dave_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == dave_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == dave_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == dave_dpay_volume );
       BOOST_CHECK( reward->last_update == dave_reward_last_update );*/
 
       transfer.to = "bob";
@@ -487,7 +487,7 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       tx.operations.clear();
       tx.signatures.clear();
       tx.operations.push_back( transfer );
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       sign( tx, alice_private_key );
       db->push_transaction( tx, 0 );
 
@@ -501,7 +501,7 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       sign( tx, bob_private_key );
       db->push_transaction( tx, 0 );
 
-      generate_blocks( db->head_block_time() + STEEM_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10, true );
+      generate_blocks( db->head_block_time() + DPAY_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10, true );
 
       op.owner = "dave";
       op.orderid = 13;
@@ -513,9 +513,9 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       sign( tx, dave_private_key );
       db->push_transaction( tx, 0 );
 
-      bob_steem_volume += op.amount_to_sell.amount.value;
+      bob_dpay_volume += op.amount_to_sell.amount.value;
       bob_reward_last_update = db->head_block_time();
-      dave_steem_volume -= op.amount_to_sell.amount.value;
+      dave_dpay_volume -= op.amount_to_sell.amount.value;
       dave_reward_last_update = db->head_block_time();
 
       ops = get_last_operations( 1 );
@@ -531,29 +531,29 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       reward = liquidity_idx.find( db->get_account( "alice" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "alice" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == alice_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == alice_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == alice_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == alice_dpay_volume );
       BOOST_CHECK( reward->last_update == alice_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "bob" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "bob" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == bob_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == bob_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == bob_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == bob_dpay_volume );
       BOOST_CHECK( reward->last_update == bob_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "sam" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "sam" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == sam_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == sam_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == sam_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == sam_dpay_volume );
       BOOST_CHECK( reward->last_update == sam_reward_last_update );*/
 
       reward = liquidity_idx.find( db->get_account( "dave" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
       /*BOOST_REQUIRE( reward->owner == db->get_account( "dave" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == dave_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == dave_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == dave_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == dave_dpay_volume );
       BOOST_CHECK( reward->last_update == dave_reward_last_update );*/
 
       auto alice_balance = db->get_account( "alice" ).balance;
@@ -564,9 +564,9 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       BOOST_TEST_MESSAGE( "Generating Blocks to trigger liquidity rewards" );
 
       db->liquidity_rewards_enabled = true;
-      generate_blocks( STEEM_LIQUIDITY_REWARD_BLOCKS - ( db->head_block_num() % STEEM_LIQUIDITY_REWARD_BLOCKS ) - 1 );
+      generate_blocks( DPAY_LIQUIDITY_REWARD_BLOCKS - ( db->head_block_num() % DPAY_LIQUIDITY_REWARD_BLOCKS ) - 1 );
 
-      BOOST_REQUIRE( db->head_block_num() % STEEM_LIQUIDITY_REWARD_BLOCKS == STEEM_LIQUIDITY_REWARD_BLOCKS - 1 );
+      BOOST_REQUIRE( db->head_block_num() % DPAY_LIQUIDITY_REWARD_BLOCKS == DPAY_LIQUIDITY_REWARD_BLOCKS - 1 );
       BOOST_REQUIRE( db->get_account( "alice" ).balance.amount.value == alice_balance.amount.value );
       BOOST_REQUIRE( db->get_account( "bob" ).balance.amount.value == bob_balance.amount.value );
       BOOST_REQUIRE( db->get_account( "sam" ).balance.amount.value == sam_balance.amount.value );
@@ -574,7 +574,7 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
 
       generate_block();
 
-      //alice_balance += STEEM_MIN_LIQUIDITY_REWARD;
+      //alice_balance += DPAY_MIN_LIQUIDITY_REWARD;
 
       BOOST_REQUIRE( db->get_account( "alice" ).balance.amount.value == alice_balance.amount.value );
       BOOST_REQUIRE( db->get_account( "bob" ).balance.amount.value == bob_balance.amount.value );
@@ -583,12 +583,12 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
 
       ops = get_last_operations( 1 );
 
-      STEEM_REQUIRE_THROW( ops[0].get< liquidity_reward_operation>(), fc::exception );
-      //BOOST_REQUIRE( ops[0].get< liquidity_reward_operation>().payout.amount.value == STEEM_MIN_LIQUIDITY_REWARD.amount.value );
+      DPAY_REQUIRE_THROW( ops[0].get< liquidity_reward_operation>(), fc::exception );
+      //BOOST_REQUIRE( ops[0].get< liquidity_reward_operation>().payout.amount.value == DPAY_MIN_LIQUIDITY_REWARD.amount.value );
 
-      generate_blocks( STEEM_LIQUIDITY_REWARD_BLOCKS );
+      generate_blocks( DPAY_LIQUIDITY_REWARD_BLOCKS );
 
-      //bob_balance += STEEM_MIN_LIQUIDITY_REWARD;
+      //bob_balance += DPAY_MIN_LIQUIDITY_REWARD;
 
       BOOST_REQUIRE( db->get_account( "alice" ).balance.amount.value == alice_balance.amount.value );
       BOOST_REQUIRE( db->get_account( "bob" ).balance.amount.value == bob_balance.amount.value );
@@ -597,17 +597,17 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
 
       ops = get_last_operations( 1 );
 
-      STEEM_REQUIRE_THROW( ops[0].get< liquidity_reward_operation>(), fc::exception );
-      //BOOST_REQUIRE( ops[0].get< liquidity_reward_operation>().payout.amount.value == STEEM_MIN_LIQUIDITY_REWARD.amount.value );
+      DPAY_REQUIRE_THROW( ops[0].get< liquidity_reward_operation>(), fc::exception );
+      //BOOST_REQUIRE( ops[0].get< liquidity_reward_operation>().payout.amount.value == DPAY_MIN_LIQUIDITY_REWARD.amount.value );
 
-      alice_steem_volume = 0;
+      alice_dpay_volume = 0;
       alice_sdc_volume = 0;
-      bob_steem_volume = 0;
+      bob_dpay_volume = 0;
       bob_sdc_volume = 0;
 
       BOOST_TEST_MESSAGE( "Testing liquidity timeout" );
 
-      generate_blocks( sam_reward_last_update + STEEM_LIQUIDITY_TIMEOUT_SEC - fc::seconds( STEEM_BLOCK_INTERVAL / 2 ) - STEEM_MIN_LIQUIDITY_REWARD_PERIOD_SEC , true );
+      generate_blocks( sam_reward_last_update + DPAY_LIQUIDITY_TIMEOUT_SEC - fc::seconds( DPAY_BLOCK_INTERVAL / 2 ) - DPAY_MIN_LIQUIDITY_REWARD_PERIOD_SEC , true );
 
       op.owner = "sam";
       op.orderid = 14;
@@ -616,17 +616,17 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       tx.operations.clear();
       tx.signatures.clear();
       tx.operations.push_back( op );
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       sign( tx, sam_private_key );
       db->push_transaction( tx, 0 );
 
-      generate_blocks( db->head_block_time() + ( STEEM_BLOCK_INTERVAL / 2 ) + STEEM_LIQUIDITY_TIMEOUT_SEC, true );
+      generate_blocks( db->head_block_time() + ( DPAY_BLOCK_INTERVAL / 2 ) + DPAY_LIQUIDITY_TIMEOUT_SEC, true );
 
       reward = liquidity_idx.find( db->get_account( "sam" ).id );
       /*BOOST_REQUIRE( reward == liquidity_idx.end() );
       BOOST_REQUIRE( reward->owner == db->get_account( "sam" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == sam_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == sam_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == sam_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == sam_dpay_volume );
       BOOST_CHECK( reward->last_update == sam_reward_last_update );*/
 
       generate_block();
@@ -638,19 +638,19 @@ BOOST_AUTO_TEST_CASE( sdc_liquidity_rewards )
       tx.operations.clear();
       tx.signatures.clear();
       tx.operations.push_back( op );
-      tx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
+      tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       sign( tx, alice_private_key );
       db->push_transaction( tx, 0 );
 
       sam_sdc_volume = ASSET( "1.000 TBD" ).amount.value;
-      sam_steem_volume = 0;
+      sam_dpay_volume = 0;
       sam_reward_last_update = db->head_block_time();
 
       reward = liquidity_idx.find( db->get_account( "sam" ).id );
       /*BOOST_REQUIRE( reward == liquidity_idx.end() );
       BOOST_REQUIRE( reward->owner == db->get_account( "sam" ).id );
-      BOOST_REQUIRE( reward->sbd_volume == sam_sdc_volume );
-      BOOST_REQUIRE( reward->steem_volume == sam_steem_volume );
+      BOOST_REQUIRE( reward->bbd_volume == sam_sdc_volume );
+      BOOST_REQUIRE( reward->dpay_volume == sam_dpay_volume );
       BOOST_CHECK( reward->last_update == sam_reward_last_update );*/
 
       validate_database();

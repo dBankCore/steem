@@ -1,5 +1,5 @@
-#include <steem/plugins/witness_api/witness_api_plugin.hpp>
-#include <steem/plugins/witness_api/witness_api.hpp>
+#include <dpay/plugins/witness_api/witness_api_plugin.hpp>
+#include <dpay/plugins/witness_api/witness_api.hpp>
 
 namespace dpay { namespace plugins { namespace witness {
 
@@ -38,7 +38,7 @@ DEFINE_API_IMPL( witness_api_impl, get_reserve_ratio )
 
 witness_api::witness_api(): my( new detail::witness_api_impl() )
 {
-   JSON_RPC_REGISTER_API( STEEM_WITNESS_API_PLUGIN_NAME );
+   JSON_RPC_REGISTER_API( DPAY_WITNESS_API_PLUGIN_NAME );
 }
 
 witness_api::~witness_api() {}

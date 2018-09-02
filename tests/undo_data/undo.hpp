@@ -1,6 +1,6 @@
 #pragma once
 
-#include <steem/chain/database.hpp>
+#include <dpay/chain/database.hpp>
 #include <fstream>
 
 namespace dpay { namespace chain {

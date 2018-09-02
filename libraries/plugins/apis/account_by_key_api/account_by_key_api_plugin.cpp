@@ -1,5 +1,5 @@
-#include <steem/plugins/account_by_key_api/account_by_key_api_plugin.hpp>
-#include <steem/plugins/account_by_key_api/account_by_key_api.hpp>
+#include <dpay/plugins/account_by_key_api/account_by_key_api_plugin.hpp>
+#include <dpay/plugins/account_by_key_api/account_by_key_api.hpp>
 
 
 namespace dpay { namespace plugins { namespace account_by_key {

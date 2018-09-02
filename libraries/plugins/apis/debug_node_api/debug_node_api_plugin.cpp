@@ -1,5 +1,5 @@
-#include <steem/plugins/debug_node_api/debug_node_api_plugin.hpp>
-#include <steem/plugins/debug_node_api/debug_node_api.hpp>
+#include <dpay/plugins/debug_node_api/debug_node_api_plugin.hpp>
+#include <dpay/plugins/debug_node_api/debug_node_api.hpp>
 
 
 namespace dpay { namespace plugins { namespace debug_node {

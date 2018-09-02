@@ -3,23 +3,23 @@ namespace dpay { namespace protocol {
 struct votable_asset_info_v1;
 } }
 
-#include <steem/protocol/types_fwd.hpp>
+#include <dpay/protocol/types_fwd.hpp>
 
-#include <steem/schema/schema.hpp>
-#include <steem/schema/schema_impl.hpp>
-#include <steem/schema/schema_types.hpp>
+#include <dpay/schema/schema.hpp>
+#include <dpay/schema/schema_impl.hpp>
+#include <dpay/schema/schema_types.hpp>
 
-#include <steem/chain/schema_types/oid.hpp>
-#include <steem/protocol/schema_types/account_name_type.hpp>
-#include <steem/protocol/schema_types/asset_symbol_type.hpp>
+#include <dpay/chain/schema_types/oid.hpp>
+#include <dpay/protocol/schema_types/account_name_type.hpp>
+#include <dpay/protocol/schema_types/asset_symbol_type.hpp>
 
 #include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include <steem/chain/account_object.hpp>
-#include <steem/chain/steem_objects.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/dpay_objects.hpp>
 
 using namespace dpay::schema;
 

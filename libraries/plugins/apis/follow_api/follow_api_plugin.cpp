@@ -1,5 +1,5 @@
-#include <steem/plugins/follow_api/follow_api_plugin.hpp>
-#include <steem/plugins/follow_api/follow_api.hpp>
+#include <dpay/plugins/follow_api/follow_api_plugin.hpp>
+#include <dpay/plugins/follow_api/follow_api.hpp>
 
 
 namespace dpay { namespace plugins { namespace follow {

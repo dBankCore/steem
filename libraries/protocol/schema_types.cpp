@@ -1,8 +1,8 @@
 
-#include <steem/schema/abstract_schema.hpp>
-#include <steem/schema/schema_impl.hpp>
+#include <dpay/schema/abstract_schema.hpp>
+#include <dpay/schema/schema_impl.hpp>
 
-#include <steem/protocol/schema_types.hpp>
+#include <dpay/protocol/schema_types.hpp>
 
 namespace dpay { namespace schema { namespace detail {
 
@@ -10,7 +10,7 @@ namespace dpay { namespace schema { namespace detail {
 // account_name_type                        //
 //////////////////////////////////////////////
 
-STEEM_SCHEMA_DEFINE_CLASS_METHODS( schema_account_name_type_impl )
+DPAY_SCHEMA_DEFINE_CLASS_METHODS( schema_account_name_type_impl )
 
 void schema_account_name_type_impl::get_deps( std::vector< std::shared_ptr< abstract_schema > >& deps )
 {
@@ -43,7 +43,7 @@ void schema_account_name_type_impl::get_str_schema( std::string& s )
 // asset_symbol_type                        //
 //////////////////////////////////////////////
 
-STEEM_SCHEMA_DEFINE_CLASS_METHODS( schema_asset_symbol_type_impl )
+DPAY_SCHEMA_DEFINE_CLASS_METHODS( schema_asset_symbol_type_impl )
 
 void schema_asset_symbol_type_impl::get_deps( std::vector< std::shared_ptr< abstract_schema > >& deps )
 {

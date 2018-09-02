@@ -1,7 +1,7 @@
 
 
-#include <steem/plugins/auth_util/auth_util_api.hpp>
-#include <steem/plugins/auth_util/auth_util_plugin.hpp>
+#include <dpay/plugins/auth_util/auth_util_api.hpp>
+#include <dpay/plugins/auth_util/auth_util_plugin.hpp>
 
 #include <string>
 
@@ -30,4 +30,4 @@ void auth_util_plugin::plugin_shutdown()
 
 } } } // dpay::plugin::auth_util
 
-STEEM_DEFINE_PLUGIN( auth_util, dpay::plugin::auth_util::auth_util_plugin )
+DPAY_DEFINE_PLUGIN( auth_util, dpay::plugin::auth_util::auth_util_plugin )

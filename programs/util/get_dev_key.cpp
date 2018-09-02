@@ -28,8 +28,8 @@
 #include <fc/crypto/elliptic.hpp>
 #include <fc/io/json.hpp>
 
-#include <steem/protocol/types.hpp>
-#include <steem/utilities/key_conversion.hpp>
+#include <dpay/protocol/types.hpp>
+#include <dpay/utilities/key_conversion.hpp>
 
 #ifndef WIN32
 #include <csignal>

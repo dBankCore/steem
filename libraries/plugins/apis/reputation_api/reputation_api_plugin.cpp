@@ -1,5 +1,5 @@
-#include <steem/plugins/reputation_api/reputation_api_plugin.hpp>
-#include <steem/plugins/reputation_api/reputation_api.hpp>
+#include <dpay/plugins/reputation_api/reputation_api_plugin.hpp>
+#include <dpay/plugins/reputation_api/reputation_api.hpp>
 
 
 namespace dpay { namespace plugins { namespace reputation {

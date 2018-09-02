@@ -1,10 +1,10 @@
 
-#include <steem/chain/database.hpp>
-#include <steem/chain/global_property_object.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/global_property_object.hpp>
 
-#include <steem/plugins/block_info/block_info.hpp>
-#include <steem/plugins/block_info/block_info_api.hpp>
-#include <steem/plugins/block_info/block_info_plugin.hpp>
+#include <dpay/plugins/block_info/block_info.hpp>
+#include <dpay/plugins/block_info/block_info_api.hpp>
+#include <dpay/plugins/block_info/block_info_plugin.hpp>
 
 #include <string>
 
@@ -55,4 +55,4 @@ void block_info_plugin::on_applied_block( const chain::signed_block& b )
 
 } } } // dpay::plugin::block_info
 
-STEEM_DEFINE_PLUGIN( block_info, dpay::plugin::block_info::block_info_plugin )
+DPAY_DEFINE_PLUGIN( block_info, dpay::plugin::block_info::block_info_plugin )

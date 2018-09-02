@@ -1,14 +1,14 @@
-#include <steem/plugins/account_history_rocksdb/account_history_rocksdb_plugin.hpp>
+#include <dpay/plugins/account_history_rocksdb/account_history_rocksdb_plugin.hpp>
 
-#include <steem/chain/database.hpp>
-#include <steem/chain/history_object.hpp>
-#include <steem/chain/index.hpp>
-#include <steem/chain/util/impacted.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/history_object.hpp>
+#include <dpay/chain/index.hpp>
+#include <dpay/chain/util/impacted.hpp>
 
-#include <steem/plugins/chain/chain_plugin.hpp>
+#include <dpay/plugins/chain/chain_plugin.hpp>
 
-#include <steem/utilities/benchmark_dumper.hpp>
-#include <steem/utilities/plugin_utilities.hpp>
+#include <dpay/utilities/benchmark_dumper.hpp>
+#include <dpay/utilities/plugin_utilities.hpp>
 
 #include <appbase/application.hpp>
 
@@ -28,7 +28,7 @@
 
 namespace bpo = boost::program_options;
 
-#define STEEM_NAMESPACE_PREFIX "dpay::protocol::"
+#define DPAY_NAMESPACE_PREFIX "dpay::protocol::"
 #define OPEN_FILE_LIMIT 750
 
 #define DIAGNOSTIC(s)
@@ -703,7 +703,7 @@ private:
 void account_history_rocksdb_plugin::impl::collectOptions(const boost::program_options::variables_map& options)
 {
    typedef std::pair< account_name_type, account_name_type > pairstring;
-   STEEM_LOAD_VALUE_SET(options, "account-history-rocksdb-track-account-range", _tracked_accounts, pairstring);
+   DPAY_LOAD_VALUE_SET(options, "account-history-rocksdb-track-account-range", _tracked_accounts, pairstring);
 
    if(options.count("account-history-rocksdb-whitelist-ops"))
    {
@@ -822,7 +822,7 @@ void account_history_rocksdb_plugin::impl::storeOpFilteringParameters(const std:
          for(const string& op : ops)
          {
             if( op.empty() == false )
-               storage->insert( STEEM_NAMESPACE_PREFIX + op );
+               storage->insert( DPAY_NAMESPACE_PREFIX + op );
          }
       }
    }

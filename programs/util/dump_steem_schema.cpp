@@ -1,12 +1,12 @@
-#include <steem/protocol/types_fwd.hpp>
+#include <dpay/protocol/types_fwd.hpp>
 
-#include <steem/schema/schema.hpp>
-#include <steem/schema/schema_impl.hpp>
-#include <steem/schema/schema_types.hpp>
+#include <dpay/schema/schema.hpp>
+#include <dpay/schema/schema_impl.hpp>
+#include <dpay/schema/schema_types.hpp>
 
-#include <steem/chain/schema_types/oid.hpp>
-#include <steem/protocol/schema_types/account_name_type.hpp>
-#include <steem/protocol/schema_types/asset_symbol_type.hpp>
+#include <dpay/chain/schema_types/oid.hpp>
+#include <dpay/protocol/schema_types/account_name_type.hpp>
+#include <dpay/protocol/schema_types/asset_symbol_type.hpp>
 
 #include <iostream>
 #include <map>
@@ -14,10 +14,10 @@
 #include <string>
 #include <vector>
 
-#include <steem/chain/account_object.hpp>
-#include <steem/chain/steem_objects.hpp>
-#include <steem/chain/database.hpp>
-#include <steem/chain/index.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/dpay_objects.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/index.hpp>
 
 using dpay::schema::abstract_schema;
 
@@ -63,14 +63,14 @@ void add_to_schema_map(
       add_to_schema_map( m, ds, follow_deps );
 }
 
-struct steem_schema
+struct dpay_schema
 {
    std::map< std::string, schema_info >     schema_map;
    std::vector< std::string >               chain_object_types;
 };
 
 FC_REFLECT( schema_info, (deps)(schema) )
-FC_REFLECT( steem_schema, (schema_map)(chain_object_types) )
+FC_REFLECT( dpay_schema, (schema_map)(chain_object_types) )
 
 int main( int argc, char** argv, char** envp )
 {
@@ -85,7 +85,7 @@ int main( int argc, char** argv, char** envp )
 
    db.open( db_args );
 
-   steem_schema ss;
+   dpay_schema ss;
 
    std::vector< std::string > chain_objects;
    db.for_each_index_extension< dpay::chain::index_info >(

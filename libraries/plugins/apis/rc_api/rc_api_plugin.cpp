@@ -1,5 +1,5 @@
-#include <steem/plugins/rc_api/rc_api_plugin.hpp>
-#include <steem/plugins/rc_api/rc_api.hpp>
+#include <dpay/plugins/rc_api/rc_api_plugin.hpp>
+#include <dpay/plugins/rc_api/rc_api.hpp>
 
 
 namespace dpay { namespace plugins { namespace rc {

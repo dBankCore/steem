@@ -1,9 +1,9 @@
 #pragma once
 #include <appbase/application.hpp>
 
-#include <steem/plugins/json_rpc/json_rpc_plugin.hpp>
+#include <dpay/plugins/json_rpc/json_rpc_plugin.hpp>
 
-#define STEEM_EXAMPLE_API_PLUGIN_NAME "example_api"
+#define DPAY_EXAMPLE_API_PLUGIN_NAME "example_api"
 
 namespace dpay { namespace example_api_plugin {
 
@@ -42,7 +42,7 @@ namespace dpay { namespace example_api_plugin {
          APPBASE_PLUGIN_REQUIRES( (plugins::json_rpc::json_rpc_plugin) );
 
          // This static method is a required by the appbase::plugin template
-         static const std::string& name() { static std::string name = STEEM_EXAMPLE_API_PLUGIN_NAME; return name; }
+         static const std::string& name() { static std::string name = DPAY_EXAMPLE_API_PLUGIN_NAME; return name; }
 
          // Specify any config options here
          virtual void set_program_options( options_description&, options_description& ) override {}
