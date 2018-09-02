@@ -618,11 +618,11 @@ struct comment_options_extension_visitor
    const comment_object& _c;
    database& _db;
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
    void operator()( const allowed_vote_assets& va) const
    {
       FC_ASSERT( _c.abs_rshares == 0, "Comment must not have been voted on before specifying allowed vote assets." );
-      auto remaining_asset_number = SMT_MAX_VOTABLE_ASSETS;
+      auto remaining_asset_number = SDC_MAX_VOTABLE_ASSETS;
       FC_ASSERT( remaining_asset_number > 0 );
       _db.modify( _c, [&]( comment_object& c )
       {
@@ -631,7 +631,7 @@ struct comment_options_extension_visitor
             if( a.first != STEEM_SYMBOL )
             {
                FC_ASSERT( remaining_asset_number > 0, "Comment votable assets number exceeds allowed limit ${ava}.",
-                        ("ava", SMT_MAX_VOTABLE_ASSETS) );
+                        ("ava", SDC_MAX_VOTABLE_ASSETS) );
                --remaining_asset_number;
                c.allowed_vote_assets.emplace_back( a.first, a.second );
             }
@@ -2769,7 +2769,7 @@ void claim_reward_balance_evaluator::do_apply( const claim_reward_balance_operat
    _db.adjust_proxied_witness_votes( acnt, op.reward_vests.amount );
 }
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
 void claim_reward_balance2_evaluator::do_apply( const claim_reward_balance2_operation& op )
 {
    const account_object* a = nullptr; // Lazily initialized below because it may turn out unnecessary.
@@ -2779,7 +2779,7 @@ void claim_reward_balance2_evaluator::do_apply( const claim_reward_balance2_oper
       if( token.amount == 0 )
          continue;
 
-      if( token.symbol.space() == asset_symbol_type::smt_nai_space )
+      if( token.symbol.space() == asset_symbol_type::sdc_nai_space )
       {
          _db.adjust_reward_balance( op.account, -token );
          _db.adjust_balance( op.account, token );
@@ -2834,14 +2834,14 @@ void claim_reward_balance2_evaluator::do_apply( const claim_reward_balance2_oper
          }
          else
             FC_ASSERT( false, "Unknown asset symbol" );
-      } // non-SMT token
+      } // non-SDC token
    } // for( const auto& token : op.reward_tokens )
 }
 #endif
 
 void delegate_vesting_shares_evaluator::do_apply( const delegate_vesting_shares_operation& op )
 {
-#pragma message( "TODO: Update get_effective_vesting_shares when modifying this operation to support SMTs." )
+#pragma message( "TODO: Update get_effective_vesting_shares when modifying this operation to support SDCs." )
 
    const auto& delegator = _db.get_account( op.delegator );
    const auto& delegatee = _db.get_account( op.delegatee );

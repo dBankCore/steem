@@ -27,7 +27,7 @@ with subprocess.Popen( [dpayd] + argv[1:], stdout=subprocess.PIPE, stderr=subpro
 
         #print("got line:", repr(line))
 
-        if ("smt_test_plugin" in line) and (
+        if ("sdc_test_plugin" in line) and (
             "tx:" in line):
             #print("triggered line check")
             q = line.index("tx:")

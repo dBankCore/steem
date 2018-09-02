@@ -623,7 +623,7 @@ struct pre_apply_operation_visitor
       regenerate( op.account );
    }
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
    void operator()( const claim_reward_balance2_operation& op )const
    {
       regenerate( op.account );
@@ -777,7 +777,7 @@ struct post_apply_operation_visitor
       _mod_accounts.push_back( op.account );
    }
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
    void operator()( const claim_reward_balance2_operation& op )const
    {
       _mod_accounts.push_back( op.account );

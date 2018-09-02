@@ -3,21 +3,21 @@
 
 #include <steem/plugins/chain/chain_plugin.hpp>
 
-namespace steem { namespace plugins { namespace smt_test {
+namespace steem { namespace plugins { namespace sdc_test {
 
 using namespace appbase;
 
-#define STEEM_SMT_TEST_PLUGIN_NAME "smt_test"
+#define STEEM_SDC_TEST_PLUGIN_NAME "sdc_test"
 
-class smt_test_plugin : public appbase::plugin< smt_test_plugin >
+class sdc_test_plugin : public appbase::plugin< sdc_test_plugin >
 {
    public:
-      smt_test_plugin();
-      virtual ~smt_test_plugin();
+      sdc_test_plugin();
+      virtual ~sdc_test_plugin();
 
       APPBASE_PLUGIN_REQUIRES( (steem::plugins::chain::chain_plugin) )
 
-      static const std::string& name() { static std::string name = STEEM_SMT_TEST_PLUGIN_NAME; return name; }
+      static const std::string& name() { static std::string name = STEEM_SDC_TEST_PLUGIN_NAME; return name; }
 
       virtual void set_program_options( options_description& cli, options_description& cfg ) override;
       void plugin_initialize( const variables_map& options ) override;
@@ -25,7 +25,7 @@ class smt_test_plugin : public appbase::plugin< smt_test_plugin >
       void plugin_shutdown() override;
 
    private:
-      std::unique_ptr< class smt_test_plugin_impl > my;
+      std::unique_ptr< class sdc_test_plugin_impl > my;
 };
 
-} } } // steem::plugins::smt_test
+} } } // steem::plugins::sdc_test

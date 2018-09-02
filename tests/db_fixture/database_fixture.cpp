@@ -229,12 +229,12 @@ fc::ecc::private_key database_fixture::generate_private_key(string seed)
    return fc::ecc::private_key::regenerate( fc::sha256::hash( seed ) );
 }
 
-#ifdef STEEM_ENABLE_SMT
-asset_symbol_type database_fixture::get_new_smt_symbol( uint8_t token_decimal_places, chain::database* db )
+#ifdef STEEM_ENABLE_SDC
+asset_symbol_type database_fixture::get_new_sdc_symbol( uint8_t token_decimal_places, chain::database* db )
 {
-   // The list of available nais is not dependent on SMT desired precision (token_decimal_places).
-   auto available_nais =  db->get_smt_next_identifier();
-   FC_ASSERT( available_nais.size() > 0, "No available nai returned by get_smt_next_identifier." );
+   // The list of available nais is not dependent on SDC desired precision (token_decimal_places).
+   auto available_nais =  db->get_sdc_next_identifier();
+   FC_ASSERT( available_nais.size() > 0, "No available nai returned by get_sdc_next_identifier." );
    const asset_symbol_type& new_nai = available_nais[0];
    // Note that token's precision is needed now, when creating actual symbol.
    return asset_symbol_type::from_nai( new_nai.to_nai(), token_decimal_places );
@@ -403,11 +403,11 @@ void database_fixture::fund(
    {
       db_plugin->debug_update( [=]( database& db)
       {
-         if( amount.symbol.space() == asset_symbol_type::smt_nai_space )
+         if( amount.symbol.space() == asset_symbol_type::sdc_nai_space )
          {
             db.adjust_balance(account_name, amount);
             db.adjust_supply(amount);
-            // Note that SMT have no equivalent of SBD, hence no virtual supply, hence no need to update it.
+            // Note that SDC have no equivalent of SBD, hence no virtual supply, hence no need to update it.
             return;
          }
 
@@ -647,20 +647,20 @@ void database_fixture::validate_database()
    try
    {
       db->validate_invariants();
-#ifdef STEEM_ENABLE_SMT
-      db->validate_smt_invariants();
+#ifdef STEEM_ENABLE_SDC
+      db->validate_sdc_invariants();
 #endif
    }
    FC_LOG_AND_RETHROW();
 }
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
 
 template< typename T >
-asset_symbol_type t_smt_database_fixture< T >::create_smt( const string& account_name, const fc::ecc::private_key& key,
+asset_symbol_type t_sdc_database_fixture< T >::create_sdc( const string& account_name, const fc::ecc::private_key& key,
    uint8_t token_decimal_places )
 {
-   smt_create_operation op;
+   sdc_create_operation op;
    signed_transaction tx;
    try
    {
@@ -670,9 +670,9 @@ asset_symbol_type t_smt_database_fixture< T >::create_smt( const string& account
       set_price_feed( price( ASSET( "1.000 TBD" ), ASSET( "1.000 TESTS" ) ) );
       convert( account_name, ASSET( "5000.000 TESTS" ) );
 
-      op.symbol = this->get_new_smt_symbol( token_decimal_places, this->db );
+      op.symbol = this->get_new_sdc_symbol( token_decimal_places, this->db );
       op.precision = op.symbol.decimals();
-      op.smt_creation_fee = ASSET( "1000.000 TBD" );
+      op.sdc_creation_fee = ASSET( "1000.000 TBD" );
       op.control_account = account_name;
 
       tx.operations.push_back( op );
@@ -688,31 +688,31 @@ asset_symbol_type t_smt_database_fixture< T >::create_smt( const string& account
    return op.symbol;
 }
 
-void sub_set_create_op(smt_create_operation* op, account_name_type control_acount)
+void sub_set_create_op(sdc_create_operation* op, account_name_type control_acount)
 {
    op->precision = op->symbol.decimals();
-   op->smt_creation_fee = ASSET( "1000.000 TBD" );
+   op->sdc_creation_fee = ASSET( "1000.000 TBD" );
    op->control_account = control_acount;
 }
 
-void set_create_op(chain::database* db, smt_create_operation* op, account_name_type control_account, uint8_t token_decimal_places)
+void set_create_op(chain::database* db, sdc_create_operation* op, account_name_type control_account, uint8_t token_decimal_places)
 {
-   op->symbol = database_fixture::get_new_smt_symbol( token_decimal_places, db );
+   op->symbol = database_fixture::get_new_sdc_symbol( token_decimal_places, db );
    sub_set_create_op(op, control_account);
 }
 
-void set_create_op(smt_create_operation* op, account_name_type control_account, uint32_t token_nai, uint8_t token_decimal_places)
+void set_create_op(sdc_create_operation* op, account_name_type control_account, uint32_t token_nai, uint8_t token_decimal_places)
 {
    op->symbol.from_nai(token_nai, token_decimal_places);
    sub_set_create_op(op, control_account);
 }
 
 template< typename T >
-std::array<asset_symbol_type, 3> t_smt_database_fixture< T >::create_smt_3(const char* control_account_name, const fc::ecc::private_key& key)
+std::array<asset_symbol_type, 3> t_sdc_database_fixture< T >::create_sdc_3(const char* control_account_name, const fc::ecc::private_key& key)
 {
-   smt_create_operation op0;
-   smt_create_operation op1;
-   smt_create_operation op2;
+   sdc_create_operation op0;
+   sdc_create_operation op1;
+   sdc_create_operation op2;
 
    try
    {
@@ -755,31 +755,31 @@ void push_invalid_operation(const operation& invalid_op, const fc::ecc::private_
 }
 
 template< typename T >
-void t_smt_database_fixture< T >::create_invalid_smt( const char* control_account_name, const fc::ecc::private_key& key )
+void t_sdc_database_fixture< T >::create_invalid_sdc( const char* control_account_name, const fc::ecc::private_key& key )
 {
    // Fail due to precision too big.
-   smt_create_operation op_precision;
+   sdc_create_operation op_precision;
    STEEM_REQUIRE_THROW( set_create_op(this->db, &op_precision, control_account_name, STEEM_ASSET_MAX_DECIMALS + 1), fc::assert_exception );
 }
 
 template< typename T >
-void t_smt_database_fixture< T >::create_conflicting_smt( const asset_symbol_type existing_smt, const char* control_account_name,
+void t_sdc_database_fixture< T >::create_conflicting_sdc( const asset_symbol_type existing_sdc, const char* control_account_name,
    const fc::ecc::private_key& key )
 {
    // Fail due to the same nai & precision.
-   smt_create_operation op_same;
-   set_create_op( &op_same, control_account_name, existing_smt.to_nai(), existing_smt.decimals() );
+   sdc_create_operation op_same;
+   set_create_op( &op_same, control_account_name, existing_sdc.to_nai(), existing_sdc.decimals() );
    push_invalid_operation( op_same, key, this->db );
    // Fail due to the same nai (though different precision).
-   smt_create_operation op_same_nai;
-   set_create_op( &op_same_nai, control_account_name, existing_smt.to_nai(), existing_smt.decimals() == 0 ? 1 : 0 );
+   sdc_create_operation op_same_nai;
+   set_create_op( &op_same_nai, control_account_name, existing_sdc.to_nai(), existing_sdc.decimals() == 0 ? 1 : 0 );
    push_invalid_operation (op_same_nai, key, this->db );
 }
 
 template< typename T >
-smt_generation_unit t_smt_database_fixture< T >::get_generation_unit( const units& steem_unit, const units& token_unit )
+sdc_generation_unit t_sdc_database_fixture< T >::get_generation_unit( const units& steem_unit, const units& token_unit )
 {
-   smt_generation_unit ret;
+   sdc_generation_unit ret;
 
    ret.steem_unit = steem_unit;
    ret.token_unit = token_unit;
@@ -788,38 +788,38 @@ smt_generation_unit t_smt_database_fixture< T >::get_generation_unit( const unit
 }
 
 template< typename T >
-smt_cap_commitment t_smt_database_fixture< T >::get_cap_commitment( share_type amount, uint128_t nonce )
+sdc_cap_commitment t_sdc_database_fixture< T >::get_cap_commitment( share_type amount, uint128_t nonce )
 {
-   smt_cap_commitment ret;
+   sdc_cap_commitment ret;
    if( nonce == 0)
       ret.fillin_nonhidden_value( amount );
    else
    {
-      smt_revealed_cap reveal;
+      sdc_revealed_cap reveal;
       reveal.amount = amount;
       reveal.nonce = nonce;
 
       ret.hash = fc::sha256::hash( reveal );
-      ret.lower_bound = SMT_MIN_HARD_CAP_STEEM_UNITS; // See smt_capped_generation_policy::validate
-      ret.upper_bound = STEEM_MAX_SHARE_SUPPLY/10;    // See smt_capped_generation_policy::validate
+      ret.lower_bound = SDC_MIN_HARD_CAP_STEEM_UNITS; // See sdc_capped_generation_policy::validate
+      ret.upper_bound = STEEM_MAX_SHARE_SUPPLY/10;    // See sdc_capped_generation_policy::validate
    }
 
    return ret;
 }
 
 template< typename T >
-smt_capped_generation_policy t_smt_database_fixture< T >::get_capped_generation_policy
+sdc_capped_generation_policy t_sdc_database_fixture< T >::get_capped_generation_policy
 (
-   const smt_generation_unit& pre_soft_cap_unit,
-   const smt_generation_unit& post_soft_cap_unit,
-   const smt_cap_commitment& min_steem_units_commitment,
-   const smt_cap_commitment& hard_cap_steem_units_commitment,
+   const sdc_generation_unit& pre_soft_cap_unit,
+   const sdc_generation_unit& post_soft_cap_unit,
+   const sdc_cap_commitment& min_steem_units_commitment,
+   const sdc_cap_commitment& hard_cap_steem_units_commitment,
    uint16_t soft_cap_percent,
    uint32_t min_unit_ratio,
    uint32_t max_unit_ratio
 )
 {
-   smt_capped_generation_policy ret;
+   sdc_capped_generation_policy ret;
 
    ret.pre_soft_cap_unit = pre_soft_cap_unit;
    ret.post_soft_cap_unit = post_soft_cap_unit;
@@ -835,22 +835,22 @@ smt_capped_generation_policy t_smt_database_fixture< T >::get_capped_generation_
    return ret;
 }
 
-template asset_symbol_type t_smt_database_fixture< clean_database_fixture >::create_smt( const string& account_name, const fc::ecc::private_key& key, uint8_t token_decimal_places );
+template asset_symbol_type t_sdc_database_fixture< clean_database_fixture >::create_sdc( const string& account_name, const fc::ecc::private_key& key, uint8_t token_decimal_places );
 
-template asset_symbol_type t_smt_database_fixture< database_fixture >::create_smt( const string& account_name, const fc::ecc::private_key& key, uint8_t token_decimal_places );
+template asset_symbol_type t_sdc_database_fixture< database_fixture >::create_sdc( const string& account_name, const fc::ecc::private_key& key, uint8_t token_decimal_places );
 
-template void t_smt_database_fixture< clean_database_fixture >::create_invalid_smt( const char* control_account_name, const fc::ecc::private_key& key );
-template void t_smt_database_fixture< clean_database_fixture >::create_conflicting_smt( const asset_symbol_type existing_smt, const char* control_account_name, const fc::ecc::private_key& key );
-template std::array<asset_symbol_type, 3> t_smt_database_fixture< clean_database_fixture >::create_smt_3( const char* control_account_name, const fc::ecc::private_key& key );
+template void t_sdc_database_fixture< clean_database_fixture >::create_invalid_sdc( const char* control_account_name, const fc::ecc::private_key& key );
+template void t_sdc_database_fixture< clean_database_fixture >::create_conflicting_sdc( const asset_symbol_type existing_sdc, const char* control_account_name, const fc::ecc::private_key& key );
+template std::array<asset_symbol_type, 3> t_sdc_database_fixture< clean_database_fixture >::create_sdc_3( const char* control_account_name, const fc::ecc::private_key& key );
 
-template smt_generation_unit t_smt_database_fixture< clean_database_fixture >::get_generation_unit( const units& steem_unit, const units& token_unit );
-template smt_cap_commitment t_smt_database_fixture< clean_database_fixture >::get_cap_commitment( share_type amount, uint128_t nonce );
-template smt_capped_generation_policy t_smt_database_fixture< clean_database_fixture >::get_capped_generation_policy
+template sdc_generation_unit t_sdc_database_fixture< clean_database_fixture >::get_generation_unit( const units& steem_unit, const units& token_unit );
+template sdc_cap_commitment t_sdc_database_fixture< clean_database_fixture >::get_cap_commitment( share_type amount, uint128_t nonce );
+template sdc_capped_generation_policy t_sdc_database_fixture< clean_database_fixture >::get_capped_generation_policy
 (
-   const smt_generation_unit& pre_soft_cap_unit,
-   const smt_generation_unit& post_soft_cap_unit,
-   const smt_cap_commitment& min_steem_units_commitment,
-   const smt_cap_commitment& hard_cap_steem_units_commitment,
+   const sdc_generation_unit& pre_soft_cap_unit,
+   const sdc_generation_unit& post_soft_cap_unit,
+   const sdc_cap_commitment& min_steem_units_commitment,
+   const sdc_cap_commitment& hard_cap_steem_units_commitment,
    uint16_t soft_cap_percent,
    uint32_t min_unit_ratio,
    uint32_t max_unit_ratio

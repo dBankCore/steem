@@ -100,7 +100,7 @@ namespace steem { namespace protocol {
       void validate()const;
    };
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
    struct votable_asset_info_v1
    {
       votable_asset_info_v1() = default;
@@ -113,9 +113,9 @@ namespace steem { namespace protocol {
 
    typedef static_variant< votable_asset_info_v1 > votable_asset_info;
 
-   /** Allows to store all SMT tokens being allowed to use during voting process.
-    *  Maps asset symbol (SMT) to the vote info.
-    *  @see SMT spec for details: https://github.com/steemit/smt-whitepaper/blob/master/smt-manual/manual.md
+   /** Allows to store all SDC tokens being allowed to use during voting process.
+    *  Maps asset symbol (SDC) to the vote info.
+    *  @see SDC spec for details: https://github.com/steemit/sdc-whitepaper/blob/master/sdc-manual/manual.md
     */
    struct allowed_vote_assets
    {
@@ -162,20 +162,20 @@ namespace steem { namespace protocol {
        */
       void validate() const
       {
-         FC_ASSERT(votable_assets.size() <= SMT_MAX_VOTABLE_ASSETS, "Too much votable assets specified");
+         FC_ASSERT(votable_assets.size() <= SDC_MAX_VOTABLE_ASSETS, "Too much votable assets specified");
          FC_ASSERT(is_allowed(STEEM_SYMBOL) == false,
             "BEX can not be explicitly specified as one of allowed_vote_assets");
       }
 
       flat_map< asset_symbol_type, votable_asset_info > votable_assets;
    };
-#endif /// STEEM_ENABLE_SMT
+#endif /// STEEM_ENABLE_SDC
 
    typedef static_variant<
             comment_payout_beneficiaries
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
             ,allowed_vote_assets
-#endif /// STEEM_ENABLE_SMT
+#endif /// STEEM_ENABLE_SDC
            > comment_options_extension;
 
    typedef flat_set< comment_options_extension > comment_options_extensions_type;
@@ -382,15 +382,15 @@ namespace steem { namespace protocol {
 
 
    /**
-    *  This operation converts liquid token (BEX or liquid SMT) into VFS (Vesting Fund Shares,
-    *  VESTS or vesting SMT) at the current exchange rate. With this operation it is possible to
+    *  This operation converts liquid token (BEX or liquid SDC) into VFS (Vesting Fund Shares,
+    *  VESTS or vesting SDC) at the current exchange rate. With this operation it is possible to
     *  give another account vesting shares so that faucets can pre-fund new accounts with vesting shares.
     */
    struct transfer_to_vesting_operation : public base_operation
    {
       account_name_type from;
       account_name_type to;      ///< if null, then same as from
-      asset             amount;  ///< must be BEX or liquid variant of SMT
+      asset             amount;  ///< must be BEX or liquid variant of SDC
 
       void validate()const;
       void get_required_active_authorities( flat_set<account_name_type>& a )const{ a.insert(from); }
@@ -1015,7 +1015,7 @@ namespace steem { namespace protocol {
       void validate() const;
    };
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
    /** Differs with original operation with extensions field and a container of tokens that will
     *  be rewarded to an account. See discussion in issue #1859
     */
@@ -1132,7 +1132,7 @@ FC_REFLECT( steem::protocol::delete_comment_operation, (author)(permlink) );
 FC_REFLECT( steem::protocol::beneficiary_route_type, (account)(weight) )
 FC_REFLECT( steem::protocol::comment_payout_beneficiaries, (beneficiaries) )
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
 FC_REFLECT( steem::protocol::votable_asset_info_v1, (max_accepted_payout)(allow_curation_rewards) )
 FC_REFLECT( steem::protocol::allowed_vote_assets, (votable_assets) )
 #endif
@@ -1151,7 +1151,7 @@ FC_REFLECT( steem::protocol::recover_account_operation, (account_to_recover)(new
 FC_REFLECT( steem::protocol::change_recovery_account_operation, (account_to_recover)(new_recovery_account)(extensions) );
 FC_REFLECT( steem::protocol::decline_voting_rights_operation, (account)(decline) );
 FC_REFLECT( steem::protocol::claim_reward_balance_operation, (account)(reward_steem)(reward_sbd)(reward_vests) )
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
 FC_REFLECT( steem::protocol::claim_reward_balance2_operation, (account)(extensions)(reward_tokens) )
 #endif
 FC_REFLECT( steem::protocol::delegate_vesting_shares_operation, (delegator)(delegatee)(vesting_shares) );

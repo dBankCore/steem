@@ -137,11 +137,11 @@ class database_api
           */
          (verify_signatures)
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
          /**
-         * @return array of Numeric Asset Identifier (NAI) available to be used for new SMT to be created.
+         * @return array of Numeric Asset Identifier (NAI) available to be used for new SDC to be created.
          */
-         (get_smt_next_identifier)
+         (get_sdc_next_identifier)
 #endif
       )
 

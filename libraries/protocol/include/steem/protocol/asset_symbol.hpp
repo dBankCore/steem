@@ -4,9 +4,9 @@
 #include <steem/protocol/types_fwd.hpp>
 
 #define STEEM_ASSET_SYMBOL_PRECISION_BITS    4
-#define SMT_MAX_NAI                          99999999
-#define SMT_MIN_NAI                          1
-#define SMT_MIN_NON_RESERVED_NAI             10000000
+#define SDC_MAX_NAI                          99999999
+#define SDC_MIN_NAI                          1
+#define SDC_MIN_NON_RESERVED_NAI             10000000
 #define STEEM_ASSET_SYMBOL_NAI_LENGTH        10
 #define STEEM_ASSET_SYMBOL_NAI_STRING_LENGTH ( STEEM_ASSET_SYMBOL_NAI_LENGTH + 2 )
 
@@ -21,11 +21,11 @@
 #define STEEM_NAI_VESTS (3)
 
 #define STEEM_ASSET_NUM_SBD \
-  (((SMT_MAX_NAI + STEEM_NAI_SBD)   << STEEM_ASSET_SYMBOL_PRECISION_BITS) | STEEM_PRECISION_SBD)
+  (((SDC_MAX_NAI + STEEM_NAI_SBD)   << STEEM_ASSET_SYMBOL_PRECISION_BITS) | STEEM_PRECISION_SBD)
 #define STEEM_ASSET_NUM_STEEM \
-  (((SMT_MAX_NAI + STEEM_NAI_STEEM) << STEEM_ASSET_SYMBOL_PRECISION_BITS) | STEEM_PRECISION_STEEM)
+  (((SDC_MAX_NAI + STEEM_NAI_STEEM) << STEEM_ASSET_SYMBOL_PRECISION_BITS) | STEEM_PRECISION_STEEM)
 #define STEEM_ASSET_NUM_VESTS \
-  (((SMT_MAX_NAI + STEEM_NAI_VESTS) << STEEM_ASSET_SYMBOL_PRECISION_BITS) | STEEM_PRECISION_VESTS)
+  (((SDC_MAX_NAI + STEEM_NAI_VESTS) << STEEM_ASSET_SYMBOL_PRECISION_BITS) | STEEM_PRECISION_VESTS)
 
 #ifdef IS_TEST_NET
 
@@ -47,9 +47,9 @@
 
 #define STEEM_ASSET_MAX_DECIMALS 12
 
-#define SMT_ASSET_NUM_PRECISION_MASK   0xF
-#define SMT_ASSET_NUM_CONTROL_MASK     0x10
-#define SMT_ASSET_NUM_VESTING_MASK     0x20
+#define SDC_ASSET_NUM_PRECISION_MASK   0xF
+#define SDC_ASSET_NUM_CONTROL_MASK     0x10
+#define SDC_ASSET_NUM_VESTING_MASK     0x20
 
 namespace steem { namespace protocol {
 
@@ -59,7 +59,7 @@ class asset_symbol_type
       enum asset_symbol_space
       {
          legacy_space = 1,
-         smt_nai_space = 2
+         sdc_nai_space = 2
       };
 
       asset_symbol_type() {}
@@ -95,11 +95,11 @@ class asset_symbol_type
        */
       asset_symbol_type get_paired_symbol() const;
       /**Returns asset_num stripped of precision holding bits.
-       * \warning checking that it's SMT symbol is caller responsibility.
+       * \warning checking that it's SDC symbol is caller responsibility.
        */
-      uint32_t get_stripped_precision_smt_num() const
+      uint32_t get_stripped_precision_sdc_num() const
       {
-         return asset_num & ~( SMT_ASSET_NUM_PRECISION_MASK );
+         return asset_num & ~( SDC_ASSET_NUM_PRECISION_MASK );
       }
 
       asset_symbol_space space()const;
@@ -164,7 +164,7 @@ inline void pack( Stream& s, const steem::protocol::asset_symbol_type& sym )
          pack( s, ser );
          break;
       }
-      case steem::protocol::asset_symbol_type::smt_nai_space:
+      case steem::protocol::asset_symbol_type::sdc_nai_space:
          pack( s, sym.asset_num );
          break;
       default:

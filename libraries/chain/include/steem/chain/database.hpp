@@ -377,8 +377,8 @@ namespace steem { namespace chain {
          void process_conversions();
          void process_savings_withdraws();
          void process_subsidized_accounts();
-#ifdef STEEM_ENABLE_SMT
-         void process_smt_objects();
+#ifdef STEEM_ENABLE_SDC
+         void process_sdc_objects();
 #endif
          void account_recovery_processing();
          void expire_escrow_ratification();
@@ -470,14 +470,14 @@ namespace steem { namespace chain {
          bool disable_low_mem_warning = true;
 #endif
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
          ///Smart Media Tokens related methods
          ///@{
-         void validate_smt_invariants()const;
+         void validate_sdc_invariants()const;
          /**
           * @return a list of available NAIs.
          */
-         vector< asset_symbol_type > get_smt_next_identifier();
+         vector< asset_symbol_type > get_sdc_next_identifier();
 
          ///@}
 #endif
@@ -518,9 +518,9 @@ namespace steem { namespace chain {
          void apply_hardfork( uint32_t hardfork );
 
          ///@}
-#ifdef STEEM_ENABLE_SMT
-         template< typename smt_balance_object_type, class balance_operator_type >
-         void adjust_smt_balance( const account_name_type& name, const asset& delta, bool check_account,
+#ifdef STEEM_ENABLE_SDC
+         template< typename sdc_balance_object_type, class balance_operator_type >
+         void adjust_sdc_balance( const account_name_type& name, const asset& delta, bool check_account,
                                   balance_operator_type balance_operator );
 #endif
          void modify_balance( const account_object& a, const asset& delta, bool check_balance );
@@ -554,8 +554,8 @@ namespace steem { namespace chain {
          uint32_t                      _next_flush_block = 0;
 
          uint32_t                      _last_free_gb_printed = 0;
-         /// For Initial value see appropriate comment where get_smt_next_identifier is implemented.
-         uint32_t                      _next_available_nai = SMT_MIN_NON_RESERVED_NAI;
+         /// For Initial value see appropriate comment where get_sdc_next_identifier is implemented.
+         uint32_t                      _next_available_nai = SDC_MIN_NON_RESERVED_NAI;
 
          uint16_t                      _shared_file_full_threshold = 0;
          uint16_t                      _shared_file_scale_rate = 0;

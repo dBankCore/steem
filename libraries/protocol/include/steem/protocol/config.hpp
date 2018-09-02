@@ -317,10 +317,10 @@
 #define STEEM_ROOT_POST_PARENT                (account_name_type())
 ///@}
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
 
-#define SMT_MAX_VOTABLE_ASSETS 2
-#define SMT_VESTING_WITHDRAW_INTERVAL_SECONDS   (60*60*24*7) /// 1 week per interval
-#define SMT_UPVOTE_LOCKOUT                      (60*60*12)  /// 12 hours
+#define SDC_MAX_VOTABLE_ASSETS 2
+#define SDC_VESTING_WITHDRAW_INTERVAL_SECONDS   (60*60*24*7) /// 1 week per interval
+#define SDC_UPVOTE_LOCKOUT                      (60*60*12)  /// 12 hours
 
-#endif /// STEEM_ENABLE_SMT
+#endif /// STEEM_ENABLE_SDC

@@ -570,10 +570,10 @@ struct verify_signatures_return
    bool valid;
 };
 
-#ifdef STEEM_ENABLE_SMT
-typedef void_type get_smt_next_identifier_args;
+#ifdef STEEM_ENABLE_SDC
+typedef void_type get_sdc_next_identifier_args;
 
-struct get_smt_next_identifier_return
+struct get_sdc_next_identifier_return
 {
    vector< asset_symbol_type > nais;
 };
@@ -802,7 +802,7 @@ FC_REFLECT( steem::plugins::database_api::verify_signatures_args,
 FC_REFLECT( steem::plugins::database_api::verify_signatures_return,
    (valid) )
 
-#ifdef STEEM_ENABLE_SMT
-FC_REFLECT( steem::plugins::database_api::get_smt_next_identifier_return,
+#ifdef STEEM_ENABLE_SDC
+FC_REFLECT( steem::plugins::database_api::get_sdc_next_identifier_return,
    (nais) )
 #endif

@@ -3,25 +3,25 @@
 
 #include <boost/multi_index/composite_key.hpp>
 
-namespace steem { namespace plugins { namespace smt_test {
+namespace steem { namespace plugins { namespace sdc_test {
 
 using namespace std;
 using namespace steem::chain;
 
-#ifndef STEEM_SMT_TEST_SPACE_ID
-#define STEEM_SMT_TEST_SPACE_ID 13
+#ifndef STEEM_SDC_TEST_SPACE_ID
+#define STEEM_SDC_TEST_SPACE_ID 13
 #endif
 
-enum smt_test_object_types
+enum sdc_test_object_types
 {
-   smt_token_object_type = ( STEEM_SMT_TEST_SPACE_ID << 8 )
+   sdc_token_object_type = ( STEEM_SDC_TEST_SPACE_ID << 8 )
 };
 
-class smt_token_object : public object< smt_token_object_type, smt_token_object >
+class sdc_token_object : public object< sdc_token_object_type, sdc_token_object >
 {
    public:
       template< typename Constructor, typename Allocator >
-      smt_token_object( Constructor&& c, allocator< Allocator > a )
+      sdc_token_object( Constructor&& c, allocator< Allocator > a )
       {
          c( *this );
       }
@@ -38,28 +38,28 @@ class smt_token_object : public object< smt_token_object_type, smt_token_object 
       time_point_sec          launch_expiration_time;
 };
 
-typedef smt_token_object::id_type smt_token_id_type;
+typedef sdc_token_object::id_type sdc_token_id_type;
 
 using namespace boost::multi_index;
 
 struct by_control_account;
 
 typedef multi_index_container<
-   smt_token_object,
+   sdc_token_object,
    indexed_by<
-      ordered_unique< tag< by_id >, member< smt_token_object, smt_token_id_type, &smt_token_object::id > >,
+      ordered_unique< tag< by_id >, member< sdc_token_object, sdc_token_id_type, &sdc_token_object::id > >,
       ordered_unique< tag< by_control_account >,
-         composite_key< smt_token_object,
-            member< smt_token_object, account_name_type, &smt_token_object::control_account >
+         composite_key< sdc_token_object,
+            member< sdc_token_object, account_name_type, &sdc_token_object::control_account >
          >
       >
    >,
-   allocator< smt_token_object >
-> smt_token_index;
+   allocator< sdc_token_object >
+> sdc_token_index;
 
-} } } // steem::plugins::smt_test
+} } } // steem::plugins::sdc_test
 
-FC_REFLECT( steem::plugins::smt_test::smt_token_object,
+FC_REFLECT( steem::plugins::sdc_test::sdc_token_object,
    (id)
    (control_account)
    (decimal_places)
@@ -69,4 +69,4 @@ FC_REFLECT( steem::plugins::smt_test::smt_token_object,
    (announced_launch_time)
    (launch_expiration_time)
    )
-CHAINBASE_SET_INDEX_TYPE( steem::plugins::smt_test::smt_token_object, steem::plugins::smt_test::smt_token_index )
+CHAINBASE_SET_INDEX_TYPE( steem::plugins::sdc_test::sdc_token_object, steem::plugins::sdc_test::sdc_token_index )

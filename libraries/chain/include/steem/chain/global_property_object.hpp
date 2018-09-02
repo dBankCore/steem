@@ -122,8 +122,8 @@ namespace steem { namespace chain {
 
          uint16_t sbd_stop_percent = 0;
          uint16_t sbd_start_percent = 0;
-#ifdef STEEM_ENABLE_SMT
-         asset smt_creation_fee = asset( 1000000, SBD_SYMBOL );
+#ifdef STEEM_ENABLE_SDC
+         asset sdc_creation_fee = asset( 1000000, SBD_SYMBOL );
 #endif
    };
 
@@ -170,8 +170,8 @@ FC_REFLECT( steem::chain::dynamic_global_property_object,
              (available_account_subsidies)
              (sbd_stop_percent)
              (sbd_start_percent)
-#ifdef STEEM_ENABLE_SMT
-             (smt_creation_fee)
+#ifdef STEEM_ENABLE_SDC
+             (sdc_creation_fee)
 #endif
           )
 CHAINBASE_SET_INDEX_TYPE( steem::chain::dynamic_global_property_object, steem::chain::dynamic_global_property_index )

@@ -1,6 +1,6 @@
 #include <fc/macros.hpp>
 
-#if defined IS_TEST_NET && defined STEEM_ENABLE_SMT
+#if defined IS_TEST_NET && defined STEEM_ENABLE_SDC
 
 #include <boost/test/unit_test.hpp>
 
@@ -10,7 +10,7 @@
 #include <steem/chain/database.hpp>
 #include <steem/chain/database_exceptions.hpp>
 #include <steem/chain/steem_objects.hpp>
-#include <steem/chain/smt_objects.hpp>
+#include <steem/chain/sdc_objects.hpp>
 
 #include "../db_fixture/database_fixture.hpp"
 
@@ -19,21 +19,21 @@ using namespace steem::protocol;
 using fc::string;
 using boost::container::flat_set;
 
-BOOST_FIXTURE_TEST_SUITE( smt_operation_tests, smt_database_fixture )
+BOOST_FIXTURE_TEST_SUITE( sdc_operation_tests, sdc_database_fixture )
 
-BOOST_AUTO_TEST_CASE( smt_limit_order_create_authorities )
+BOOST_AUTO_TEST_CASE( sdc_limit_order_create_authorities )
 {
    try
    {
-      BOOST_TEST_MESSAGE( "Testing: smt_limit_order_create_authorities" );
+      BOOST_TEST_MESSAGE( "Testing: sdc_limit_order_create_authorities" );
 
       ACTORS( (alice)(bob) )
 
       limit_order_create_operation op;
 
-      //Create SMT and give some SMT to creator.
+      //Create SDC and give some SDC to creator.
       signed_transaction tx;
-      asset_symbol_type alice_symbol = create_smt( "alice", alice_private_key, 0 );
+      asset_symbol_type alice_symbol = create_sdc( "alice", alice_private_key, 0 );
 
       tx.operations.clear();
       tx.signatures.clear();
@@ -73,19 +73,19 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_authorities )
    FC_LOG_AND_RETHROW()
 }
 
-BOOST_AUTO_TEST_CASE( smt_limit_order_create2_authorities )
+BOOST_AUTO_TEST_CASE( sdc_limit_order_create2_authorities )
 {
    try
    {
-      BOOST_TEST_MESSAGE( "Testing: smt_limit_order_create2_authorities" );
+      BOOST_TEST_MESSAGE( "Testing: sdc_limit_order_create2_authorities" );
 
       ACTORS( (alice)(bob) )
 
       limit_order_create2_operation op;
 
-      //Create SMT and give some SMT to creator.
+      //Create SDC and give some SDC to creator.
       signed_transaction tx;
-      asset_symbol_type alice_symbol = create_smt( "alice", alice_private_key, 0 );
+      asset_symbol_type alice_symbol = create_sdc( "alice", alice_private_key, 0 );
 
       tx.operations.clear();
       tx.signatures.clear();
@@ -125,7 +125,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_authorities )
    FC_LOG_AND_RETHROW()
 }
 
-BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
+BOOST_AUTO_TEST_CASE( sdc_limit_order_create_apply )
 {
    try
    {
@@ -133,9 +133,9 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
 
       ACTORS( (alice)(bob) )
 
-      //Create SMT and give some SMT to creators.
+      //Create SDC and give some SDC to creators.
       signed_transaction tx;
-      asset_symbol_type alice_symbol = create_smt( "alice", alice_private_key, 3);
+      asset_symbol_type alice_symbol = create_sdc( "alice", alice_private_key, 3);
 
       const account_object& alice_account = db->get_account( "alice" );
       const account_object& bob_account = db->get_account( "bob" );
@@ -146,15 +146,15 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       convert( "bob", ASSET("1000.000 TESTS" ) );
       generate_block();
 
-      asset alice_smt_balance = asset( 1000000, alice_symbol );
-      asset bob_smt_balance = asset( 1000000, alice_symbol );
+      asset alice_sdc_balance = asset( 1000000, alice_symbol );
+      asset bob_sdc_balance = asset( 1000000, alice_symbol );
 
       asset alice_balance = alice_account.balance;
 
       asset bob_balance = bob_account.balance;
 
-      FUND( "alice", alice_smt_balance );
-      FUND( "bob", bob_smt_balance );
+      FUND( "alice", alice_sdc_balance );
+      FUND( "bob", bob_sdc_balance );
 
       tx.operations.clear();
       tx.signatures.clear();
@@ -177,7 +177,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "bob", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       validate_database();
 
       BOOST_TEST_MESSAGE( "--- Test failure when amount to receive is 0" );
@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       validate_database();
 
       BOOST_TEST_MESSAGE( "--- Test failure when amount to sell is 0" );
@@ -207,7 +207,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       validate_database();
 
       BOOST_TEST_MESSAGE( "--- Test failure when expiration is too long" );
@@ -240,7 +240,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       BOOST_REQUIRE( limit_order->for_sale == op.amount_to_sell.amount );
       BOOST_REQUIRE( limit_order->sell_price == price( op.amount_to_sell / op.min_to_receive ) );
       BOOST_REQUIRE( limit_order->get_market() == std::make_pair( alice_symbol, STEEM_SYMBOL ) );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
       validate_database();
 
@@ -260,7 +260,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       BOOST_REQUIRE( limit_order->for_sale == 10000 );
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "10.000 TESTS" ), op.min_to_receive ) );
       BOOST_REQUIRE( limit_order->get_market() == std::make_pair( alice_symbol, STEEM_SYMBOL ) );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
       validate_database();
 
@@ -275,13 +275,13 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", op.orderid ) ) == limit_order_idx.end() );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
       validate_database();
 
       // BOOST_TEST_MESSAGE( "--- Test having a partial match to limit order" );
-      // // Alice has order for 15 SMT at a price of 2:3
-      // // Fill 5 BEX for 7.5 SMT
+      // // Alice has order for 15 SDC at a price of 2:3
+      // // Fill 5 BEX for 7.5 SDC
 
       op.owner = "bob";
       op.orderid = 1;
@@ -294,8 +294,8 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       sign( tx, bob_private_key );
       db->push_transaction( tx, 0 );
 
-      bob_smt_balance -= asset (7500, alice_symbol );
-      alice_smt_balance += asset (7500, alice_symbol );
+      bob_sdc_balance -= asset (7500, alice_symbol );
+      alice_sdc_balance += asset (7500, alice_symbol );
       bob_balance += ASSET( "5.000 TESTS" );
 
       auto recent_ops = get_last_operations( 1 );
@@ -309,9 +309,9 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "10.000 TESTS" ), asset( 15000, alice_symbol ) ) );
       BOOST_REQUIRE( limit_order->get_market() == std::make_pair( alice_symbol, STEEM_SYMBOL ) );
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "bob", op.orderid ) ) == limit_order_idx.end() );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
       BOOST_REQUIRE( fill_order_op.open_owner == "alice" );
       BOOST_REQUIRE( fill_order_op.open_orderid == 1 );
@@ -331,8 +331,8 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       sign( tx, bob_private_key );
       db->push_transaction( tx, 0 );
 
-      bob_smt_balance -= asset( 15000, alice_symbol );
-      alice_smt_balance += asset( 7500, alice_symbol );
+      bob_sdc_balance -= asset( 15000, alice_symbol );
+      alice_sdc_balance += asset( 7500, alice_symbol );
       bob_balance += ASSET( "5.000 TESTS" );
 
       limit_order = limit_order_idx.find( std::make_tuple( "bob", 1 ) );
@@ -343,9 +343,9 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       BOOST_REQUIRE( limit_order->sell_price == price( asset( 15000, alice_symbol ), ASSET( "10.000 TESTS" ) ) );
       BOOST_REQUIRE( limit_order->get_market() == std::make_pair( alice_symbol, STEEM_SYMBOL ) );
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", 1 ) ) == limit_order_idx.end() );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
       validate_database();
 
@@ -362,14 +362,14 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       db->push_transaction( tx, 0 );
 
       alice_balance -= ASSET( "5.000 TESTS" );
-      alice_smt_balance += asset( 7500, alice_symbol );
+      alice_sdc_balance += asset( 7500, alice_symbol );
       bob_balance += ASSET( "5.000 TESTS" );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", 3 ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "bob", 1 ) ) == limit_order_idx.end() );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
       validate_database();
 
@@ -396,8 +396,8 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       db->push_transaction( tx, 0 );
 
       alice_balance -= ASSET( "10.000 TESTS" );
-      alice_smt_balance += asset( 11000, alice_symbol );
-      bob_smt_balance -= asset( 12000, alice_symbol );
+      alice_sdc_balance += asset( 11000, alice_symbol );
+      bob_sdc_balance -= asset( 12000, alice_symbol );
       bob_balance += ASSET( "10.000 TESTS" );
 
       limit_order = limit_order_idx.find( std::make_tuple( "bob", 4 ) );
@@ -408,9 +408,9 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       BOOST_REQUIRE( limit_order->for_sale.value == 1000 );
       BOOST_REQUIRE( limit_order->sell_price == price( asset( 12000, alice_symbol ), ASSET( "10.000 TESTS" ) ) );
       BOOST_REQUIRE( limit_order->get_market() == std::make_pair( alice_symbol, STEEM_SYMBOL ) );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
       validate_database();
 
@@ -449,9 +449,9 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       db->push_transaction( tx, 0 );
 
       alice_balance -= ASSET( "20.000 TESTS" );
-      alice_smt_balance += asset( 12000, alice_symbol );
+      alice_sdc_balance += asset( 12000, alice_symbol );
 
-      bob_smt_balance -= asset( 11000, alice_symbol );
+      bob_sdc_balance -= asset( 11000, alice_symbol );
       bob_balance += ASSET( "10.909 TESTS" );
 
       limit_order = limit_order_idx.find( std::make_tuple( "alice", 5 ) );
@@ -462,26 +462,26 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create_apply )
       BOOST_REQUIRE( limit_order->for_sale.value == 9091 );
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "20.000 TESTS" ), asset( 22000, alice_symbol ) ) );
       BOOST_REQUIRE( limit_order->get_market() == std::make_pair( alice_symbol, STEEM_SYMBOL ) );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
       validate_database();
    }
    FC_LOG_AND_RETHROW()
 }
 
-BOOST_AUTO_TEST_CASE( smt_limit_order_cancel_authorities )
+BOOST_AUTO_TEST_CASE( sdc_limit_order_cancel_authorities )
 {
    try
    {
-      BOOST_TEST_MESSAGE( "Testing: smt_limit_order_cancel_authorities" );
+      BOOST_TEST_MESSAGE( "Testing: sdc_limit_order_cancel_authorities" );
 
       ACTORS( (alice)(bob) )
 
-      //Create SMT and give some SMT to creator.
+      //Create SDC and give some SDC to creator.
       signed_transaction tx;
-      asset_symbol_type alice_symbol = create_smt( "alice", alice_private_key, 3 );
+      asset_symbol_type alice_symbol = create_sdc( "alice", alice_private_key, 3 );
 
       FUND( "alice", asset( 100000, alice_symbol ) );
 
@@ -535,27 +535,27 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_cancel_authorities )
    FC_LOG_AND_RETHROW()
 }
 
-BOOST_AUTO_TEST_CASE( smt_limit_order_cancel_apply )
+BOOST_AUTO_TEST_CASE( sdc_limit_order_cancel_apply )
 {
    try
    {
-      BOOST_TEST_MESSAGE( "Testing: smt_limit_order_cancel_apply" );
+      BOOST_TEST_MESSAGE( "Testing: sdc_limit_order_cancel_apply" );
 
       ACTORS( (alice) )
 
-      //Create SMT and give some SMT to creator.
+      //Create SDC and give some SDC to creator.
       signed_transaction tx;
-      asset_symbol_type alice_symbol = create_smt( "alice", alice_private_key, 3 );
+      asset_symbol_type alice_symbol = create_sdc( "alice", alice_private_key, 3 );
 
       const account_object& alice_account = db->get_account( "alice" );
 
       tx.operations.clear();
       tx.signatures.clear();
 
-      asset alice_smt_balance = asset( 1000000, alice_symbol );
+      asset alice_sdc_balance = asset( 1000000, alice_symbol );
       asset alice_balance = alice_account.balance;
 
-      FUND( "alice", alice_smt_balance );
+      FUND( "alice", alice_sdc_balance );
 
       const auto& limit_order_idx = db->get_index< limit_order_index >().indices().get< by_account >();
 
@@ -593,13 +593,13 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_cancel_apply )
       db->push_transaction( tx, 0 );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", 5 ) ) == limit_order_idx.end() );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
    }
    FC_LOG_AND_RETHROW()
 }
 
-BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
+BOOST_AUTO_TEST_CASE( sdc_limit_order_create2_apply )
 {
    try
    {
@@ -607,9 +607,9 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
 
       ACTORS( (alice)(bob) )
 
-      //Create SMT and give some SMT to creators.
+      //Create SDC and give some SDC to creators.
       signed_transaction tx;
-      asset_symbol_type alice_symbol = create_smt( "alice", alice_private_key, 3);
+      asset_symbol_type alice_symbol = create_sdc( "alice", alice_private_key, 3);
 
       const account_object& alice_account = db->get_account( "alice" );
       const account_object& bob_account = db->get_account( "bob" );
@@ -620,15 +620,15 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       convert( "bob", ASSET("1000.000 TESTS" ) );
       generate_block();
 
-      asset alice_smt_balance = asset( 1000000, alice_symbol );
-      asset bob_smt_balance = asset( 1000000, alice_symbol );
+      asset alice_sdc_balance = asset( 1000000, alice_symbol );
+      asset bob_sdc_balance = asset( 1000000, alice_symbol );
 
       asset alice_balance = alice_account.balance;
 
       asset bob_balance = bob_account.balance;
 
-      FUND( "alice", alice_smt_balance );
-      FUND( "bob", bob_smt_balance );
+      FUND( "alice", alice_sdc_balance );
+      FUND( "bob", bob_sdc_balance );
 
       tx.operations.clear();
       tx.signatures.clear();
@@ -651,7 +651,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "bob", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       validate_database();
 
       BOOST_TEST_MESSAGE( "--- Test failure when amount to receive is 0" );
@@ -667,7 +667,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       validate_database();
 
       BOOST_TEST_MESSAGE( "--- Test failure when amount to sell is 0" );
@@ -682,7 +682,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       validate_database();
 
       BOOST_TEST_MESSAGE( "--- Test failure when expiration is too long" );
@@ -715,7 +715,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       BOOST_REQUIRE( limit_order->for_sale == op.amount_to_sell.amount );
       BOOST_REQUIRE( limit_order->sell_price == op.exchange_rate );
       BOOST_REQUIRE( limit_order->get_market() == std::make_pair( alice_symbol, STEEM_SYMBOL ) );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
       validate_database();
 
@@ -735,7 +735,7 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       BOOST_REQUIRE( limit_order->for_sale == 10000 );
       BOOST_REQUIRE( limit_order->sell_price == op.exchange_rate );
       BOOST_REQUIRE( limit_order->get_market() == std::make_pair( alice_symbol, STEEM_SYMBOL ) );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
       validate_database();
 
@@ -750,13 +750,13 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", op.orderid ) ) == limit_order_idx.end() );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
       validate_database();
 
       // BOOST_TEST_MESSAGE( "--- Test having a partial match to limit order" );
-      // // Alice has order for 15 SMT at a price of 2:3
-      // // Fill 5 BEX for 7.5 SMT
+      // // Alice has order for 15 SDC at a price of 2:3
+      // // Fill 5 BEX for 7.5 SDC
 
       op.owner = "bob";
       op.orderid = 1;
@@ -769,8 +769,8 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       sign( tx, bob_private_key );
       db->push_transaction( tx, 0 );
 
-      bob_smt_balance -= asset (7500, alice_symbol );
-      alice_smt_balance += asset (7500, alice_symbol );
+      bob_sdc_balance -= asset (7500, alice_symbol );
+      alice_sdc_balance += asset (7500, alice_symbol );
       bob_balance += ASSET( "5.000 TESTS" );
 
       auto recent_ops = get_last_operations( 1 );
@@ -784,9 +784,9 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "2.000 TESTS" ), asset( 3000, alice_symbol ) ) );
       BOOST_REQUIRE( limit_order->get_market() == std::make_pair( alice_symbol, STEEM_SYMBOL ) );
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "bob", op.orderid ) ) == limit_order_idx.end() );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
       BOOST_REQUIRE( fill_order_op.open_owner == "alice" );
       BOOST_REQUIRE( fill_order_op.open_orderid == 1 );
@@ -806,8 +806,8 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       sign( tx, bob_private_key );
       db->push_transaction( tx, 0 );
 
-      bob_smt_balance -= asset( 15000, alice_symbol );
-      alice_smt_balance += asset( 7500, alice_symbol );
+      bob_sdc_balance -= asset( 15000, alice_symbol );
+      alice_sdc_balance += asset( 7500, alice_symbol );
       bob_balance += ASSET( "5.000 TESTS" );
 
       limit_order = limit_order_idx.find( std::make_tuple( "bob", 1 ) );
@@ -818,9 +818,9 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       BOOST_REQUIRE( limit_order->sell_price == price( asset( 3000, alice_symbol ), ASSET( "2.000 TESTS" ) ) );
       BOOST_REQUIRE( limit_order->get_market() == std::make_pair( alice_symbol, STEEM_SYMBOL ) );
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", 1 ) ) == limit_order_idx.end() );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
       validate_database();
 
@@ -837,14 +837,14 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       db->push_transaction( tx, 0 );
 
       alice_balance -= ASSET( "5.000 TESTS" );
-      alice_smt_balance += asset( 7500, alice_symbol );
+      alice_sdc_balance += asset( 7500, alice_symbol );
       bob_balance += ASSET( "5.000 TESTS" );
 
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", 3 ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "bob", 1 ) ) == limit_order_idx.end() );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
       validate_database();
 
@@ -871,8 +871,8 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       db->push_transaction( tx, 0 );
 
       alice_balance -= ASSET( "10.000 TESTS" );
-      alice_smt_balance += asset( 11000, alice_symbol );
-      bob_smt_balance -= asset( 12000, alice_symbol );
+      alice_sdc_balance += asset( 11000, alice_symbol );
+      bob_sdc_balance -= asset( 12000, alice_symbol );
       bob_balance += ASSET( "10.000 TESTS" );
 
       limit_order = limit_order_idx.find( std::make_tuple( "bob", 4 ) );
@@ -883,9 +883,9 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       BOOST_REQUIRE( limit_order->for_sale.value == 1000 );
       BOOST_REQUIRE( limit_order->sell_price == op.exchange_rate );
       BOOST_REQUIRE( limit_order->get_market() == std::make_pair( alice_symbol, STEEM_SYMBOL ) );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
       validate_database();
 
@@ -924,9 +924,9 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       db->push_transaction( tx, 0 );
 
       alice_balance -= ASSET( "20.000 TESTS" );
-      alice_smt_balance += asset( 12000, alice_symbol );
+      alice_sdc_balance += asset( 12000, alice_symbol );
 
-      bob_smt_balance -= asset( 11000, alice_symbol );
+      bob_sdc_balance -= asset( 11000, alice_symbol );
       bob_balance += ASSET( "10.909 TESTS" );
 
       limit_order = limit_order_idx.find( std::make_tuple( "alice", 5 ) );
@@ -937,9 +937,9 @@ BOOST_AUTO_TEST_CASE( smt_limit_order_create2_apply )
       BOOST_REQUIRE( limit_order->for_sale.value == 9091 );
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "1.000 TESTS" ), asset( 1100, alice_symbol ) ) );
       BOOST_REQUIRE( limit_order->get_market() == std::make_pair( alice_symbol, STEEM_SYMBOL ) );
-      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( alice_account, alice_symbol ).amount.value == alice_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( alice_account, STEEM_SYMBOL ).amount.value == alice_balance.amount.value );
-      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_smt_balance.amount.value );
+      BOOST_REQUIRE( db->get_balance( bob_account, alice_symbol ).amount.value == bob_sdc_balance.amount.value );
       BOOST_REQUIRE( db->get_balance( bob_account, STEEM_SYMBOL ).amount.value == bob_balance.amount.value );
       validate_database();
    }
@@ -957,11 +957,11 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_validate )
 
       generate_block();
 
-      // Create SMT(s) and continue.
-      auto smts = create_smt_3("alice", alice_private_key);
-      const auto& smt1 = smts[0];
-      const auto& smt2 = smts[1];
-      const auto& smt3 = smts[2];
+      // Create SDC(s) and continue.
+      auto sdcs = create_sdc_3("alice", alice_private_key);
+      const auto& sdc1 = sdcs[0];
+      const auto& sdc2 = sdcs[1];
+      const auto& sdc3 = sdcs[2];
 
       BOOST_TEST_MESSAGE( "Testing empty rewards" );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
@@ -978,13 +978,13 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_validate )
       op.reward_tokens.push_back( ASSET( "0.000000 VESTS" ) );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
-      op.reward_tokens.push_back( asset( 0, smt1 ) );
+      op.reward_tokens.push_back( asset( 0, sdc1 ) );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
-      op.reward_tokens.push_back( asset( 0, smt2 ) );
+      op.reward_tokens.push_back( asset( 0, sdc2 ) );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
-      op.reward_tokens.push_back( asset( 0, smt3 ) );
+      op.reward_tokens.push_back( asset( 0, sdc3 ) );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
 
@@ -1001,15 +1001,15 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_validate )
       op.validate();
       op.reward_tokens.clear();
 
-      op.reward_tokens.push_back( asset( 1, smt1 ) );
+      op.reward_tokens.push_back( asset( 1, sdc1 ) );
       op.validate();
       op.reward_tokens.clear();
 
-      op.reward_tokens.push_back( asset( 1, smt2 ) );
+      op.reward_tokens.push_back( asset( 1, sdc2 ) );
       op.validate();
       op.reward_tokens.clear();
 
-      op.reward_tokens.push_back( asset( 1, smt3 ) );
+      op.reward_tokens.push_back( asset( 1, sdc3 ) );
       op.validate();
       op.reward_tokens.clear();
 
@@ -1017,9 +1017,9 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_validate )
       op.reward_tokens.push_back( ASSET( "1.000 TBD" ) );
       op.reward_tokens.push_back( ASSET( "1.000 TESTS" ) );
       op.reward_tokens.push_back( ASSET( "1.000000 VESTS" ) );
-      op.reward_tokens.push_back( asset( 1, smt1 ) );
-      op.reward_tokens.push_back( asset( 1, smt2 ) );
-      op.reward_tokens.push_back( asset( 1, smt3 ) );
+      op.reward_tokens.push_back( asset( 1, sdc1 ) );
+      op.reward_tokens.push_back( asset( 1, sdc2 ) );
+      op.reward_tokens.push_back( asset( 1, sdc3 ) );
       op.validate();
       op.reward_tokens.clear();
 
@@ -1033,19 +1033,19 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_validate )
       op.reward_tokens.push_back( ASSET( "-1.000000 VESTS" ) );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
-      op.reward_tokens.push_back( asset( -1, smt1 ) );
+      op.reward_tokens.push_back( asset( -1, sdc1 ) );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
-      op.reward_tokens.push_back( asset( -1, smt2 ) );
+      op.reward_tokens.push_back( asset( -1, sdc2 ) );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
-      op.reward_tokens.push_back( asset( -1, smt3 ) );
+      op.reward_tokens.push_back( asset( -1, sdc3 ) );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
 
       BOOST_TEST_MESSAGE( "Testing duplicated reward tokens." );
-      op.reward_tokens.push_back( asset( 1, smt3 ) );
-      op.reward_tokens.push_back( asset( 1, smt3 ) );
+      op.reward_tokens.push_back( asset( 1, sdc3 ) );
+      op.reward_tokens.push_back( asset( 1, sdc3 ) );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
 
@@ -1053,12 +1053,12 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_validate )
       op.reward_tokens.push_back( ASSET( "1.000 TESTS" ) );
       op.reward_tokens.push_back( ASSET( "1.000 TBD" ) );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
-      op.reward_tokens.push_back( asset( 1, smt3 ) );
-      op.reward_tokens.push_back( asset( 1, smt1 ) );
+      op.reward_tokens.push_back( asset( 1, sdc3 ) );
+      op.reward_tokens.push_back( asset( 1, sdc1 ) );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.reward_tokens.clear();
-      op.reward_tokens.push_back( asset( 1, smt1 ) );
-      op.reward_tokens.push_back( asset( -1, smt3 ) );
+      op.reward_tokens.push_back( asset( 1, sdc1 ) );
+      op.reward_tokens.push_back( asset( -1, sdc3 ) );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
    }
    FC_LOG_AND_RETHROW()
@@ -1099,14 +1099,14 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_apply )
       ACTORS( (alice) )
       generate_block();
 
-      auto smts = create_smt_3( "alice", alice_private_key );
-      const auto& smt1 = smts[0];
-      const auto& smt2 = smts[1];
-      const auto& smt3 = smts[2];
+      auto sdcs = create_sdc_3( "alice", alice_private_key );
+      const auto& sdc1 = sdcs[0];
+      const auto& sdc2 = sdcs[1];
+      const auto& sdc3 = sdcs[2];
 
-      FUND_SMT_REWARDS( "alice", asset( 10*std::pow(10, smt1.decimals()), smt1 ) );
-      FUND_SMT_REWARDS( "alice", asset( 10*std::pow(10, smt2.decimals()), smt2 ) );
-      FUND_SMT_REWARDS( "alice", asset( 10*std::pow(10, smt3.decimals()), smt3 ) );
+      FUND_SDC_REWARDS( "alice", asset( 10*std::pow(10, sdc1.decimals()), sdc1 ) );
+      FUND_SDC_REWARDS( "alice", asset( 10*std::pow(10, sdc2.decimals()), sdc2 ) );
+      FUND_SDC_REWARDS( "alice", asset( 10*std::pow(10, sdc3.decimals()), sdc3 ) );
 
       db_plugin->debug_update( []( database& db )
       {
@@ -1134,9 +1134,9 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_apply )
       auto alice_steem = db->get_account( "alice" ).balance;
       auto alice_sbd = db->get_account( "alice" ).sbd_balance;
       auto alice_vests = db->get_account( "alice" ).vesting_shares;
-      auto alice_smt1 = db->get_balance( "alice", smt1 );
-      auto alice_smt2 = db->get_balance( "alice", smt2 );
-      auto alice_smt3 = db->get_balance( "alice", smt3 );
+      auto alice_sdc1 = db->get_balance( "alice", sdc1 );
+      auto alice_sdc2 = db->get_balance( "alice", sdc2 );
+      auto alice_sdc3 = db->get_balance( "alice", sdc3 );
 
       claim_reward_balance2_operation op;
       op.account = "alice";
@@ -1148,10 +1148,10 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_apply )
       op.reward_tokens.push_back( ASSET( "0.000000 VESTS" ) );
       FAIL_WITH_OP(op, alice_private_key, fc::assert_exception);
       op.reward_tokens.clear();
-      // SMTs
-      op.reward_tokens.push_back( asset( 0, smt1 ) );
-      op.reward_tokens.push_back( asset( 0, smt2 ) );
-      op.reward_tokens.push_back( asset( 20*std::pow(10, smt3.decimals()), smt3 ) );
+      // SDCs
+      op.reward_tokens.push_back( asset( 0, sdc1 ) );
+      op.reward_tokens.push_back( asset( 0, sdc2 ) );
+      op.reward_tokens.push_back( asset( 20*std::pow(10, sdc3.decimals()), sdc3 ) );
       FAIL_WITH_OP(op, alice_private_key, fc::assert_exception);
       op.reward_tokens.clear();
 
@@ -1172,17 +1172,17 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_apply )
       validate_database();
       alice_vests += partial_vests;
       op.reward_tokens.clear();
-      // SMTs
-      asset partial_smt2 = asset( 5*std::pow(10, smt2.decimals()), smt2 );
-      op.reward_tokens.push_back( asset( 0, smt1 ) );
-      op.reward_tokens.push_back( partial_smt2 );
-      op.reward_tokens.push_back( asset( 0, smt3 ) );
+      // SDCs
+      asset partial_sdc2 = asset( 5*std::pow(10, sdc2.decimals()), sdc2 );
+      op.reward_tokens.push_back( asset( 0, sdc1 ) );
+      op.reward_tokens.push_back( partial_sdc2 );
+      op.reward_tokens.push_back( asset( 0, sdc3 ) );
       PUSH_OP(op, alice_private_key);
-      BOOST_REQUIRE( db->get_balance( "alice", smt1 ) == alice_smt1 + asset( 0, smt1 ) );
-      BOOST_REQUIRE( db->get_balance( "alice", smt2 ) == alice_smt2 + partial_smt2 );
-      BOOST_REQUIRE( db->get_balance( "alice", smt3 ) == alice_smt3 + asset( 0, smt3 ) );
+      BOOST_REQUIRE( db->get_balance( "alice", sdc1 ) == alice_sdc1 + asset( 0, sdc1 ) );
+      BOOST_REQUIRE( db->get_balance( "alice", sdc2 ) == alice_sdc2 + partial_sdc2 );
+      BOOST_REQUIRE( db->get_balance( "alice", sdc3 ) == alice_sdc3 + asset( 0, sdc3 ) );
       validate_database();
-      alice_smt2 += partial_smt2;
+      alice_sdc2 += partial_sdc2;
       op.reward_tokens.clear();
 
       BOOST_TEST_MESSAGE( "--- Claiming the full reward balance" );
@@ -1202,39 +1202,39 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance2_apply )
       BOOST_REQUIRE( db->get_account( "alice" ).reward_vesting_steem == ASSET( "0.000 TESTS" ) );
       validate_database();
       op.reward_tokens.clear();
-      // SMTs
-      asset full_smt1 = asset( 10*std::pow(10, smt1.decimals()), smt1 );
-      asset full_smt3 = asset( 10*std::pow(10, smt3.decimals()), smt3 );
-      op.reward_tokens.push_back( full_smt1 );
-      op.reward_tokens.push_back( partial_smt2 );
-      op.reward_tokens.push_back( full_smt3 );
+      // SDCs
+      asset full_sdc1 = asset( 10*std::pow(10, sdc1.decimals()), sdc1 );
+      asset full_sdc3 = asset( 10*std::pow(10, sdc3.decimals()), sdc3 );
+      op.reward_tokens.push_back( full_sdc1 );
+      op.reward_tokens.push_back( partial_sdc2 );
+      op.reward_tokens.push_back( full_sdc3 );
       PUSH_OP(op, alice_private_key);
-      BOOST_REQUIRE( db->get_balance( "alice", smt1 ) == alice_smt1 + full_smt1 );
-      BOOST_REQUIRE( db->get_balance( "alice", smt2 ) == alice_smt2 + partial_smt2 );
-      BOOST_REQUIRE( db->get_balance( "alice", smt3 ) == alice_smt3 + full_smt3 );
+      BOOST_REQUIRE( db->get_balance( "alice", sdc1 ) == alice_sdc1 + full_sdc1 );
+      BOOST_REQUIRE( db->get_balance( "alice", sdc2 ) == alice_sdc2 + partial_sdc2 );
+      BOOST_REQUIRE( db->get_balance( "alice", sdc3 ) == alice_sdc3 + full_sdc3 );
       validate_database();
    }
    FC_LOG_AND_RETHROW()
 }
 
-BOOST_AUTO_TEST_CASE( smt_transfer_to_vesting_validate )
+BOOST_AUTO_TEST_CASE( sdc_transfer_to_vesting_validate )
 {
    try
    {
-      BOOST_TEST_MESSAGE( "Testing: transfer_to_vesting_validate with SMT" );
+      BOOST_TEST_MESSAGE( "Testing: transfer_to_vesting_validate with SDC" );
 
       // Dramatis personae
       ACTORS( (alice) )
       generate_block();
-      // Create sample SMTs
-      auto smts = create_smt_3( "alice", alice_private_key );
-      const auto& smt1 = smts[0];
-      // Fund creator with SMTs
-      FUND( "alice", asset( 100, smt1 ) );
+      // Create sample SDCs
+      auto sdcs = create_sdc_3( "alice", alice_private_key );
+      const auto& sdc1 = sdcs[0];
+      // Fund creator with SDCs
+      FUND( "alice", asset( 100, sdc1 ) );
 
       transfer_to_vesting_operation op;
       op.from = "alice";
-      op.amount = asset( 20, smt1 );
+      op.amount = asset( 20, sdc1 );
       op.validate();
 
       // Fail on invalid 'from' account name
@@ -1248,97 +1248,97 @@ BOOST_AUTO_TEST_CASE( smt_transfer_to_vesting_validate )
       op.to = "";
 
       // Fail on vesting symbol (instead of liquid)
-      op.amount = asset( 20, smt1.get_paired_symbol() );
+      op.amount = asset( 20, sdc1.get_paired_symbol() );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
-      op.amount = asset( 20, smt1 );
+      op.amount = asset( 20, sdc1 );
 
       // Fail on 0 amount
-      op.amount = asset( 0, smt1 );
+      op.amount = asset( 0, sdc1 );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
-      op.amount = asset( 20, smt1 );
+      op.amount = asset( 20, sdc1 );
 
       // Fail on negative amount
-      op.amount = asset( -20, smt1 );
+      op.amount = asset( -20, sdc1 );
       STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
-      op.amount = asset( 20, smt1 );
+      op.amount = asset( 20, sdc1 );
 
       validate_database();
    }
    FC_LOG_AND_RETHROW()
 }
 
-// Here would be smt_transfer_to_vesting_authorities if it differed from transfer_to_vesting_authorities
+// Here would be sdc_transfer_to_vesting_authorities if it differed from transfer_to_vesting_authorities
 
-BOOST_AUTO_TEST_CASE( smt_transfer_to_vesting_apply )
+BOOST_AUTO_TEST_CASE( sdc_transfer_to_vesting_apply )
 {
    try
    {
-      BOOST_TEST_MESSAGE( "Testing: smt_transfer_to_vesting_apply" );
+      BOOST_TEST_MESSAGE( "Testing: sdc_transfer_to_vesting_apply" );
 
-      auto test_single_smt = [this] (const asset_symbol_type& liquid_smt, const fc::ecc::private_key& key )
+      auto test_single_sdc = [this] (const asset_symbol_type& liquid_sdc, const fc::ecc::private_key& key )
       {
-         asset_symbol_type vesting_smt = liquid_smt.get_paired_symbol();
-         // Fund creator with SMTs
-         FUND( "alice", asset( 10000, liquid_smt ) );
+         asset_symbol_type vesting_sdc = liquid_sdc.get_paired_symbol();
+         // Fund creator with SDCs
+         FUND( "alice", asset( 10000, liquid_sdc ) );
 
-         const auto& smt_object = db->get< smt_token_object, by_symbol >( liquid_smt );
+         const auto& sdc_object = db->get< sdc_token_object, by_symbol >( liquid_sdc );
 
          // Check pre-vesting balances
-         FC_ASSERT( db->get_balance( "alice", liquid_smt ).amount == 10000, "SMT balance adjusting error" );
-         FC_ASSERT( db->get_balance( "alice", vesting_smt ).amount == 0, "SMT balance adjusting error" );
+         FC_ASSERT( db->get_balance( "alice", liquid_sdc ).amount == 10000, "SDC balance adjusting error" );
+         FC_ASSERT( db->get_balance( "alice", vesting_sdc ).amount == 0, "SDC balance adjusting error" );
 
-         auto smt_shares = asset( smt_object.total_vesting_shares, vesting_smt );
-         auto smt_vests = asset( smt_object.total_vesting_fund_smt, liquid_smt );
-         auto smt_share_price = smt_object.get_vesting_share_price();
-         auto alice_smt_shares = db->get_balance( "alice", vesting_smt );
-         auto bob_smt_shares = db->get_balance( "bob", vesting_smt );;
+         auto sdc_shares = asset( sdc_object.total_vesting_shares, vesting_sdc );
+         auto sdc_vests = asset( sdc_object.total_vesting_fund_sdc, liquid_sdc );
+         auto sdc_share_price = sdc_object.get_vesting_share_price();
+         auto alice_sdc_shares = db->get_balance( "alice", vesting_sdc );
+         auto bob_sdc_shares = db->get_balance( "bob", vesting_sdc );;
 
          // Self transfer Alice's liquid
          transfer_to_vesting_operation op;
          op.from = "alice";
          op.to = "";
-         op.amount = asset( 7500, liquid_smt );
+         op.amount = asset( 7500, liquid_sdc );
          PUSH_OP( op, key );
 
-         auto new_vest = op.amount * smt_share_price;
-         smt_shares += new_vest;
-         smt_vests += op.amount;
-         alice_smt_shares += new_vest;
+         auto new_vest = op.amount * sdc_share_price;
+         sdc_shares += new_vest;
+         sdc_vests += op.amount;
+         alice_sdc_shares += new_vest;
 
-         BOOST_REQUIRE( db->get_balance( "alice", liquid_smt ) == asset( 2500, liquid_smt ) );
-         BOOST_REQUIRE( db->get_balance( "alice", vesting_smt ) == alice_smt_shares );
-         BOOST_REQUIRE( smt_object.total_vesting_fund_smt.value == smt_vests.amount.value );
-         BOOST_REQUIRE( smt_object.total_vesting_shares.value == smt_shares.amount.value );
+         BOOST_REQUIRE( db->get_balance( "alice", liquid_sdc ) == asset( 2500, liquid_sdc ) );
+         BOOST_REQUIRE( db->get_balance( "alice", vesting_sdc ) == alice_sdc_shares );
+         BOOST_REQUIRE( sdc_object.total_vesting_fund_sdc.value == sdc_vests.amount.value );
+         BOOST_REQUIRE( sdc_object.total_vesting_shares.value == sdc_shares.amount.value );
          validate_database();
-         smt_share_price = smt_object.get_vesting_share_price();
+         sdc_share_price = sdc_object.get_vesting_share_price();
 
          // Transfer Alice's liquid to Bob's vests
          op.to = "bob";
-         op.amount = asset( 2000, liquid_smt );
+         op.amount = asset( 2000, liquid_sdc );
          PUSH_OP( op, key );
 
-         new_vest = op.amount * smt_share_price;
-         smt_shares += new_vest;
-         smt_vests += op.amount;
-         bob_smt_shares += new_vest;
+         new_vest = op.amount * sdc_share_price;
+         sdc_shares += new_vest;
+         sdc_vests += op.amount;
+         bob_sdc_shares += new_vest;
 
-         BOOST_REQUIRE( db->get_balance( "alice", liquid_smt ) == asset( 500, liquid_smt ) );
-         BOOST_REQUIRE( db->get_balance( "alice", vesting_smt ) == alice_smt_shares );
-         BOOST_REQUIRE( db->get_balance( "bob", liquid_smt ) == asset( 0, liquid_smt ) );
-         BOOST_REQUIRE( db->get_balance( "bob", vesting_smt ) == bob_smt_shares );
-         BOOST_REQUIRE( smt_object.total_vesting_fund_smt.value == smt_vests.amount.value );
-         BOOST_REQUIRE( smt_object.total_vesting_shares.value == smt_shares.amount.value );
+         BOOST_REQUIRE( db->get_balance( "alice", liquid_sdc ) == asset( 500, liquid_sdc ) );
+         BOOST_REQUIRE( db->get_balance( "alice", vesting_sdc ) == alice_sdc_shares );
+         BOOST_REQUIRE( db->get_balance( "bob", liquid_sdc ) == asset( 0, liquid_sdc ) );
+         BOOST_REQUIRE( db->get_balance( "bob", vesting_sdc ) == bob_sdc_shares );
+         BOOST_REQUIRE( sdc_object.total_vesting_fund_sdc.value == sdc_vests.amount.value );
+         BOOST_REQUIRE( sdc_object.total_vesting_shares.value == sdc_shares.amount.value );
          validate_database();
       };
 
       ACTORS( (alice)(bob) )
       generate_block();
 
-      // Create sample SMTs
-      auto smts = create_smt_3( "alice", alice_private_key );
-      test_single_smt( smts[0], alice_private_key);
-      test_single_smt( smts[1], alice_private_key );
-      test_single_smt( smts[2], alice_private_key );
+      // Create sample SDCs
+      auto sdcs = create_sdc_3( "alice", alice_private_key );
+      test_single_sdc( sdcs[0], alice_private_key);
+      test_single_sdc( sdcs[1], alice_private_key );
+      test_single_sdc( sdcs[2], alice_private_key );
    }
    FC_LOG_AND_RETHROW()
 }

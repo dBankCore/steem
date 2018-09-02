@@ -91,7 +91,7 @@ namespace steem { namespace protocol {
    {
       typedef void result_type;
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
       void operator()( const allowed_vote_assets& va) const
       {
          va.validate();
@@ -194,8 +194,8 @@ namespace steem { namespace protocol {
    {
       validate_account_name( from );
       FC_ASSERT( amount.symbol == STEEM_SYMBOL ||
-                 ( amount.symbol.space() == asset_symbol_type::smt_nai_space && amount.symbol.is_vesting() == false ),
-                 "Amount must be BEX or SMT liquid" );
+                 ( amount.symbol.space() == asset_symbol_type::sdc_nai_space && amount.symbol.is_vesting() == false ),
+                 "Amount must be BEX or SDC liquid" );
       if ( to != account_name_type() ) validate_account_name( to );
       FC_ASSERT( amount.amount > 0, "Must transfer a nonzero amount" );
    }
@@ -478,14 +478,14 @@ namespace steem { namespace protocol {
       FC_ASSERT(  ( is_asset_type( amount_to_sell, STEEM_SYMBOL ) && is_asset_type( min_to_receive, SBD_SYMBOL ) )
                || ( is_asset_type( amount_to_sell, SBD_SYMBOL ) && is_asset_type( min_to_receive, STEEM_SYMBOL ) )
                || (
-                     amount_to_sell.symbol.space() == asset_symbol_type::smt_nai_space
+                     amount_to_sell.symbol.space() == asset_symbol_type::sdc_nai_space
                      && is_asset_type( min_to_receive, STEEM_SYMBOL )
                   )
                || (
                      is_asset_type( amount_to_sell, STEEM_SYMBOL )
-                     && min_to_receive.symbol.space() == asset_symbol_type::smt_nai_space
+                     && min_to_receive.symbol.space() == asset_symbol_type::sdc_nai_space
                   ),
-               "Limit order must be for the BEX:BBD or SMT:(BEX/BBD) market" );
+               "Limit order must be for the BEX:BBD or SDC:(BEX/BBD) market" );
 
       (amount_to_sell / min_to_receive).validate();
    }
@@ -500,14 +500,14 @@ namespace steem { namespace protocol {
       FC_ASSERT(  ( is_asset_type( amount_to_sell, STEEM_SYMBOL ) && is_asset_type( exchange_rate.quote, SBD_SYMBOL ) )
                || ( is_asset_type( amount_to_sell, SBD_SYMBOL ) && is_asset_type( exchange_rate.quote, STEEM_SYMBOL ) )
                || (
-                     amount_to_sell.symbol.space() == asset_symbol_type::smt_nai_space
+                     amount_to_sell.symbol.space() == asset_symbol_type::sdc_nai_space
                      && is_asset_type( exchange_rate.quote, STEEM_SYMBOL )
                   )
                || (
                      is_asset_type( amount_to_sell, STEEM_SYMBOL )
-                     && exchange_rate.quote.symbol.space() == asset_symbol_type::smt_nai_space
+                     && exchange_rate.quote.symbol.space() == asset_symbol_type::sdc_nai_space
                   ),
-               "Limit order must be for the BEX:BBD or SMT:(BEX/BBD) market" );
+               "Limit order must be for the BEX:BBD or SDC:(BEX/BBD) market" );
 
       FC_ASSERT( ( amount_to_sell * exchange_rate ).amount > 0, "Amount to sell cannot round to 0 when traded" );
    }
@@ -670,7 +670,7 @@ namespace steem { namespace protocol {
       FC_ASSERT( reward_steem.amount > 0 || reward_sbd.amount > 0 || reward_vests.amount > 0, "Must claim something." );
    }
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
    void claim_reward_balance2_operation::validate()const
    {
       validate_account_name( account );

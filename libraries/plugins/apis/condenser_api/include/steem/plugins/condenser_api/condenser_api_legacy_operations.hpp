@@ -25,7 +25,7 @@ namespace steem { namespace plugins { namespace condenser_api {
 
    typedef static_variant<
             protocol::comment_payout_beneficiaries
-   #ifdef STEEM_ENABLE_SMT
+   #ifdef STEEM_ENABLE_SDC
             ,protocol::allowed_vote_assets
    #endif
          > legacy_comment_options_extensions;
@@ -1269,7 +1269,7 @@ namespace steem { namespace plugins { namespace condenser_api {
       }
 
 
-      // Should only be SMT ops
+      // Should only be SDC ops
       template< typename T >
       bool operator()( const T& )const { return false; }
 };

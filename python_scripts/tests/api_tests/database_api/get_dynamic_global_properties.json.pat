@@ -17,7 +17,7 @@
     "recent_slots_filled": "340282366920938463463374607431768211455",
     "sbd_interest_rate": 0,
     "sbd_print_rate": 10000,
-    "smt_creation_fee": "1000.000 TBD",
+    "sdc_creation_fee": "1000.000 TBD",
     "time": "2016-01-01T00:00:00",
     "total_pow": "18446744073709551615",
     "total_reward_fund_steem": "0.000 TESTS",

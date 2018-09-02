@@ -1,14 +1,14 @@
 #pragma once
 
 #include <steem/chain/steem_object_types.hpp>
-#include <steem/protocol/smt_operations.hpp>
+#include <steem/protocol/sdc_operations.hpp>
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
 
 namespace steem { namespace chain {
 
 /**
- * Class responsible for holding regular (i.e. non-reward) balance of SMT for given account.
+ * Class responsible for holding regular (i.e. non-reward) balance of SDC for given account.
  * It has not been unified with reward balance object counterpart, due to different number
  * of fields needed to hold balances (2 for regular, 3 for reward).
  */
@@ -46,7 +46,7 @@ public:
    }
    void add_vesting( const asset& vesting_shares, const asset& vesting_value )
    {
-      // There's no need to store vesting value (in liquid SMT variant) in regular balance.
+      // There's no need to store vesting value (in liquid SDC variant) in regular balance.
       vesting += vesting_shares;
    }
    ///@}
@@ -56,7 +56,7 @@ public:
 };
 
 /**
- * Class responsible for holding reward balance of SMT for given account.
+ * Class responsible for holding reward balance of SDC for given account.
  * It has not been unified with regular balance object counterpart, due to different number
  * of fields needed to hold balances (2 for regular, 3 for reward).
  */

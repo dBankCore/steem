@@ -68,8 +68,8 @@ class database_api_impl
          (verify_authority)
          (verify_account_authority)
          (verify_signatures)
-#ifdef STEEM_ENABLE_SMT
-         (get_smt_next_identifier)
+#ifdef STEEM_ENABLE_SDC
+         (get_sdc_next_identifier)
 #endif
       )
 
@@ -1440,17 +1440,17 @@ DEFINE_API_IMPL( database_api_impl, verify_signatures )
    return result;
 }
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
 //////////////////////////////////////////////////////////////////////
 //                                                                  //
-// SMT                                                              //
+// SDC                                                              //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 
-DEFINE_API_IMPL( database_api_impl, get_smt_next_identifier )
+DEFINE_API_IMPL( database_api_impl, get_sdc_next_identifier )
 {
-   get_smt_next_identifier_return result;
-   result.nais = _db.get_smt_next_identifier();
+   get_sdc_next_identifier_return result;
+   result.nais = _db.get_sdc_next_identifier();
    return result;
 }
 #endif
@@ -1503,8 +1503,8 @@ DEFINE_READ_APIS( database_api,
    (verify_authority)
    (verify_account_authority)
    (verify_signatures)
-#ifdef STEEM_ENABLE_SMT
-   (get_smt_next_identifier)
+#ifdef STEEM_ENABLE_SDC
+   (get_sdc_next_identifier)
 #endif
 )
 

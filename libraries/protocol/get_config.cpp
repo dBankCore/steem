@@ -16,13 +16,13 @@ fc::variant_object get_config()
 #else
    result[ "IS_TEST_NET" ] = false;
 #endif
-#ifdef STEEM_ENABLE_SMT
-   result[ "STEEM_ENABLE_SMT" ] = true;
-   result["SMT_VESTING_WITHDRAW_INTERVAL_SECONDS"] = SMT_VESTING_WITHDRAW_INTERVAL_SECONDS;
-   result["SMT_UPVOTE_LOCKOUT"] = SMT_UPVOTE_LOCKOUT;
-   result["SMT_MAX_VOTABLE_ASSETS"] = SMT_MAX_VOTABLE_ASSETS;
+#ifdef STEEM_ENABLE_SDC
+   result[ "STEEM_ENABLE_SDC" ] = true;
+   result["SDC_VESTING_WITHDRAW_INTERVAL_SECONDS"] = SDC_VESTING_WITHDRAW_INTERVAL_SECONDS;
+   result["SDC_UPVOTE_LOCKOUT"] = SDC_UPVOTE_LOCKOUT;
+   result["SDC_MAX_VOTABLE_ASSETS"] = SDC_MAX_VOTABLE_ASSETS;
 #else
-   result[ "STEEM_ENABLE_SMT" ] = false;
+   result[ "STEEM_ENABLE_SDC" ] = false;
 #endif
 
    result["SBD_SYMBOL"] = SBD_SYMBOL;

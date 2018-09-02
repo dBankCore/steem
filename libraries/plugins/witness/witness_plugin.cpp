@@ -122,7 +122,7 @@ namespace detail {
       const comment_object& _c;
       const database& _db;
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
       void operator()( const allowed_vote_assets& va) const
       {
          FC_TODO("To be implemented  suppport for allowed_vote_assets");

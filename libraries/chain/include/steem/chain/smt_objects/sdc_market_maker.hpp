@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
 
 #include <cstdint>
 #include <utility>

@@ -14,7 +14,7 @@ namespace steem { namespace chain {
    using protocol::beneficiary_route_type;
    using chainbase::t_vector;
    using chainbase::t_pair;
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
    using protocol::votable_asset_info;
 #endif
 
@@ -52,7 +52,7 @@ namespace steem { namespace chain {
          template< typename Constructor, typename Allocator >
          comment_object( Constructor&& c, allocator< Allocator > a )
             :category( a ), parent_permlink( a ), permlink( a ), beneficiaries( a )
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
             , allowed_vote_assets( a )
 #endif
          {
@@ -107,7 +107,7 @@ namespace steem { namespace chain {
 
          using t_beneficiaries = t_vector< beneficiary_route_type >;
          t_beneficiaries   beneficiaries;
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
          using t_votable_assets = t_vector< t_pair< asset_symbol_type, votable_asset_info > >;
          t_votable_assets  allowed_vote_assets;
 #endif
@@ -260,7 +260,7 @@ namespace steem { namespace chain {
 
 } } // steem::chain
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
 FC_REFLECT( steem::chain::comment_object,
              (id)(author)(permlink)
              (category)(parent_author)(parent_permlink)
@@ -306,7 +306,7 @@ namespace helpers
    public:
       typedef steem::chain::comment_index IndexType;
       typedef typename steem::chain::comment_object::t_beneficiaries t_beneficiaries;
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
       typedef typename steem::chain::comment_object::t_votable_assets t_votable_assets;
 #endif
       index_statistic_info gather_statistics(const IndexType& index, bool onlyStaticInfo) const
@@ -322,7 +322,7 @@ namespace helpers
                info._item_additional_allocation += o.parent_permlink.capacity()*sizeof(shared_string::value_type);
                info._item_additional_allocation += o.permlink.capacity()*sizeof(shared_string::value_type);
                info._item_additional_allocation += o.beneficiaries.capacity()*sizeof(t_beneficiaries::value_type);
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
                info._item_additional_allocation += o.allowed_vote_assets.capacity()*sizeof(t_votable_assets::value_type);
 #endif
             }

@@ -21,7 +21,7 @@ endif( MSVC )
 ## SORT .cpp by most likely to change / break compile
 add_library( steem_protocol
 
-             smt_operations.cpp
+             sdc_operations.cpp
              steem_operations.cpp
              types.cpp
              schema_types.cpp

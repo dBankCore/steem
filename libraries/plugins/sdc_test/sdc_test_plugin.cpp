@@ -1,21 +1,21 @@
-#include <steem/plugins/smt_test/smt_test_plugin.hpp>
-#include <steem/plugins/smt_test/smt_test_objects.hpp>
+#include <steem/plugins/sdc_test/sdc_test_plugin.hpp>
+#include <steem/plugins/sdc_test/sdc_test_objects.hpp>
 
 #include <steem/chain/account_object.hpp>
 #include <steem/chain/database.hpp>
 #include <steem/chain/index.hpp>
 #include <steem/chain/operation_notification.hpp>
 
-#include <steem/protocol/smt_operations.hpp>
+#include <steem/protocol/sdc_operations.hpp>
 
-namespace steem { namespace plugins { namespace smt_test {
+namespace steem { namespace plugins { namespace sdc_test {
 
 using namespace steem::protocol;
 
-class smt_test_plugin_impl
+class sdc_test_plugin_impl
 {
    public:
-      smt_test_plugin_impl( smt_test_plugin& _plugin ) :
+      sdc_test_plugin_impl( sdc_test_plugin& _plugin ) :
          _db( appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db() ),
          _self( _plugin ) {}
 
@@ -27,14 +27,14 @@ class smt_test_plugin_impl
 
       flat_set< public_key_type >   cached_keys;
       chain::database&     _db;
-      smt_test_plugin&              _self;
+      sdc_test_plugin&              _self;
 };
 
 struct pre_operation_visitor
 {
-   smt_test_plugin_impl& _plugin;
+   sdc_test_plugin_impl& _plugin;
 
-   pre_operation_visitor( smt_test_plugin_impl& plugin ) : _plugin( plugin ) {}
+   pre_operation_visitor( sdc_test_plugin_impl& plugin ) : _plugin( plugin ) {}
 
    typedef void result_type;
 
@@ -44,9 +44,9 @@ struct pre_operation_visitor
 
 struct post_operation_visitor
 {
-   smt_test_plugin_impl& _plugin;
+   sdc_test_plugin_impl& _plugin;
 
-   post_operation_visitor( smt_test_plugin_impl& plugin ) : _plugin( plugin ) {}
+   post_operation_visitor( sdc_test_plugin_impl& plugin ) : _plugin( plugin ) {}
 
    typedef void result_type;
 
@@ -54,23 +54,23 @@ struct post_operation_visitor
    void operator()( const T& )const {}
 };
 
-void smt_test_plugin_impl::on_pre_apply_operation( const operation_notification& note )
+void sdc_test_plugin_impl::on_pre_apply_operation( const operation_notification& note )
 {
    note.op.visit( pre_operation_visitor( *this ) );
 }
 
-void smt_test_plugin_impl::on_post_apply_operation( const operation_notification& note )
+void sdc_test_plugin_impl::on_post_apply_operation( const operation_notification& note )
 {
    note.op.visit( post_operation_visitor( *this ) );
 }
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef STEEM_ENABLE_SDC
 
 void test_alpha()
 {
    vector<operation>  operations;
 
-   smt_capped_generation_policy gpolicy;
+   sdc_capped_generation_policy gpolicy;
    uint64_t max_supply = STEEM_MAX_SHARE_SUPPLY / 6000;
 
    // set steem unit, total is 100 STEEM-satoshis = 0.1 STEEM
@@ -96,7 +96,7 @@ void test_alpha()
    gpolicy.max_unit_ratio = 1000;
 
 
-   smt_setup_operation setup_op;
+   sdc_setup_operation setup_op;
    setup_op.control_account = "alpha";
    setup_op.decimal_places = 4;
 
@@ -108,10 +108,10 @@ void test_alpha()
 
    setup_op.validate();
 
-   smt_cap_reveal_operation reveal_min_op;
+   sdc_cap_reveal_operation reveal_min_op;
    reveal_min_op.control_account = "alpha";
    reveal_min_op.cap.fillin_nonhidden_value( 1 );
-   smt_cap_reveal_operation reveal_cap_op;
+   sdc_cap_reveal_operation reveal_cap_op;
    reveal_cap_op.control_account = "alpha";
    reveal_cap_op.cap.fillin_nonhidden_value( max_supply );
 
@@ -126,7 +126,7 @@ void test_beta()
 {
    vector<operation>  operations;
 
-   smt_capped_generation_policy gpolicy;
+   sdc_capped_generation_policy gpolicy;
 
    // set steem unit, total is 100 STEEM-satoshis = 0.1 STEEM
    gpolicy.pre_soft_cap_unit.steem_unit.emplace( "fred"  , 3 );
@@ -150,7 +150,7 @@ void test_beta()
    gpolicy.min_unit_ratio = 50;
    gpolicy.max_unit_ratio = 100;
 
-   smt_setup_operation setup_op;
+   sdc_setup_operation setup_op;
    setup_op.control_account = "beta";
    setup_op.decimal_places = 4;
 
@@ -162,10 +162,10 @@ void test_beta()
 
    setup_op.validate();
 
-   smt_cap_reveal_operation reveal_min_op;
+   sdc_cap_reveal_operation reveal_min_op;
    reveal_min_op.control_account = "beta";
    reveal_min_op.cap.fillin_nonhidden_value( 5000000 );
-   smt_cap_reveal_operation reveal_cap_op;
+   sdc_cap_reveal_operation reveal_cap_op;
    reveal_cap_op.control_account = "beta";
    reveal_cap_op.cap.fillin_nonhidden_value( 30000000 );
 
@@ -180,7 +180,7 @@ void test_delta()
 {
    vector<operation>  operations;
 
-   smt_capped_generation_policy gpolicy;
+   sdc_capped_generation_policy gpolicy;
 
    // set steem unit, total is 1 STEEM-satoshi = 0.001 STEEM
    gpolicy.pre_soft_cap_unit.steem_unit.emplace( "founder", 1 );
@@ -201,7 +201,7 @@ void test_delta()
    gpolicy.min_unit_ratio = 1000;
    gpolicy.max_unit_ratio = 1000;
 
-   smt_setup_operation setup_op;
+   sdc_setup_operation setup_op;
    setup_op.control_account = "delta";
    setup_op.decimal_places = 5;
 
@@ -213,10 +213,10 @@ void test_delta()
 
    setup_op.validate();
 
-   smt_cap_reveal_operation reveal_min_op;
+   sdc_cap_reveal_operation reveal_min_op;
    reveal_min_op.control_account = "delta";
    reveal_min_op.cap.fillin_nonhidden_value( 10000000 );
-   smt_cap_reveal_operation reveal_cap_op;
+   sdc_cap_reveal_operation reveal_cap_op;
    reveal_cap_op.control_account = "delta";
    reveal_cap_op.cap.fillin_nonhidden_value( 10000000 );
 
@@ -239,7 +239,7 @@ void dump_operation_json()
 }
 #endif
 
-smt_test_plugin::smt_test_plugin()
+sdc_test_plugin::sdc_test_plugin()
 {
    try
    {
@@ -251,16 +251,16 @@ smt_test_plugin::smt_test_plugin()
    }
 }
 
-smt_test_plugin::~smt_test_plugin() {}
+sdc_test_plugin::~sdc_test_plugin() {}
 
-void smt_test_plugin::set_program_options( options_description& cli, options_description& cfg ){}
+void sdc_test_plugin::set_program_options( options_description& cli, options_description& cfg ){}
 
-void smt_test_plugin::plugin_initialize( const boost::program_options::variables_map& options )
+void sdc_test_plugin::plugin_initialize( const boost::program_options::variables_map& options )
 {
-   my = std::make_unique< smt_test_plugin_impl >( *this );
+   my = std::make_unique< sdc_test_plugin_impl >( *this );
    try
    {
-      ilog( "Initializing smt_test plugin" );
+      ilog( "Initializing sdc_test plugin" );
       chain::database& db = appbase::app().get_plugin< steem::plugins::chain::chain_plugin >().db();
 
       db.add_pre_apply_operation_handler( [&]( const operation_notification& note ){ my->on_pre_apply_operation( note ); }, *this, 0 );
@@ -271,8 +271,8 @@ void smt_test_plugin::plugin_initialize( const boost::program_options::variables
    FC_CAPTURE_AND_RETHROW()
 }
 
-void smt_test_plugin::plugin_startup() {}
+void sdc_test_plugin::plugin_startup() {}
 
-void smt_test_plugin::plugin_shutdown() {}
+void sdc_test_plugin::plugin_shutdown() {}
 
-} } } // steem::plugins::smt_test
+} } } // steem::plugins::sdc_test
