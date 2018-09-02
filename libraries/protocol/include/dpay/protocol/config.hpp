@@ -85,19 +85,19 @@
 #define DPAY_START_VESTING_BLOCK             (DPAY_BLOCKS_PER_DAY * 7)
 #define DPAY_START_MINER_VOTING_BLOCK        (DPAY_BLOCKS_PER_DAY * 30)
 
-#define DPAY_INIT_MINER_NAME                 "initminer"
-#define DPAY_NUM_INIT_MINERS                 1
+#define DPAY_INIT_MINER_NAME                 "dpayminer"
+#define DPAY_NUM_INIT_MINERS                 21
 #define DPAY_INIT_TIME                       (fc::time_point_sec());
 
 #define DPAY_MAX_WITNESSES                   21
 
-#define DPAY_MAX_VOTED_WITNESSES_HF0         19
-#define DPAY_MAX_MINER_WITNESSES_HF0         1
-#define DPAY_MAX_RUNNER_WITNESSES_HF0        1
+#define DPAY_MAX_VOTED_WITNESSES_HF0         21
+#define DPAY_MAX_MINER_WITNESSES_HF0         21
+#define DPAY_MAX_RUNNER_WITNESSES_HF0        21
 
-#define DPAY_MAX_VOTED_WITNESSES_HF17        20
-#define DPAY_MAX_MINER_WITNESSES_HF17        0
-#define DPAY_MAX_RUNNER_WITNESSES_HF17       1
+#define DPAY_MAX_VOTED_WITNESSES_HF17        21
+#define DPAY_MAX_MINER_WITNESSES_HF17        21
+#define DPAY_MAX_RUNNER_WITNESSES_HF17       21
 
 #define DPAY_HARDFORK_REQUIRED_WITNESSES     17 // 17 of the 21 dpos witnesses (20 elected and 1 virtual time) required for hardfork. This guarantees 75% participation on all subsequent rounds.
 #define DPAY_MAX_TIME_UNTIL_EXPIRATION       (60*60) // seconds,  aka: 1 hour
