@@ -86,7 +86,7 @@
 #define DPAY_START_MINER_VOTING_BLOCK        (DPAY_BLOCKS_PER_DAY * 30)
 
 #define DPAY_INIT_MINER_NAME                 "dpayminer"
-#define DPAY_NUM_INIT_MINERS                 21
+#define DPAY_NUM_INIT_MINERS                 1
 #define DPAY_INIT_TIME                       (fc::time_point_sec());
 
 #define DPAY_MAX_WITNESSES                   21
