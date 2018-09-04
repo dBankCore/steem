@@ -2864,6 +2864,7 @@ void database::init_genesis( uint64_t init_supply )
       create< hardfork_property_object >( [&](hardfork_property_object& hpo )
       {
          hpo.processed_hardforks.push_back( DPAY_GENESIS_TIME );
+
       } );
 
       // Create witness scheduler

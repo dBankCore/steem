@@ -1,7 +1,5 @@
 FROM phusion/baseimage:0.9.19
 
-#ARG DPAYD_BLOCKCHAIN=https://example.com/dpayd-blockchain.tbz2
-
 ARG DPAY_STATIC_BUILD=ON
 ENV DPAY_STATIC_BUILD ${DPAY_STATIC_BUILD}
 ARG BUILD_STEP

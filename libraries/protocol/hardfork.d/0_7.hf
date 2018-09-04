@@ -3,8 +3,7 @@
 #define DPAY_HARDFORK_0_7__117 DPAY_HARDFORK_0_7
 #define DPAY_FIRST_CASHOUT_TIME DPAY_HARDFORK_0_7
 
-// Mon Jul  4 00:00:00 UTC 2016
-// Sun Jul  3 20:00:00 EDT 2016
-#define DPAY_HARDFORK_0_7_TIME 1467590400  //July 4th
+// Thursday, April 4, 2019 12:00:00 AM
+#define DPAY_HARDFORK_0_7_TIME 1554336000  //April 4
 #define DPAY_HARDFORK_0_7_VERSION hardfork_version( 0, 7 )
 #endif
