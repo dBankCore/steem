@@ -1,8 +1,8 @@
-#include <steem/protocol/operations.hpp>
+#include <dpay/protocol/operations.hpp>
 
-#include <steem/protocol/operation_util_impl.hpp>
+#include <dpay/protocol/operation_util_impl.hpp>
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 struct is_market_op_visitor {
    typedef bool result_type;
@@ -32,6 +32,6 @@ bool is_virtual_operation( const operation& op )
    return op.visit( is_vop_visitor() );
 }
 
-} } // steem::protocol
+} } // dpay::protocol
 
-STEEM_DEFINE_OPERATION_TYPE( steem::protocol::operation )
+DPAY_DEFINE_OPERATION_TYPE( dpay::protocol::operation )

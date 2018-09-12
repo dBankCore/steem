@@ -6,7 +6,7 @@ Use docker:
 ```
 docker run \
     -d -p 6620:6620 -p 1776:1776 --name dpayd-default \
-    --restart unless-stopped steemit/steem
+    --restart unless-stopped dpay/dpay
 ```
 #### Low memory node?
 Above runs low memory node, which is suitable for:
@@ -20,7 +20,7 @@ docker run \
     --env USE_WAY_TOO_MUCH_RAM=1 --env USE_FULL_WEB_NODE=1 \
     -d -p 6620:6620 -p 1776:1776 --name dpayd-full \
     --restart unless-stopped \
-    steemit/steem
+    dpay/dpay
 ```
 ### Configure for your use case
 #### Full API node
@@ -44,7 +44,7 @@ This configuration exists in Docker with the following command
 docker run -d --env TRACK_ACCOUNT="yourexchangeid" \
     --name dpayd \
     --restart unless-stopped \
-    steemit/steem
+    dpay/dpay
 ```
 
 ### Resources usage

@@ -12,7 +12,7 @@ from time import time
 
 # local imports
 from dpaydebugnode import DebugNode
-from steemapi.steemnoderpc import SteemNodeRPC
+from dpayapi.dpaynoderpc import DPayNodeRPC
 
 WAITING = True
 

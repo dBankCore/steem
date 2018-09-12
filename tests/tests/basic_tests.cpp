@@ -24,10 +24,10 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <steem/chain/database.hpp>
-#include <steem/protocol/protocol.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/protocol/protocol.hpp>
 
-#include <steem/protocol/steem_operations.hpp>
+#include <dpay/protocol/dpay_operations.hpp>
 
 #include <fc/crypto/digest.hpp>
 #include <fc/crypto/hex.hpp>
@@ -36,9 +36,9 @@
 #include <algorithm>
 #include <random>
 
-using namespace steem;
-using namespace steem::chain;
-using namespace steem::protocol;
+using namespace dpay;
+using namespace dpay::chain;
+using namespace dpay::protocol;
 
 BOOST_FIXTURE_TEST_SUITE( basic_tests, clean_database_fixture )
 

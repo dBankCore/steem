@@ -7,7 +7,7 @@ PAT_FILE=$TEST_DIR/get_ops_in_block.json.pat
 
 function print_help_and_quit {
    echo "Usage: last_block_number [--pre-appbase] 1st_node_address [--pre-appbase] 2nd_node_address"
-   echo "Example: 10000 --pre-appbase https://dpayd.steemit.com http://127.0.0.1:1776"
+   echo "Example: 10000 --pre-appbase https://dpayd.dpays.io http://127.0.0.1:1776"
    exit $EXIT_CODE
 }
 
@@ -31,7 +31,7 @@ case $# in
       NODE2=$4
       YAML_FILE1=$TEST_DIR/compare_block_old.yaml
       COMPARATOR2=comparator_appbase_ops
-   else 
+   else
       if [ $3 == "--pre-appbase" ]
       then
          # Here we switch nodes to avoid writing reversed comparator_appbase_ops

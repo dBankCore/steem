@@ -1,9 +1,9 @@
 
-#include <steem/schema/schema.hpp>
+#include <dpay/schema/schema.hpp>
 
 #include <set>
 
-namespace steem { namespace schema {
+namespace dpay { namespace schema {
 
 namespace detail {
 

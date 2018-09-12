@@ -2,8 +2,8 @@ FROM phusion/baseimage:0.9.19
 
 #ARG DPAYD_BLOCKCHAIN=https://example.com/dpayd-blockchain.tbz2
 
-ARG STEEM_STATIC_BUILD=ON
-ENV STEEM_STATIC_BUILD ${STEEM_STATIC_BUILD}
+ARG DPAY_STATIC_BUILD=ON
+ENV DPAY_STATIC_BUILD ${DPAY_STATIC_BUILD}
 ARG BUILD_STEP
 ENV BUILD_STEP ${BUILD_STEP}
 
@@ -51,17 +51,17 @@ RUN \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     pip3 install gcovr
 
-ADD . /usr/local/src/steem
+ADD . /usr/local/src/dpay
 
 RUN \
     if [ "$BUILD_STEP" = "1" ] || [ ! "$BUILD_STEP" ] ; then \
-    cd /usr/local/src/steem && \
+    cd /usr/local/src/dpay && \
     git submodule update --init --recursive && \
     mkdir build && \
     cd build && \
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
-        -DBUILD_STEEM_TESTNET=ON \
+        -DBUILD_DPAY_TESTNET=ON \
         -DLOW_MEMORY_NODE=OFF \
         -DCLEAR_VOTES=ON \
         -DSKIP_BY_TX_ID=ON \
@@ -70,53 +70,53 @@ RUN \
     ./tests/chain_test && \
     ./tests/plugin_test && \
     ./programs/util/test_fixed_string && \
-    cd /usr/local/src/steem && \
+    cd /usr/local/src/dpay && \
     doxygen && \
     PYTHONPATH=programs/build_helpers \
-    python3 -m steem_build_helpers.check_reflect && \
+    python3 -m dpay_build_helpers.check_reflect && \
     programs/build_helpers/get_config_check.sh && \
-    rm -rf /usr/local/src/steem/build ; \
+    rm -rf /usr/local/src/dpay/build ; \
     fi
 
 RUN \
     if [ "$BUILD_STEP" = "2" ] || [ ! "$BUILD_STEP" ] ; then \
-    cd /usr/local/src/steem && \
+    cd /usr/local/src/dpay && \
     git submodule update --init --recursive && \
     mkdir build && \
     cd build && \
     cmake \
         -DCMAKE_INSTALL_PREFIX=/usr/local/dpayd-testnet \
         -DCMAKE_BUILD_TYPE=Release \
-        -DBUILD_STEEM_TESTNET=ON \
+        -DBUILD_DPAY_TESTNET=ON \
         -DLOW_MEMORY_NODE=OFF \
         -DCLEAR_VOTES=ON \
         -DSKIP_BY_TX_ID=ON \
         -DENABLE_SMT_SUPPORT=ON \
-        -DSTEEM_STATIC_BUILD=${STEEM_STATIC_BUILD} \
+        -DDPAY_STATIC_BUILD=${DPAY_STATIC_BUILD} \
         .. && \
     make -j$(nproc) chain_test test_fixed_string plugin_test && \
     make install && \
     ./tests/chain_test && \
     ./tests/plugin_test && \
     ./programs/util/test_fixed_string && \
-    cd /usr/local/src/steem && \
+    cd /usr/local/src/dpay && \
     doxygen && \
     PYTHONPATH=programs/build_helpers \
-    python3 -m steem_build_helpers.check_reflect && \
+    python3 -m dpay_build_helpers.check_reflect && \
     programs/build_helpers/get_config_check.sh && \
-    rm -rf /usr/local/src/steem/build ; \
+    rm -rf /usr/local/src/dpay/build ; \
     fi
 
 RUN \
     if [ "$BUILD_STEP" = "1" ] || [ ! "$BUILD_STEP" ] ; then \
-    cd /usr/local/src/steem && \
+    cd /usr/local/src/dpay && \
     git submodule update --init --recursive && \
     mkdir build && \
     cd build && \
     cmake \
         -DCMAKE_BUILD_TYPE=Debug \
         -DENABLE_COVERAGE_TESTING=ON \
-        -DBUILD_STEEM_TESTNET=ON \
+        -DBUILD_DPAY_TESTNET=ON \
         -DLOW_MEMORY_NODE=OFF \
         -DCLEAR_VOTES=ON \
         -DSKIP_BY_TX_ID=ON \
@@ -127,13 +127,13 @@ RUN \
     ./tests/plugin_test && \
     mkdir -p /var/cobertura && \
     gcovr --object-directory="../" --root=../ --xml-pretty --gcov-exclude=".*tests.*" --gcov-exclude=".*fc.*" --gcov-exclude=".*app*" --gcov-exclude=".*net*" --gcov-exclude=".*plugins*" --gcov-exclude=".*schema*" --gcov-exclude=".*time*" --gcov-exclude=".*utilities*" --gcov-exclude=".*wallet*" --gcov-exclude=".*programs*" --gcov-exclude=".*vendor*" --output="/var/cobertura/coverage.xml" && \
-    cd /usr/local/src/steem && \
-    rm -rf /usr/local/src/steem/build ; \
+    cd /usr/local/src/dpay && \
+    rm -rf /usr/local/src/dpay/build ; \
     fi
 
 RUN \
     if [ "$BUILD_STEP" = "2" ] || [ ! "$BUILD_STEP" ] ; then \
-    cd /usr/local/src/steem && \
+    cd /usr/local/src/dpay && \
     git submodule update --init --recursive && \
     mkdir build && \
     cd build && \
@@ -143,8 +143,8 @@ RUN \
         -DLOW_MEMORY_NODE=ON \
         -DCLEAR_VOTES=ON \
         -DSKIP_BY_TX_ID=OFF \
-        -DBUILD_STEEM_TESTNET=OFF \
-        -DSTEEM_STATIC_BUILD=${STEEM_STATIC_BUILD} \
+        -DBUILD_DPAY_TESTNET=OFF \
+        -DDPAY_STATIC_BUILD=${DPAY_STATIC_BUILD} \
         .. \
     && \
     make -j$(nproc) && \
@@ -166,13 +166,13 @@ RUN \
         -DLOW_MEMORY_NODE=OFF \
         -DCLEAR_VOTES=OFF \
         -DSKIP_BY_TX_ID=ON \
-        -DBUILD_STEEM_TESTNET=OFF \
-        -DSTEEM_STATIC_BUILD=${STEEM_STATIC_BUILD} \
+        -DBUILD_DPAY_TESTNET=OFF \
+        -DDPAY_STATIC_BUILD=${DPAY_STATIC_BUILD} \
         .. \
     && \
     make -j$(nproc) && \
     make install && \
-    rm -rf /usr/local/src/steem ; \
+    rm -rf /usr/local/src/dpay ; \
     fi
 
 RUN \
@@ -251,8 +251,8 @@ ADD contrib/config-for-broadcaster.ini /etc/dpayd/config-for-broadcaster.ini
 ADD contrib/config-for-ahnode.ini /etc/dpayd/config-for-ahnode.ini
 
 # add normal startup script that starts via sv
-ADD contrib/dpayd.run /usr/local/bin/steem-sv-run.sh
-RUN chmod +x /usr/local/bin/steem-sv-run.sh
+ADD contrib/dpayd.run /usr/local/bin/dpay-sv-run.sh
+RUN chmod +x /usr/local/bin/dpay-sv-run.sh
 
 # add nginx templates
 ADD contrib/dpayd.nginx.conf /etc/nginx/dpayd.nginx.conf

@@ -1,9 +1,9 @@
 Exchange Quickstart
 -------------------
 
-System Requirements: A dedicated server or virtual machine with a minimum of 16GB of RAM, and at least 50GB of fast local SSD storage. STEEM is one of the most active blockchains in the world and handles an incredibly large amount of transactions per second, as such, it requires fast storage to run efficiently.
+System Requirements: A dedicated server or virtual machine with a minimum of 16GB of RAM, and at least 50GB of fast local SSD storage. BEX is one of the most active blockchains in the world and handles an incredibly large amount of transactions per second, as such, it requires fast storage to run efficiently.
 
-We recommend using docker to both build and run STEEM for exchanges. Docker is the world's leading containerization platform and using it guarantees that your build and run environment is identical to what our developers use. You can still build from source and you can keep both blockchain data and wallet data outside of the docker container. The instructions below will show you how to do this in just a few easy steps.
+We recommend using docker to both build and run BEX for exchanges. Docker is the world's leading containerization platform and using it guarantees that your build and run environment is identical to what our developers use. You can still build from source and you can keep both blockchain data and wallet data outside of the docker container. The instructions below will show you how to do this in just a few easy steps.
 
 ### Install docker and git (if not already installed)
 
@@ -18,12 +18,12 @@ curl -fsSL get.docker.com -o get-docker.sh
 sh get-docker.sh
 ```
 
-### Clone the steem repo
+### Clone the dPay repo
 
-Pull in the steem repo from the official source on github and then change into the directory that's created for it.
+Pull in the dPay repo from the official source on github and then change into the directory that's created for it.
 ```
-git clone https://github.com/steemit/steem
-cd steem
+git clone https://github.com/dpays/dpay
+cd dpay
 ```
 
 ### Build the image from source with docker
@@ -31,7 +31,7 @@ cd steem
 Docker isn't just for downloading already built images, it can be used to build from source the same way you would otherwise build. By doing this you ensure that your build environment is identical to what we use to develop the software. Use the below command to start the build:
 
 ```
-docker build -t=steemit/steem .
+docker build -t=dpay/dpay .
 ```
 
 Don't forget the `.` at the end of the line which indicates the build target is in the current directory.
@@ -45,7 +45,7 @@ When the build completes you will see a message indicating that it is 'successfu
 If you'd like to use our already pre-built official binary images, it's as simple as downloading it from the Dockerhub registry with only one command:
 
 ```
-docker pull steemit/steem
+docker pull dpay/dpay
 ```
 
 ### Running a binary build without a Docker container
@@ -55,7 +55,7 @@ If you build with Docker but do not want to run dpayd from within a docker conta
 To extract the binary you need to start a container and then copy the file from it.
 
 ```
-docker run -d --name dpayd-exchange steemit/steem
+docker run -d --name dpayd-exchange dpay/dpay
 docker cp dpayd-exchange:/usr/local/dpayd-default/bin/dpayd /local/path/to/dpayd
 docker cp dpayd-exchange:/usr/local/dpayd-default/bin/cli_wallet /local/path/to/cli_wallet
 docker stop dpayd-exchange
@@ -69,7 +69,7 @@ For re-usability, you can create directories to store blockchain and wallet data
 
 ```
 mkdir blockchain
-mkdir steemwallet
+mkdir dpaywallet
 ```
 
 ### Run the container
@@ -77,7 +77,7 @@ mkdir steemwallet
 The below command will start a daemonized instance opening ports for p2p and RPC  while linking the directories we created for blockchain and wallet data inside the container. Fill in `TRACK_ACCOUNT` with the name of your exchange account that you want to follow. The `-v` flags are how you map directories outside of the container to the inside, you list the path to the directories you created earlier before the `:` for each `-v` flag. The restart policy ensures that the container will automatically restart even if your system is restarted.
 
 ```
-docker run -d --name dpayd-exchange --env TRACK_ACCOUNT=nameofaccount -p 6620:6620 -p 1776:1776 -v /path/to/steemwallet:/var/steemwallet -v /path/to/blockchain:/var/lib/dpayd/blockchain --restart always steemit/steem
+docker run -d --name dpayd-exchange --env TRACK_ACCOUNT=nameofaccount -p 6620:6620 -p 1776:1776 -v /path/to/dpaywallet:/var/dpaywallet -v /path/to/blockchain:/var/lib/dpayd/blockchain --restart always dpay/dpay
 ```
 
 You can see that the container is running with the `docker ps` command.
@@ -91,5 +91,5 @@ Initial syncing will take between 6 and 48 hours depending on your equipment, fa
 The command below will run the cli_wallet from inside the running container while mapping the `wallet.json` to the directory you created for it on the host.
 
 ```
-docker exec -it dpayd-exchange /usr/local/dpayd-default/bin/cli_wallet -w /var/steemwallet/wallet.json
+docker exec -it dpayd-exchange /usr/local/dpayd-default/bin/cli_wallet -w /var/dpaywallet/wallet.json
 ```

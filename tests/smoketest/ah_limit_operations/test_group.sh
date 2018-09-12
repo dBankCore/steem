@@ -6,7 +6,7 @@ popd () { command popd "$@" > /dev/null; }
 
 function print_help_and_quit {
    echo Usage: jobs test_dpayd_path ref_dpayd_path test_work_path ref_work_path block_limit [--dont-copy-config]
-   echo Example: 16 ~/steemit/1/dpayd ~/steemit/2/dpayd ~/steemit/1/wdir ~/steemit/2/wdir 5000000
+   echo Example: 16 ~/dpay/1/dpayd ~/dpay/2/dpayd ~/dpay/1/wdir ~/dpay/2/wdir 5000000
    exit -1
 }
 
@@ -63,7 +63,7 @@ function run_test {
    rm -rf $WDIR
    mkdir -p $1
    pushd $PY_SCRIPT_DIR
-   
+
    echo Running python3 $1 $JOBS http://$TEST_NODE http://$REF_NODE $WDIR
    python3 $1 $JOBS http://$TEST_NODE http://$REF_NODE $WDIR
    [ $? -ne 0 ] && echo test $1 FAILED && EXIT_CODE=-1

@@ -1,4 +1,4 @@
-# Building Steem
+# Building dPay
 
 ## Compile-Time Options (cmake)
 
@@ -18,13 +18,13 @@ recommended for witnesses and seed-nodes.
 
 Clears old votes from memory that are no longer required for consensus.
 
-### BUILD_STEEM_TESTNET=[OFF/ON]
+### BUILD_DPAY_TESTNET=[OFF/ON]
 
-Builds steem for use in a private testnet. Also required for building unit tests.
+Builds dpay for use in a private testnet. Also required for building unit tests.
 
 ### SKIP_BY_TX_ID=[OFF/ON]
 
-By default this is off. Enabling will prevent the account history plugin querying transactions 
+By default this is off. Enabling will prevent the account history plugin querying transactions
 by id, but saving around 65% of CPU time when reindexing. Enabling this option is a
 huge gain if you do not need this functionality.
 
@@ -32,13 +32,13 @@ huge gain if you do not need this functionality.
 
 We ship a Dockerfile.  This builds both common node type binaries.
 
-    git clone https://github.com/steemit/steem
-    cd steem
-    docker build -t steemit/steem .
+    git clone https://github.com/dpays/dpay
+    cd dpay
+    docker build -t dpay/dpay .
 
 ## Building on Ubuntu 16.04
 
-For Ubuntu 16.04 users, after installing the right packages with `apt` Steem
+For Ubuntu 16.04 users, after installing the right packages with `apt` dPay
 will build out of the box without further effort:
 
     # Required packages
@@ -80,8 +80,8 @@ will build out of the box without further effort:
         libreadline-dev \
         perl
 
-    git clone https://github.com/steemit/steem
-    cd steem
+    git clone https://github.com/dpays/dpay
+    cd dpay
     git checkout stable
     git submodule update --init --recursive
     mkdir build
@@ -120,14 +120,14 @@ Here are the required packages:
         python3-jinja2
 
 The Boost provided in the Ubuntu 14.04 package manager (Boost 1.55) is too old.
-Steem requires Boost 1.58 (as in Ubuntu 16.04) and works with versions up to 1.60 (including).
-So building Steem on Ubuntu 14.04 requires downloading and installing a more recent
+dPay requires Boost 1.58 (as in Ubuntu 16.04) and works with versions up to 1.60 (including).
+So building dPay on Ubuntu 14.04 requires downloading and installing a more recent
 version of Boost.
 
 According to [this mailing list
 post](http://boost.2283326.n4.nabble.com/1-58-1-bugfix-release-necessary-td4674686.html),
 Boost 1.58 is not compatible with gcc 4.8 (the default C++ compiler for
-Ubuntu 14.04) when compiling in C++11 mode (which Steem does).
+Ubuntu 14.04) when compiling in C++11 mode (which dPay does).
 So we will use Boost 1.60.
 
 Here is how to build and install Boost 1.60 into your user's home directory
@@ -144,10 +144,10 @@ Here is how to build and install Boost 1.60 into your user's home directory
     ./bootstrap.sh "--prefix=$BOOST_ROOT"
     ./b2 install
 
-Then the instructions are the same as for steem:
+Then the instructions are the same as for dpay:
 
-    git clone https://github.com/steemit/steem
-    cd steem
+    git clone https://github.com/dpays/dpay
+    cd dpay
     git checkout stable
     git submodule update --init --recursive
     mkdir build && cd build
@@ -173,7 +173,7 @@ Install Homebrew by following the instructions here: http://brew.sh/
     brew doctor
     brew update
 
-### Install steem dependencies:
+### Install dpay dependencies:
 
     brew install \
         autoconf \
@@ -186,11 +186,11 @@ Install Homebrew by following the instructions here: http://brew.sh/
         snappy \
         zlib \
         python3
-        
+
     pip3 install --user jinja2
-    
+
 Note: brew recently updated to boost 1.61.0, which is not yet supported by
-steem. Until then, this will allow you to install boost 1.60.0.
+dpay. Until then, this will allow you to install boost 1.60.0.
 
 *Optional.* To use TCMalloc in LevelDB:
 
@@ -203,8 +203,8 @@ steem. Until then, this will allow you to install boost 1.60.0.
 
 ### Clone the Repository
 
-    git clone https://github.com/steemit/steem.git
-    cd steem
+    git clone https://github.com/dpays/dpay.git
+    cd dpay
 
 ### Compile
 
