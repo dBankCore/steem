@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
   Usage: __name__ jobs url1 url2 [working_dir [accounts_file]]
-    Example: script_name 4 http://127.0.0.1:8090 http://127.0.0.1:8091 [get_account_history [accounts]]
+    Example: script_name 4 http://127.0.0.1:1776 http://127.0.0.1:8091 [get_account_history [accounts]]
     set jobs to 0 if you want use all processors
     url1 is reference url for list_accounts
 """
@@ -16,7 +16,7 @@ from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures import Future
 from concurrent.futures import wait
 from jsonsocket import JSONSocket
-from jsonsocket import steemd_call
+from jsonsocket import dpayd_call
 from list_account import list_accounts
 from pathlib import Path
 
@@ -28,7 +28,7 @@ errors = 0
 def main():
   if len( sys.argv ) < 4 or len( sys.argv ) > 6:
     print( "Usage: __name__ jobs url1 url2 [working_dir [accounts_file]]" )
-    print( "  Example: __name__ 4 http://127.0.0.1:8090 http://127.0.0.1:8091 [get_account_history [accounts]]" )
+    print( "  Example: __name__ 4 http://127.0.0.1:1776 http://127.0.0.1:8091 [get_account_history [accounts]]" )
     print( "  set jobs to 0 if you want use all processors" )
     print( "  url1 is reference url for list_accounts" )
     exit ()
@@ -132,13 +132,13 @@ def get_account_history(url1, url2, account, max_tries=10, timeout=0.1):
       } ), "utf-8" ) + b"\r\n"
 
     with ThreadPoolExecutor(max_workers=2) as executor:
-      future1 = executor.submit(steemd_call, url1, data=request, max_tries=max_tries, timeout=timeout)
-      future2 = executor.submit(steemd_call, url2, data=request, max_tries=max_tries, timeout=timeout)
+      future1 = executor.submit(dpayd_call, url1, data=request, max_tries=max_tries, timeout=timeout)
+      future2 = executor.submit(dpayd_call, url2, data=request, max_tries=max_tries, timeout=timeout)
 
     status1, json1 = future1.result()
     status2, json2 = future2.result()
-    #status1, json1 = steemd_call(url1, data=request, max_tries=max_tries, timeout=timeout)
-    #status2, json2 = steemd_call(url2, data=request, max_tries=max_tries, timeout=timeout)
+    #status1, json1 = dpayd_call(url1, data=request, max_tries=max_tries, timeout=timeout)
+    #status2, json2 = dpayd_call(url2, data=request, max_tries=max_tries, timeout=timeout)
     
     if status1 == False or status2 == False or json1 != json2:
       print("Comparison failed for account: {}; start: {}; limit: {}".format(account, START, LIMIT))

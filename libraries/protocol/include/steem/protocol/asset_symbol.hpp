@@ -30,14 +30,14 @@
 #ifdef IS_TEST_NET
 
 #define VESTS_SYMBOL_U64  (uint64_t('V') | (uint64_t('E') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('S') << 32))
-#define STEEM_SYMBOL_U64  (uint64_t('T') | (uint64_t('E') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('S') << 32))
+#define STEEM_SYMBOL_U64  (uint64_t('B') | (uint64_t('E') << 8) | (uint64_t('T') << 16))
 #define SBD_SYMBOL_U64    (uint64_t('T') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
 
 #else
 
 #define VESTS_SYMBOL_U64  (uint64_t('V') | (uint64_t('E') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('S') << 32))
-#define STEEM_SYMBOL_U64  (uint64_t('S') | (uint64_t('T') << 8) | (uint64_t('E') << 16) | (uint64_t('E') << 24) | (uint64_t('M') << 32))
-#define SBD_SYMBOL_U64    (uint64_t('S') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
+#define STEEM_SYMBOL_U64  (uint64_t('B') | (uint64_t('E') << 8) | (uint64_t('X') << 16))
+#define SBD_SYMBOL_U64    (uint64_t('B') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
 
 #endif
 
@@ -98,7 +98,7 @@ class asset_symbol_type
        * \warning checking that it's SMT symbol is caller responsibility.
        */
       uint32_t get_stripped_precision_smt_num() const
-      { 
+      {
          return asset_num & ~( SMT_ASSET_NUM_PRECISION_MASK );
       }
 

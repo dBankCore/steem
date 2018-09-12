@@ -112,7 +112,7 @@ if( SKIP_BY_TX_ID )
    SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSKIP_BY_TX_ID" )
 endif()
 
-OPTION( STEEM_STATIC_BUILD "Build steemd as a static library (ON or OFF)" OFF )
+OPTION( STEEM_STATIC_BUILD "Build dpayd as a static library (ON or OFF)" OFF )
 if( STEEM_STATIC_BUILD AND ( ( MSVC AND NOT MINGW ) OR APPLE ) )
    MESSAGE( STATUS "Statuc build is not available on Windows or OS X" )
    SET( STEEM_STATIC_BUILD OFF )

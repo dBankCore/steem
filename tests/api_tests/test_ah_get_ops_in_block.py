@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
   Usage: script_name jobs url1 url2 [wdir [last_block [first_block]]]
-    Example: script_name 4 http://127.0.0.1:8090 http://127.0.0.1:8091 ./ 5000000 0
+    Example: script_name 4 http://127.0.0.1:1776 http://127.0.0.1:8091 ./ 5000000 0
     set jobs to 0 if you want use all processors
     if last_block == 0, it is read from url1 (as reference)
 """
@@ -11,7 +11,7 @@ import json
 import os
 import shutil
 from jsonsocket import JSONSocket
-from jsonsocket import steemd_call
+from jsonsocket import dpayd_call
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures import Future
@@ -32,7 +32,7 @@ def future_end_cb(future):
 def main():
   if len(sys.argv) < 4 or len(sys.argv) > 7:
     print("Usage: script_name jobs url1 url2 [wdir [last_block [first_block]]]")
-    print("  Example: script_name 4 http://127.0.0.1:8090 http://127.0.0.1:8091 ./ 5000000 0")
+    print("  Example: script_name 4 http://127.0.0.1:1776 http://127.0.0.1:8091 ./ 5000000 0")
     print( "  set jobs to 0 if you want use all processors" )
     print("  if last_block == 0, it is read from url1 (as reference)")
     exit()
@@ -125,7 +125,7 @@ def get_last_block(url, max_tries=10, timeout=0.1):
     "params": {}
     } ), "utf-8" ) + b"\r\n"
     
-  status, response = steemd_call(url, data=request, max_tries=max_tries, timeout=timeout)
+  status, response = dpayd_call(url, data=request, max_tries=max_tries, timeout=timeout)
   
   if status == False:
     return 0
@@ -150,14 +150,14 @@ def compare_results(f_block, l_block, url1, url2, max_tries=10, timeout=0.1):
 
     with ThreadPoolExecutor(max_workers=2) as executor:
     #with ProcessPoolExecutor(max_workers=2) as executor:
-      future1 = executor.submit(steemd_call, url1, data=request, max_tries=max_tries, timeout=timeout)
-      future2 = executor.submit(steemd_call, url2, data=request, max_tries=max_tries, timeout=timeout)
+      future1 = executor.submit(dpayd_call, url1, data=request, max_tries=max_tries, timeout=timeout)
+      future2 = executor.submit(dpayd_call, url2, data=request, max_tries=max_tries, timeout=timeout)
 
     status1, json1 = future1.result()
     status2, json2 = future2.result()
     
-    #status1, json1 = steemd_call(url1, data=request, max_tries=max_tries, timeout=timeout)
-    #status2, json2 = steemd_call(url2, data=request, max_tries=max_tries, timeout=timeout)
+    #status1, json1 = dpayd_call(url1, data=request, max_tries=max_tries, timeout=timeout)
+    #status2, json2 = dpayd_call(url2, data=request, max_tries=max_tries, timeout=timeout)
       
     if status1 == False or status2 == False or json1 != json2:
       print("Difference @block: {}\n".format(i))

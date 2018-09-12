@@ -45,9 +45,9 @@
 
 #define STEEM_BLOCKCHAIN_VERSION              ( version(0, 20, 0) )
 
-#define STEEM_INIT_PUBLIC_KEY_STR             "STM8GC13uCZbP44HzMLV6zPZGwVQ8Nt4Kji8PapsPiNq1BK153XTX"
-#define STEEM_CHAIN_ID fc::sha256()
-#define STEEM_ADDRESS_PREFIX                  "STM"
+#define STEEM_INIT_PUBLIC_KEY_STR             "DWB71hoefovfw8xjGiLpxEDBfc2iDJpAVkbR99PZaiLSR8JiYmp6V"
+#define STEEM_CHAIN_ID (fc::sha256::hash("dpay"))
+#define STEEM_ADDRESS_PREFIX                  "DWB"
 
 #define STEEM_GENESIS_TIME                    (fc::time_point_sec(1458835200))
 #define STEEM_MINING_TIME                     (fc::time_point_sec(1458838800))
@@ -323,4 +323,3 @@
 #define SMT_UPVOTE_LOCKOUT                      (60*60*12)  /// 12 hours
 
 #endif /// STEEM_ENABLE_SMT
-

@@ -73,7 +73,7 @@ int main( int argc, char** argv )
       {
          try { 
             fc::http::websocket_client client;
-            auto con  = client.connect( "ws://localhost:8090" );
+            auto con  = client.connect( "ws://localhost:1776" );
             auto apic = std::make_shared<websocket_api_connection>(*con);
             auto remote_login_api = apic->get_remote_api<login_api>();
             auto remote_calc = remote_login_api->get_calc();

@@ -10,7 +10,7 @@ running tests, it is recommended to build as release.
 
 ### LOW_MEMORY_NODE=[OFF/ON]
 
-Builds steemd to be a consensus-only low memory node. Data and fields not
+Builds dpayd to be a consensus-only low memory node. Data and fields not
 needed for consensus are not stored in the object database.  This option is
 recommended for witnesses and seed-nodes.
 
@@ -87,7 +87,7 @@ will build out of the box without further effort:
     mkdir build
     cd build
     cmake -DCMAKE_BUILD_TYPE=Release ..
-    make -j$(nproc) steemd
+    make -j$(nproc) dpayd
     make -j$(nproc) cli_wallet
     # optional
     make install  # defaults to /usr/local
@@ -152,7 +152,7 @@ Then the instructions are the same as for steem:
     git submodule update --init --recursive
     mkdir build && cd build
     cmake -DCMAKE_BUILD_TYPE=Release ..
-    make -j$(nproc) steemd
+    make -j$(nproc) dpayd
     make -j$(nproc) cli_wallet
 
 ## Building on macOS X
@@ -221,15 +221,15 @@ steem. Until then, this will allow you to install boost 1.60.0.
 
 Also, some useful build targets for `make` are:
 
-    steemd
+    dpayd
     chain_test
     cli_wallet
 
 e.g.:
 
-    make -j$(sysctl -n hw.logicalcpu) steemd
+    make -j$(sysctl -n hw.logicalcpu) dpayd
 
-This will only build `steemd`.
+This will only build `dpayd`.
 
 ## Building on Other Platforms
 

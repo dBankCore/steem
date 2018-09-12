@@ -169,7 +169,7 @@ It may sound like consensus limits are better, because they're enforced more str
 checking makes upgrades painful:
 
 - Upgrading non-consensus limits is a witness-only upgrade.
-- Upgrading consensus limits is a hardfork, all `steemd` nodes must upgrade.
+- Upgrading consensus limits is a hardfork, all `dpayd` nodes must upgrade.
 
 The subsidized account resource limit is consensus.  Other resource limits are non-consensus.  Why were things
 divided that way?  It has to do with the consequences of violating the limits:

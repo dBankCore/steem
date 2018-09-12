@@ -33,7 +33,7 @@ Numeric API identifiers
 
 API's are assigned numeric ID's in the order they are specified as public API's.  So for example you can access `hello_api_api` over HTTP like this:
 
-    curl --data '{"jsonrpc": "2.0", "params": [2, "get_message", []], "id":1, "method":"call"}' http://127.0.0.1:8090/rpc
+    curl --data '{"jsonrpc": "2.0", "params": [2, "get_message", []], "id":1, "method":"call"}' http://127.0.0.1:1776/rpc
 
 The number `2` is the numeric API identifier for `hello_api_api`.  These identifiers are assigned sequentially starting with 0 when the API is registered to the connection.
 So effectively this means numeric API identifiers are determined by the order of `hello_api_api` in the `public-api` declaration above.
@@ -48,7 +48,7 @@ String API identifiers
 Client code that references API's by their numeric identifiers have to coordinated with server-side configuration.
 This is inconvenient, so the API server supports identifying the API by name as well, like this:
 
-    curl --data '{"jsonrpc": "2.0", "params": ["hello_api_api", "get_message", []], "id":1, "method":"call"}' http://127.0.0.1:8090/rpc
+    curl --data '{"jsonrpc": "2.0", "params": ["hello_api_api", "get_message", []], "id":1, "method":"call"}' http://127.0.0.1:1776/rpc
 
 It is considered best practice for API clients to use this syntax to reference API's by their string identifiers.  The reason is that the client becomes robust against
 server-side configuration changes which result in renumbering of API's.
@@ -64,13 +64,13 @@ There are three methods to secure the API:
 
 The Steem developers recommend using the first of these methods to secure the API by binding to localhost, as follows:
 
-    rpc-endpoint = 127.0.0.1:8090
+    rpc-endpoint = 127.0.0.1:1776
 
 Securing specific API's
 -----------------------
 
 The problem with securing API's at the network level is that there are deployment scenarios where a node may want to have some API's public, but other API's private.
-The `steemd` process includes username/password based authentication to individual API's.
+The `dpayd` process includes username/password based authentication to individual API's.
 
 Since the username/password is sent directly over the wire, you should use a TLS connection when authenticating with username and password.  TLS connection can be achieved by one of two methods:
 
