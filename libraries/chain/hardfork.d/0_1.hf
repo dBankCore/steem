@@ -1,6 +1,6 @@
-#ifndef STEEMIT_HARDFORK_0_1
-#define STEEMIT_HARDFORK_0_1 1
-// 4/25/2016 17:30:00 GMT
-#define STEEMIT_HARDFORK_0_1_TIME 1461605400
-#define STEEMIT_HARDFORK_0_1_VERSION hardfork_version( 0, 1 )
+#ifndef DPAY_HARDFORK_0_1
+#define DPAY_HARDFORK_0_1 1
+// Monday, October 1, 2018 12:00:00 AM
+#define DPAY_HARDFORK_0_1_TIME 1538352000
+#define DPAY_HARDFORK_0_1_VERSION hardfork_version( 0, 1 )
 #endif
