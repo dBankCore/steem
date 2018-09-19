@@ -3,7 +3,9 @@
   <br>
   <br>
 </p>
+
 # dPay
+
 **Decentralized MultiChain Smart Network (DMSN) (Stable Release)**
 
 dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" social consensus algorithm for token allocation.
