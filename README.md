@@ -1,4 +1,10 @@
-# dPay Decentralized MultiChain Smart Network (DMSN) (Stable Release)
+<p align="center">
+  <img src="https://github.com/dpays/dpay-desktop/raw/master/icon.png" alt="dPay API Portal" width="100">
+  <br>
+  <br>
+</p>
+# dPay
+### **Decentralized MultiChain Smart Network (DMSN) (Stable Release)**
 
 dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" social consensus algorithm for token allocation.
 
@@ -60,11 +66,11 @@ dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" socia
 - [Installing A Witness Node](https://github.com/dpays/dpay/blob/master/doc/witness/installation.md)
 
 ## Installing A Normal Live Network Node
-[Install dPay With Docker](https://github.com/dpays/dpay/blob/master/doc/install/live/docker.md).
-[Build/Install dPay From Source](https://github.com/dpays/dpay/blob/master/doc/install/live/install.md).
+- [Install dPay With Docker](https://github.com/dpays/dpay/blob/master/doc/install/live/docker.md).
+- [Build/Install dPay From Source](https://github.com/dpays/dpay/blob/master/doc/install/live/install.md).
 
 ## Installing dPay For Exchanges
-[Exchange Quickstart Guide](https://github.com/dpays/dpay/blob/master/doc/exchangequickstart.md).
+- [Exchange Quickstart Guide](https://github.com/dpays/dpay/blob/master/doc/exchangequickstart.md).
 
 ## dPay Seed Nodes
 A list of some seed nodes to get you started can be found in [doc/seednodes.txt](doc/seednodes.txt).
