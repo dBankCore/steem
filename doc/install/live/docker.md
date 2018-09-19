@@ -117,3 +117,5 @@ git clone https://github.com/dpays/dpay
 cd dpay
 docker build -t dpay/dpay .
 ```
+
+#### Launch Container
