@@ -52,7 +52,7 @@ The dPay livenet currently boasts 71 seed + API nodes and has had these seeds, w
 | 45 | nefertiti.link              |    @nefertiti    | 0.19.6-stable | 51.15.35.9      |    6620   |
 
 
-# DPAY LIVE NETWORK WITNESS NODES
+## DPAY LIVE NETWORK WITNESS NODES
 
 |  # |         Node Hosting         | Node Maintainer  | Node Version  |  IPV4 Address   | Peer Port |
 |----|------------------------------|------------------|---------------|-----------------|-----------|
@@ -78,7 +78,7 @@ The dPay livenet currently boasts 71 seed + API nodes and has had these seeds, w
 | 21| tablecafe.dpayproducers.com   |    @tablecafe    | 0.19.6-stable | 51.15.231.132   |    6620   |
 
 
-# DPAY LIVE NETWORK PUBLIC API NODES
+## DPAY LIVE NETWORK PUBLIC API NODES
 
 | # |         Node Hosting        | Node Maintainer |       Node Version     |  IPV4 Address | Peer Port |
 |---|-----------------------------|-----------------|------------------------|---------------|-----------|
