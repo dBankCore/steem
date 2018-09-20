@@ -10,7 +10,8 @@ building on Windows but will be providing build instructions in our next release
 
 ### Install The Latest Version Of Docker
 ```
-apt-get remove docker docker-engine docker.io \
+apt-get remove -y docker docker-engine docker.io \
+apt-get purge -y docker docker-engine docker.io
     apt-get update \
     apt-get install -y \
     apt-transport-https \
