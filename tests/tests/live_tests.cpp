@@ -16,7 +16,7 @@ using namespace dpay;
 using namespace dpay::chain;
 using namespace dpay::protocol;
 
-#ifndef IS_TEST_NET
+#ifdef IS_TEST_NET
 
 BOOST_FIXTURE_TEST_SUITE( live_tests, live_database_fixture )
 
@@ -179,8 +179,7 @@ BOOST_AUTO_TEST_CASE( retally_votes )
 
 BOOST_AUTO_TEST_SUITE_END()
 
-#endif
-#ifndef IS_JACKSON_NET
+#ifdef IS_JACKSON_NET
 
 BOOST_FIXTURE_TEST_SUITE( live_tests, live_database_fixture )
 
@@ -343,8 +342,7 @@ BOOST_AUTO_TEST_CASE( retally_votes )
 
 BOOST_AUTO_TEST_SUITE_END()
 
-#endif
-#ifndef IS_JEFFERSON_NET
+#elif IS_JEFFERSON_NET
 
 BOOST_FIXTURE_TEST_SUITE( live_tests, live_database_fixture )
 
@@ -507,8 +505,7 @@ BOOST_AUTO_TEST_CASE( retally_votes )
 
 BOOST_AUTO_TEST_SUITE_END()
 
-#endif
-#ifndef IS_FRANKLIN_NET
+#elif IS_FRANKLIN_NET
 
 BOOST_FIXTURE_TEST_SUITE( live_tests, live_database_fixture )
 
@@ -671,8 +668,7 @@ BOOST_AUTO_TEST_CASE( retally_votes )
 
 BOOST_AUTO_TEST_SUITE_END()
 
-#endif
-#ifndef IS_KENNEDY_NET
+#elif IS_KENNEDY_NET
 
 BOOST_FIXTURE_TEST_SUITE( live_tests, live_database_fixture )
 
