@@ -179,7 +179,7 @@ BOOST_AUTO_TEST_CASE( retally_votes )
 
 BOOST_AUTO_TEST_SUITE_END()
 
-#ifdef IS_JACKSON_NET
+#elif IS_JACKSON_NET
 
 BOOST_FIXTURE_TEST_SUITE( live_tests, live_database_fixture )
 
