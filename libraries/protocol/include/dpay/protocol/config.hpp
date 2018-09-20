@@ -264,7 +264,7 @@
 #define DPAY_MAX_WITNESSES                   21
 
 #define DPAY_MAX_VOTED_WITNESSES_HF0         19
-#define DPAY_MAX_MINER_WITNESSES_HF0         21
+#define DPAY_MAX_MINER_WITNESSES_HF0         1
 #define DPAY_MAX_RUNNER_WITNESSES_HF0        1
 
 #define DPAY_MAX_VOTED_WITNESSES_HF17        20
