@@ -3,7 +3,7 @@ The dPay livenet currently boasts 71 seed + API nodes and has had these seeds, w
 
 ## DPAY LIVE NETWORK SEED NODES
 
-|  # |         Node Hosting        | Node Maintainer  | Node Version  | IPV4 Address  |  Peer Port  |
+|  # |        Node Hostname        | Node Maintainer  | Node Version  | IPV4 Address  |  Peer Port  |
 |----|-----------------------------|------------------|---------------|---------------|-------------|
 | 1  | dpayd.dsite.io              |     @dweb        | 0.19.6-stable | 51.15.127.30    |    6620   |
 | 2  | d.dpays.io                  |     @dpay        | 0.20.0        | 51.15.115.117   |    6620   |
@@ -54,7 +54,7 @@ The dPay livenet currently boasts 71 seed + API nodes and has had these seeds, w
 
 ## DPAY LIVE NETWORK WITNESS NODES
 
-|  # |         Node Hosting         | Node Maintainer  | Node Version  |  IPV4 Address   | Peer Port |
+|  # |        Node Hostname         | Node Maintainer  | Node Version  |  IPV4 Address   | Peer Port |
 |----|------------------------------|------------------|---------------|-----------------|-----------|
 | 1 | mbex.link                     |      @mbex       | 0.19.6-stable | 35.208.72.146   |    6620   |
 | 2 | dpay.jrice.io                 |     @jared       | 0.19.6-stable | 212.47.243.153  |    6620   |
@@ -80,7 +80,7 @@ The dPay livenet currently boasts 71 seed + API nodes and has had these seeds, w
 
 ## DPAY LIVE NETWORK PUBLIC API NODES
 
-| # |         Node Hosting        | Node Maintainer |       Node Version     |  IPV4 Address | Peer Port |
+| # |        Node Hostname        | Node Maintainer |       Node Version     |  IPV4 Address | Peer Port |
 |---|-----------------------------|-----------------|------------------------|---------------|-----------|
 | 1 | dpayapi.com                 |     @dpay       | dpay/jefferson:release | 35.221.127.225|    443    |
 | 2 | api.dpays.io                |     @dpay       | dpay/jefferson:release | 51.15.242.246 |    443    |
