@@ -38,10 +38,10 @@ RUN \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     pip3 install gcovr
 
-ADD . /usr/local/src/dpay
-
 RUN \
+    git clone https://github.com/dpays/dpay.git /usr/local/src/dpay && \
     cd /usr/local/src/dpay && \
+    git checkout stable && \
     git submodule update --init --recursive && \
     mkdir build && \
     cd build && \
