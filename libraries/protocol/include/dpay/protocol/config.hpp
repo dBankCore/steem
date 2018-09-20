@@ -24,8 +24,6 @@
 #define BBD_SYMBOL    (uint64_t(3) | (uint64_t('C') << 8) | (uint64_t('B') << 16) | (uint64_t('D') << 24) ) ///< Native Currency-Backed Dollars with 3 digits of precision
 #define STMD_SYMBOL   (uint64_t(3) | (uint64_t('C') << 8) | (uint64_t('H') << 16) | (uint64_t('N') << 24) | (uint64_t('D') << 32) ) ///< Native Currency-Backed Dollars with 3 digits of precision
 
-// Change the following dPay Asset symbol to your network's default/native digital currency symbol. Example: On dPay's live network our native symbol is BEX.
-#define DPAY_SYMBOL                          "CHAIN"
 // Change the following dPay Asset symbols to what you would like your network's asset symbols to be.
 #define DPAY_ADDRESS_PREFIX                  "TST"
 
@@ -49,7 +47,7 @@
 #define DPAY_OWNER_UPDATE_LIMIT                          fc::seconds(0)
 #define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 1
 
-#ifdef IS_JACKSON_NET
+#elif IS_JACKSON_NET
 /*
 * DPAY'S JACKSON TEST NETWORK CONFIGURATION
 * Configuration settings for dPay's Jackson Test Network.
@@ -70,7 +68,6 @@
 #define BBD_SYMBOL    (uint64_t(3) | (uint64_t('J') << 8) | (uint64_t('B') << 16) | (uint64_t('D') << 24) ) ///< JACKS Backed Dollars with 3 digits of precision
 #define STMD_SYMBOL   (uint64_t(3) | (uint64_t('J') << 8) | (uint64_t('C') << 16) | (uint64_t('K') << 24) | (uint64_t('D') << 32) ) ///< JACKS Dollars with 3 digits of precision
 
-#define DPAY_SYMBOL                          "JACKS"
 #define DPAY_ADDRESS_PREFIX                  "AND"
 
 #define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
@@ -94,7 +91,7 @@
 #define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 1
 
 
-#ifdef IS_JEFFERSON_NET
+#elif IS_JEFFERSON_NET
 /*
 * DPAY'S JEFFERSON TEST NETWORK CONFIGURATION
 * Configuration settings for dPay's Jefferson Test Network.
@@ -115,7 +112,6 @@
 #define BBD_SYMBOL    (uint64_t(3) | (uint64_t('F') << 8) | (uint64_t('B') << 16) | (uint64_t('D') << 24) ) ///< FREE Backed Dollars with 3 digits of precision
 #define STMD_SYMBOL   (uint64_t(3) | (uint64_t('F') << 8) | (uint64_t('R') << 16) | (uint64_t('E') << 24) | (uint64_t('D') << 32) ) ///< FREE Dollars with 3 digits of precision
 
-#define DPAY_SYMBOL                          "FREE"
 #define DPAY_ADDRESS_PREFIX                  "JEF"
 
 #define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
@@ -138,7 +134,7 @@
 #define DPAY_OWNER_UPDATE_LIMIT                          fc::seconds(0)
 #define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 1
 
-#ifdef IS_FRANKLIN_NET
+#elif IS_FRANKLIN_NET
 /*
 * DPAY'S FRANKLIN TEST NETWORK CONFIGURATION
 * Configuration settings for dPay's Frankin Test Network.
@@ -159,7 +155,6 @@
 #define BBD_SYMBOL    (uint64_t(3) | (uint64_t('F') << 8) | (uint64_t('B') << 16) | (uint64_t('D') << 24) ) ///< FRANK Backed Dollars (FBD) with 3 digits of precision
 #define STMD_SYMBOL   (uint64_t(3) | (uint64_t('F') << 8) | (uint64_t('R') << 16) | (uint64_t('A') << 24) | (uint64_t('D') << 32) ) ///< FRANK Dollars with 3 digits of precision
 
-#define DPAY_SYMBOL                          "FRANK"
 #define DPAY_ADDRESS_PREFIX                  "BELL"
 
 #define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
@@ -182,7 +177,7 @@
 #define DPAY_OWNER_UPDATE_LIMIT                          fc::seconds(0)
 #define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 1
 
-#ifdef IS_KENNEDY_NET
+#elif IS_KENNEDY_NET
 /*
 * DPAY'S KENNEDY TEST NETWORK CONFIGURATION
 * Configuration settings for dPay's Kennedy Test Network.
@@ -204,7 +199,6 @@
 #define BBD_SYMBOL    (uint64_t(3) | (uint64_t('K') << 8) | (uint64_t('B') << 16) | (uint64_t('D') << 24) ) ///< KEN Backed Dollars (FBD) with 3 digits of precision
 #define STMD_SYMBOL   (uint64_t(3) | (uint64_t('K') << 8) | (uint64_t('E') << 16) | (uint64_t('N') << 24) | (uint64_t('D') << 32) ) ///< KEN Dollars with 3 digits of precision
 
-#define DPAY_SYMBOL                          "KEN"
 #define DPAY_ADDRESS_PREFIX                  "JFK"
 
 #define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
@@ -234,7 +228,6 @@
 #define DPAY_SYMBOL  (uint64_t(3) | (uint64_t('B') << 8) | (uint64_t('E') << 16) | (uint64_t('X') << 24)) ///< BEX with 3 digits of precision
 #define BBD_SYMBOL    (uint64_t(3) | (uint64_t('B') << 8) | (uint64_t('B') << 16) | (uint64_t('D') << 24) ) ///< BEX Backed Dollars with 3 digits of precision
 #define STMD_SYMBOL   (uint64_t(3) | (uint64_t('B') << 8) | (uint64_t('E') << 16) | (uint64_t('X') << 24) | (uint64_t('D') << 32) ) ///< BEX Dollars with 3 digits of precision
-#define DPAY_SYMBOL                          "BEX"
 #define DPAY_ADDRESS_PREFIX                  "DWB"
 
 #define DPAY_GENESIS_TIME                    (fc::time_point_sec(1458835200))
