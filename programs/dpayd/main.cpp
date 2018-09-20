@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
       std::cerr << "dPay Chain ID: " << std::string(DPAY_CHAIN_ID) << "\n";
       std::cerr << "dPay Chain Version: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
       std::cerr << "------------------------------------------------------\n";
-#ifdef IS_FRANKLIN_NET
+#elif  IS_FRANKLIN_NET
       std::cerr << "------------------------------------------------------\n\n";
       std::cerr << "        STARTING DPAY FRANKLIN TEST NETWORK\n\n";
       std::cerr << "------------------------------------------------------\n";
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
       std::cerr << "dPay Chain ID: " << std::string(DPAY_CHAIN_ID) << "\n";
       std::cerr << "dPay Chain Version: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
       std::cerr << "------------------------------------------------------\n";
-#ifdef IS_JACKSON_NET
+#elif  IS_JACKSON_NET
       std::cerr << "------------------------------------------------------\n\n";
       std::cerr << "        STARTING DPAY JACKSON TEST NETWORK\n\n";
       std::cerr << "------------------------------------------------------\n";
@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
       std::cerr << "dPay Chain ID: " << std::string(DPAY_CHAIN_ID) << "\n";
       std::cerr << "dPay Chain Version: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
       std::cerr << "------------------------------------------------------\n";
-#ifdef IS_KENNEDY_NET
+#elif  IS_KENNEDY_NET
       std::cerr << "------------------------------------------------------\n\n";
       std::cerr << "        STARTING DPAY KENNEDY TEST NETWORK\n\n";
       std::cerr << "------------------------------------------------------\n";
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
       std::cerr << "dPay Chain ID: " << std::string(DPAY_CHAIN_ID) << "\n";
       std::cerr << "dPay Chain Version: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
       std::cerr << "------------------------------------------------------\n";
-#ifdef IS_TEST_NET
+#elif IS_TEST_NET
       std::cerr << "------------------------------------------------------\n\n";
       std::cerr << "        STARTING PRIVATE DPAY TEST NETWORK\n\n";
       std::cerr << "------------------------------------------------------\n";
