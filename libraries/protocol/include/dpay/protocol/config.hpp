@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 19, 6) )
+#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 9, 0) )
 #define DPAY_BLOCKCHAIN_HARDFORK_VERSION     ( hardfork_version( DPAY_BLOCKCHAIN_VERSION ) )
 
 #ifdef IS_TEST_NET
@@ -27,8 +27,8 @@
 // Change the following dPay Asset symbols to what you would like your network's asset symbols to be.
 #define DPAY_ADDRESS_PREFIX                  "TST"
 
-#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
-#define DPAY_MINING_TIME                     (fc::time_point_sec(1451606400))
+#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1536669076))
+#define DPAY_MINING_TIME                     (fc::time_point_sec(1536669076))
 #define DPAY_CASHOUT_WINDOW_SECONDS          (60*60) /// 1 hr
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF12 (DPAY_CASHOUT_WINDOW_SECONDS)
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF17 (DPAY_CASHOUT_WINDOW_SECONDS)
@@ -70,8 +70,8 @@
 
 #define DPAY_ADDRESS_PREFIX                  "AND"
 
-#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
-#define DPAY_MINING_TIME                     (fc::time_point_sec(1451606400))
+#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1536669076))
+#define DPAY_MINING_TIME                     (fc::time_point_sec(1536669076))
 #define DPAY_CASHOUT_WINDOW_SECONDS          (60*60) /// 1 hr
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF12 (DPAY_CASHOUT_WINDOW_SECONDS)
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF17 (DPAY_CASHOUT_WINDOW_SECONDS)
@@ -114,8 +114,8 @@
 
 #define DPAY_ADDRESS_PREFIX                  "JEF"
 
-#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
-#define DPAY_MINING_TIME                     (fc::time_point_sec(1451606400))
+#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1536669076))
+#define DPAY_MINING_TIME                     (fc::time_point_sec(1536669076))
 #define DPAY_CASHOUT_WINDOW_SECONDS          (60*60) /// 1 hr
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF12 (DPAY_CASHOUT_WINDOW_SECONDS)
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF17 (DPAY_CASHOUT_WINDOW_SECONDS)
@@ -157,8 +157,8 @@
 
 #define DPAY_ADDRESS_PREFIX                  "BELL"
 
-#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
-#define DPAY_MINING_TIME                     (fc::time_point_sec(1451606400))
+#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1536669076))
+#define DPAY_MINING_TIME                     (fc::time_point_sec(1536669076))
 #define DPAY_CASHOUT_WINDOW_SECONDS          (60*60) /// 1 hr
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF12 (DPAY_CASHOUT_WINDOW_SECONDS)
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF17 (DPAY_CASHOUT_WINDOW_SECONDS)
@@ -201,8 +201,8 @@
 
 #define DPAY_ADDRESS_PREFIX                  "JFK"
 
-#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
-#define DPAY_MINING_TIME                     (fc::time_point_sec(1451606400))
+#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1536669076))
+#define DPAY_MINING_TIME                     (fc::time_point_sec(1536669076))
 #define DPAY_CASHOUT_WINDOW_SECONDS          (60*60) /// 1 hr
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF12 (DPAY_CASHOUT_WINDOW_SECONDS)
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF17 (DPAY_CASHOUT_WINDOW_SECONDS)
@@ -230,8 +230,8 @@
 #define STMD_SYMBOL   (uint64_t(3) | (uint64_t('B') << 8) | (uint64_t('E') << 16) | (uint64_t('X') << 24) | (uint64_t('D') << 32) ) ///< BEX Dollars with 3 digits of precision
 #define DPAY_ADDRESS_PREFIX                  "DWB"
 
-#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1458835200))
-#define DPAY_MINING_TIME                     (fc::time_point_sec(1458838800))
+#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1536669076))
+#define DPAY_MINING_TIME                     (fc::time_point_sec(1536669076))
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF12 (60*60*24)    /// 1 day
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF17 (60*60*12)    /// 12 hours
 #define DPAY_CASHOUT_WINDOW_SECONDS          (60*60*24*7)  /// 7 days
