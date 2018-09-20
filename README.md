@@ -10,25 +10,95 @@
 
 dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" social consensus algorithm for token allocation.
 
-# dPay Built-in Networks (Live/Test/Dev)
+## dPay Documentation / Resources
+- [dPay Resource Requirements ](https://github.com/dpays/dpay/blob/stable/doc/resource-requirements.md)
+- [dPay Git Guidelines](https://github.com/dpays/dpay/blob/stable/doc/git-guidelines.md)
+- [Exchange Documentation](#)
+  - [Building dPay From Source For Exchanges](https://github.com/dpays/dpay/blob/master/doc/)
+  - [Building dPay With Docker For Exchanges](https://github.com/dpays/dpay/blob/master/doc/)
+- [Installation Documentation](#)
+  - [dPay Live Network](#)
+    - [Creating A dPay SideChain](https://github.com/dpays/dpay/blob/master/doc/install/custom-network/creating-a-dpay-sidechain.md)
+    - [Build Custom Network From Source](https://github.com/dpays/dpay/blob/master/doc/install/custom-network/build-from-source.md)
+    - [Build Custom Network With Docker](https://github.com/dpays/dpay/blob/master/doc/install/custom-network/docker.md)
+  - [Franklin Test Network](#)
+    - [Build Franklin From Source](https://github.com/dpays/dpay/blob/master/doc/install/live/build-from-source.md)
+    - [Build Franklin With Docker](https://github.com/dpays/dpay/blob/master/doc/install/franklin/docker.md)
+    - [Franklin Seed Nodes](https://github.com/dpays/dpay/blob/master/doc/install/franklin/seed-nodes.md)
+  - [Jackson Test Network](#)
+    - [Build Jackson From Source](https://github.com/dpays/dpay/blob/master/doc/install/jackson/build-from-source.md)
+    - [Build Jackson With Docker](https://github.com/dpays/dpay/blob/master/doc/install/jackson/docker.md)
+    - [Jackson Seed Nodes](https://github.com/dpays/dpay/blob/master/doc/install/jackson/seed-nodes.md)
+  - [Jefferson Dev Network](#)
+    - [Build Jefferson From Source](https://github.com/dpays/dpay/blob/master/doc/install/jefferson/build-from-source.md)
+    - [Build Jefferson With Docker](https://github.com/dpays/dpay/blob/master/doc/install/jefferson/docker.md)
+    - [Jefferson Seed Nodes](https://github.com/dpays/dpay/blob/master/doc/install/jefferson/seed-nodes.md)  
+  - [Kennedy Test Network](#)
+    - [Build Kennedy From Source](https://github.com/dpays/dpay/blob/master/doc/install/kennedy/build-from-source.md)
+    - [Build Kennedy With Docker](https://github.com/dpays/dpay/blob/master/doc/install/kennedy/docker.md)
+    - [Kennedy Seed Nodes](https://github.com/dpays/dpay/blob/master/doc/install/kennedy/seed-nodes.md)
+  - [Custom Network](#)
+    - [Creating A dPay SideChain](https://github.com/dpays/dpay/blob/master/doc/install/custom-network/creating-a-dpay-sidechain.md)
+    - [Build Custom Network From Source](https://github.com/dpays/dpay/blob/master/doc/install/custom-network/build-from-source.md)
+    - [Build Custom Network With Docker](https://github.com/dpays/dpay/blob/master/doc/install/custom-network/docker.md)
+- [dPay Developer Documentation](https://developers.dpays.io/)
+  - [dPay Developer Documentation](https://developers.dpays.io/)
+  - [dPay API Documentation](https://developers.dpays.io/apidefinitions/)
+  - [dPayID Documentation](https://developers.dpays.io/services/#services-dpayid)
+  - [Jefferson RPC/WS Proxy Server](https://developers.dpays.io/services/#services-jefferson)
+  - [dPay Data Service](https://developers.dpays.io/services/#DPDS)
+  - [dPayJS Documentation](https://library.dpays.io/dpayjs)
+  - [dPayTS Documentation](https://library.dpays.io/dpayts)
+  - [dPay RPC/WS API Notes](https://github.com/dpays/dpay/blob/stable/doc/api-notes.md)
+  - [dPay Plugin Documentation](https://github.com/dpays/dpay/blob/stable/doc/plugin.md)
+  - [dPay SQRT Documentation](https://github.com/dpays/dpay/blob/stable/doc/sqrt.md)
+  - [dPay-Core Testing Guide](https://github.com/dpays/dpay/blob/stable/doc/testing.md)
+  - [dPay Debug Node Documentation](https://github.com/dpays/dpay/blob/stable/doc/dpay-debug-node.md)
+- [dPay Mining Documentation](#) - Coming Soon
+  - [Mining Requirements](#) - Coming Soon
+  - [Mining Quickstart](#) - Coming Soon
+- [dPay Witness Documentation](#)
+  - [Witness Node Installation](https://github.com/dpays/dpay/blob/master/doc/witness/installation.md)
+  - [Voting For Witnesses](https://github.com/dpays/dpay/blob/master/doc/voting-for-witnesses.md) - Coming Soon
+- [dPay Network Information](#)
+  - [Build Variables](https://github.com/dpays/dpay/blob/master/doc/networks/build-variables.md)
+  - [dPay Network Ports](https://github.com/dpays/dpay/blob/master/doc/dpay-network-ports.md)
+- [dPay Network Information](#)
+  - [Build Variables](https://github.com/dpays/dpay/blob/master/doc/networks/build-variables.md)
+  - [dPay Network Ports](https://github.com/dpays/dpay/blob/master/doc/dpay-network-ports.md)
 
-## dPay Live/Public Network
+
+##  Quick Installation
+
+  ```
+  docker run \
+      -d -p 6620:6620 -p 1776:1776 --name dpayd-default \
+      --restart unless-stopped dpay/dpay
+  ```
+
+## dPay Built-in Networks (Live/Test/Dev)
+
+### dPay Live/Public Network
 - [Installing dPay Live/Public Network From Source](https://github.com/dpays/dpay/blob/master/doc/install/live/build-from-source.md)
+- [Installing dPay Live/Public Network With Docker](https://github.com/dpays/dpay/blob/master/doc/install/live/docker.md)
+- [Seed Nodes For Live/Public Network](https://github.com/dpays/dpay/blob/master/doc/install/live/seed-nodes.md)
 - Currency symbol BEX.
 - 10% APR inflation narrowing to 1% APR over 20 years.
 - 75% of inflation to "Proof of Brain" social consensus algorithm.
 - 15% of inflation to stake holders.
 - 10% of inflation to block producers.
 
-## dPay Jackson Test Network
+### dPay Jackson Test Network
 - [Installing dPay Jackson Test Network From Source](https://github.com/dpays/dpay/blob/master/doc/install/jackson/build-from-source.md)
+- [Installing dPay Jackson Test Network With Docker](https://github.com/dpays/dpay/blob/master/doc/install/jackson/docker.md)
+- [Seed Nodes For dPay Jackson Test Network](https://github.com/dpays/dpay/blob/master/doc/install/jackson/seed-nodes.md)
 - Currency symbol JACKS.
 - 10% APR inflation narrowing to 1% APR over 20 years.
 - 75% of inflation to "Proof of Brain" social consensus algorithm.
 - 15% of inflation to stake holders.
 - 10% of inflation to block producers.
 
-## dPay Franklin Test Network
+### dPay Franklin Test Network
 - [Installing dPay Franklin Test Network From Source](https://github.com/dpays/dpay/blob/master/doc/install/franklin/build-from-source.md)
 - [Installing dPay Kennedy Test Network With Docker](https://github.com/dpays/dpay/blob/master/doc/install/franklin/docker.md)
 - [Seed Nodes For dPay Kennedy Test Network](https://github.com/dpays/dpay/blob/master/doc/install/franklin/seed-nodes.md)
@@ -38,7 +108,7 @@ dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" socia
 - 15% of inflation to stake holders.
 - 10% of inflation to block producers.
 
-## dPay Kennedy Test Network
+### dPay Kennedy Test Network
 - [Installing dPay Kennedy Test Network From Source](https://github.com/dpays/dpay/blob/master/doc/install/kennedy/build-from-source.md)
 - [Installing dPay Kennedy Test Network With Docker](https://github.com/dpays/dpay/blob/master/doc/install/kennedy/docker.md)
 - [Seed Nodes For dPay Kennedy Test Network](https://github.com/dpays/dpay/blob/master/doc/install/kennedy/seed-nodes.md)
@@ -48,7 +118,7 @@ dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" socia
 - 15% of inflation to stake holders.
 - 10% of inflation to block producers.
 
-## dPay Jefferson Dev Network
+### dPay Jefferson Dev Network
 - [Installing dPay Jefferson Dev Network From Source](https://github.com/dpays/dpay/blob/master/doc/install/jefferson/build-from-source.md)
 - [Installing dPay Jefferson Dev Network With Docker](https://github.com/dpays/dpay/blob/master/doc/install/jefferson/docker.md)
 - [Seed Nodes For dPay Jefferson Dev Network](https://github.com/dpays/dpay/blob/master/doc/install/jefferson/seed-nodes.md)
@@ -57,28 +127,6 @@ dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" socia
 - 75% of inflation to "Proof of Brain" social consensus algorithm.
 - 15% of inflation to stake holders.
 - 10% of inflation to block producers.
-
-## dPay Built-in SideChains
-- [dTunes SideChain](https://github.com/dpays/dpay/blob/master/doc/sidechains/dtunes.md)
-- [dSocial SideChain](https://github.com/dpays/dpay/blob/master/doc/sidechains/dsocial.md)
-
-## Build Your Own dPay SideChain
-- [What Is A SideChain?](https://github.com/dpays/dpay/blob/master/doc/sidechains/about-sidechains.md)
-- [Launch a dPay SideChain](https://github.com/dpays/dpay/blob/master/doc/sidechains/launching-sidechains.md)
-
-## How To Mine BEX
-- [Mining Requirements](https://github.com/dpays/dpay/blob/master/doc/mining/requirements.md)
-- [dPay Mining Quickstart](https://github.com/dpays/dpay/blob/master/doc/mining/quickstart.md)
-
-## How To Become A dPay Witness
-- [Installing A Witness Node](https://github.com/dpays/dpay/blob/master/doc/witness/installation.md)
-
-## Installing A Normal Live Network Node
-- [Install dPay With Docker](https://github.com/dpays/dpay/blob/master/doc/install/live/docker.md)
-- [Build/Install dPay From Source](https://github.com/dpays/dpay/blob/master/doc/install/live/install.md)
-
-## Installing dPay For Exchanges
-- [Exchange Quickstart Guide](https://github.com/dpays/dpay/blob/master/doc/exchanges/docker.md)
 
 
 # NO SUPPORT & NO WARRANTY

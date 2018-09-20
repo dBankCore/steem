@@ -119,3 +119,21 @@ docker build -t dpay/dpay .
 ```
 
 #### Launch Container
+After building the container from source, launch the Docker container with the commands below.
+
+##### Low-Memory Node
+
+```
+docker run \
+    -d -p 6620:6620 -p 1776:1776 --name dpayd-default \
+    --restart unless-stopped dpay/dpay
+```
+
+##### Full API Node
+```
+docker run \
+    --env USE_WAY_TOO_MUCH_RAM=1 --env USE_FULL_WEB_NODE=1 \
+    -d -p 6620:6620 -p 1776:1776 --name dpayd-full \
+    --restart unless-stopped \
+    dpay/dpay
+```
