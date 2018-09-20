@@ -302,33 +302,18 @@ endif(ENABLE_INSTALLER)
 
 if( BUILD_DPAY_TESTNET )
   MESSAGE( STATUS "\n\n      CONFIGURED FOR TEST NETWORK                    \n\n" )
-else()
-  MESSAGE( STATUS "\n\n      CONFIGURED FOR DPAY PUBLIC NETWORK             \n\n" )
-endif()
-
 if( BUILD_DPAY_KENNEDY )
   MESSAGE( STATUS "\n\n      CONFIGURED FOR DPAY KENNEDY TEST NETWORK       \n\n" )
-else()
-  MESSAGE( STATUS "\n\n      CONFIGURED FOR DPAY PUBLIC NETWORK             \n\n" )
-endif()
-
 if( BUILD_DPAY_JEFFERSON )
   MESSAGE( STATUS "\n\n      CONFIGURED FOR DPAY JEFFERSON TEST NETWORK     \n\n" )
-else()
-  MESSAGE( STATUS "\n\n      CONFIGURED FOR DPAY PUBLIC NETWORK             \n\n" )
-endif()
-
 if( BUILD_DPAY_JACKSON )
   MESSAGE( STATUS "\n\n      CONFIGURED FOR DPAY JACKSON TEST NETWORK       \n\n" )
-else()
-  MESSAGE( STATUS "\n\n      CONFIGURED FOR DPAY PUBLIC NETWORK             \n\n" )
-endif()
-
 if( BUILD_DPAY_FRANKLIN )
   MESSAGE( STATUS "\n\n      CONFIGURED FOR DPAY FRANKLIN TEST NETWORK      \n\n" )
 else()
   MESSAGE( STATUS "\n\n      CONFIGURED FOR DPAY PUBLIC NETWORK             \n\n" )
 endif()
+
 
 if( LOW_MEMORY_NODE )
   MESSAGE( STATUS "\n\n      CONFIGURED FOR LOW MEMORY NODE                 \n\n" )

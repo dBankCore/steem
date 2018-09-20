@@ -228,21 +228,8 @@
 #define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 1
 
 #else
-/*
-* DPAY'S LIVE/PUBLIC NETWORK CONFIGURATION
-* Configuration settings for dPay's Frankin Test Network.
-* https://dpays.io // https://api.dpays.io
-*/
 #define DPAY_INIT_PUBLIC_KEY_STR             "DWB71hoefovfw8xjGiLpxEDBfc2iDJpAVkbR99PZaiLSR8JiYmp6V"
 #define DPAY_CHAIN_ID                        (fc::sha256::hash("dpay"))
-/*
-* DPAY NETWORK CURRENCIES
-* `DWB` ADDRESS PREFIX (dWeb)
-* VESTS
-* BEX (Native currency) aka BenchMark (Old German Goverment-Issued Currency. Formerly Legal Tender)
-* BBD (Benchmark-backed dollars)
-* BEXD (Benchmark-backed Dollars with 3 digits of precisions)
-*/
 #define VESTS_SYMBOL  (uint64_t(6) | (uint64_t('V') << 8) | (uint64_t('E') << 16) | (uint64_t('S') << 24) | (uint64_t('T') << 32) | (uint64_t('S') << 40)) ///< VESTS with 6 digits of precision
 #define DPAY_SYMBOL  (uint64_t(3) | (uint64_t('B') << 8) | (uint64_t('E') << 16) | (uint64_t('X') << 24)) ///< BEX with 3 digits of precision
 #define BBD_SYMBOL    (uint64_t(3) | (uint64_t('B') << 8) | (uint64_t('B') << 16) | (uint64_t('D') << 24) ) ///< BEX Backed Dollars with 3 digits of precision
