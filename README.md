@@ -53,9 +53,6 @@ dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" socia
   - [dPay SQRT Documentation](https://github.com/dpays/dpay/blob/stable/doc/sqrt.md)
   - [dPay-Core Testing Guide](https://github.com/dpays/dpay/blob/stable/doc/testing.md)
   - [dPay Debug Node Documentation](https://github.com/dpays/dpay/blob/stable/doc/dpay-debug-node.md)
-- [dPay Mining Documentation](#) - Coming Soon
-  - [Mining Requirements](#) - Coming Soon
-  - [Mining Quickstart](#) - Coming Soon
 - [dPay Witness Documentation](#)
   - [Witness Node Installation](https://github.com/dpays/dpay/blob/stable/doc/witness/installation.md)
   - [Voting For Witnesses](https://github.com/dpays/dpay/blob/stable/doc/voting-for-witnesses.md) - Coming Soon
