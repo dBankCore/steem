@@ -1,6 +1,6 @@
 #ifndef DPAY_HARDFORK_0_4
 #define DPAY_HARDFORK_0_4 4
 // Monday, September 11, 2018 12:30:00 PM
-#define DPAY_HARDFORK_0_4_TIME 1537543781
+#define DPAY_HARDFORK_0_4_TIME 1537556827
 #define DPAY_HARDFORK_0_4_VERSION hardfork_version( 0, 4 )
 #endif
