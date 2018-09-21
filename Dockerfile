@@ -236,9 +236,9 @@ RUN chown dpayd:dpayd -R /var/lib/dpayd
 VOLUME ["/var/lib/dpayd"]
 
 # rpc service:
-EXPOSE 8090
+EXPOSE 1776
 # p2p service:
-EXPOSE 2001
+EXPOSE 6620
 
 # add seednodes from documentation to image
 ADD doc/seednodes.txt /etc/dpayd/seednodes.txt

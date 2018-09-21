@@ -9,7 +9,7 @@
 // This is checked by get_config_check.sh called from Dockerfile
 
 #ifdef IS_TEST_NET
-#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 21, 0) )
+#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 0, 5) )
 
 #define DPAY_INIT_PRIVATE_KEY                (fc::ecc::private_key::regenerate(fc::sha256::hash(std::string("init_key"))))
 #define DPAY_INIT_PUBLIC_KEY_STR             (std::string( dpay::protocol::public_key_type(DPAY_INIT_PRIVATE_KEY.get_public_key()) ))
@@ -43,14 +43,14 @@
 
 #else // IS LIVE DPAY NETWORK
 
-#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 20, 0) )
+#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 0, 5) )
 
 #define DPAY_INIT_PUBLIC_KEY_STR             "DWB71hoefovfw8xjGiLpxEDBfc2iDJpAVkbR99PZaiLSR8JiYmp6V"
 #define DPAY_CHAIN_ID (fc::sha256::hash("dpay"))
 #define DPAY_ADDRESS_PREFIX                  "DWB"
 
-#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1458835200))
-#define DPAY_MINING_TIME                     (fc::time_point_sec(1458838800))
+#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1536669076))
+#define DPAY_MINING_TIME                     (fc::time_point_sec(1536669076))
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF12 (60*60*24)    /// 1 day
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF17 (60*60*12)    /// 12 hours
 #define DPAY_CASHOUT_WINDOW_SECONDS          (60*60*24*7)  /// 7 days
@@ -85,7 +85,7 @@
 #define DPAY_START_MINER_VOTING_BLOCK        (DPAY_BLOCKS_PER_DAY * 30)
 
 #define DPAY_INIT_MINER_NAME                 "initminer"
-#define DPAY_NUM_INIT_MINERS                 1
+#define DPAY_NUM_INIT_MINERS                 21
 #define DPAY_INIT_TIME                       (fc::time_point_sec());
 
 #define DPAY_MAX_WITNESSES                   21
