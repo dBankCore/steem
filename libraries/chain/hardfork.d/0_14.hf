@@ -15,7 +15,7 @@
 #define DPAY_HARDFORK_0_14__410 (DPAY_HARDFORK_0_14)
 
 
-#define DPAY_HARDFORK_0_14_TIME  1537522996 // Monday, September 11, 2018 12:30:00 PM
+#define DPAY_HARDFORK_0_14_TIME  1537538935 // Monday, September 11, 2018 12:30:00 PM
 
 #define DPAY_HARDFORK_0_14_VERSION hardfork_version( 0, 14 )
 
