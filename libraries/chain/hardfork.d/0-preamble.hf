@@ -48,4 +48,4 @@ FC_REFLECT( dpay::chain::hardfork_property_object,
    (next_hardfork)(next_hardfork_time) )
 CHAINBASE_SET_INDEX_TYPE( dpay::chain::hardfork_property_object, dpay::chain::hardfork_property_index )
 
-#define DPAY_NUM_HARDFORKS 0
+#define DPAY_NUM_HARDFORKS 1
