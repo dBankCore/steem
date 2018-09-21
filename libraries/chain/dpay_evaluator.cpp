@@ -1416,14 +1416,21 @@ void vote_evaluator::do_apply( const vote_operation& o )
 
          if( curation_reward_eligible )
          {
-           u512 rshares3(rshares);
-           u256 total2( comment.abs_rshares.value );
-           rshares3 *= 1000000;
-           total2 *= 1000000;
-           cv.weight = static_cast<uint64_t>( rshares3 / total2 );
-          }
+            if( comment.created < fc::time_point_sec(DPAY_HARDFORK_0_6_REVERSE_AUCTION_TIME) ) {
+               u512 rshares3(rshares);
+               u256 total2( comment.abs_rshares.value );
 
-            else {// cv.weight = W(R_1) - W(R_0)
+               if( !_db.has_hardfork( DPAY_HARDFORK_0_1 ) )
+               {
+                  rshares3 *= 1000000;
+                  total2 *= 1000000;
+               }
+
+               rshares3 = rshares3 * rshares3 * rshares3;
+
+               total2 *= total2;
+               cv.weight = static_cast<uint64_t>( rshares3 / total2 );
+            } else {// cv.weight = W(R_1) - W(R_0)
                const uint128_t two_s = 2 * util::get_content_constant_s();
                if( _db.has_hardfork( DPAY_HARDFORK_0_17__774 ) )
                {
@@ -1449,11 +1456,21 @@ void vote_evaluator::do_apply( const vote_operation& o )
             }
 
             max_vote_weight = cv.weight;
-            uint128_t w(max_vote_weight);
-            uint64_t delta_t = std::min( uint64_t((cv.last_update - comment.created).to_seconds()), uint64_t(DPAY_REVERSE_AUCTION_WINDOW_SECONDS) );
-            w *= delta_t;
-            w /= DPAY_REVERSE_AUCTION_WINDOW_SECONDS;
-            cv.weight = w.to_uint64();
+
+            if( _db.head_block_time() > fc::time_point_sec(DPAY_HARDFORK_0_6_REVERSE_AUCTION_TIME) )  /// start enforcing this prior to the hardfork
+            {
+               /// discount weight by time
+               uint128_t w(max_vote_weight);
+               uint64_t delta_t = std::min( uint64_t((cv.last_update - comment.created).to_seconds()), uint64_t(DPAY_REVERSE_AUCTION_WINDOW_SECONDS) );
+
+               w *= delta_t;
+               w /= DPAY_REVERSE_AUCTION_WINDOW_SECONDS;
+               cv.weight = w.to_uint64();
+            }
+         }
+         else
+         {
+            cv.weight = 0;
          }
       });
 
