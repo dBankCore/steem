@@ -69,7 +69,7 @@ dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" socia
 
 ## dPay LiveNet Details
 - Stable Version is 0.1.0
-- Newest Version is 0.0.5
+- Newest Version is 0.1.5
 - Chain was officially started by 21 community members who formed a governance on Sep, 11 2018 07:31:16
 - Currency symbol BEX, short for BenchMark, a private issued currency using the name of an old and out-of-circulation legal [Germany currency]()
 - Produces 10,512,000 blocks per year.
