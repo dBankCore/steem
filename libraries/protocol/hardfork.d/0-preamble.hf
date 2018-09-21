@@ -13,7 +13,7 @@
 #include <set>
 
 #ifdef IS_TEST_NET
-#define DPAY_NUM_HARDFORKS 21
+#define DPAY_NUM_HARDFORKS 0
 #else
-#define DPAY_NUM_HARDFORKS 20
+#define DPAY_NUM_HARDFORKS 0
 #endif
