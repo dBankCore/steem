@@ -1,1 +1,2 @@
-
+dpayd.dpays.io:6620          # dpay
+d.dpays.io:6620              # dpay

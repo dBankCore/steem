@@ -1,9 +1,9 @@
-Exchange Quickstart
+Exchange Quickstart For dPay Using Docker
 -------------------
 
-System Requirements: A dedicated server or virtual machine with a minimum of 16GB of RAM, and at least 50GB of fast local SSD storage. BEX is one of the most active blockchains in the world and handles an incredibly large amount of transactions per second, as such, it requires fast storage to run efficiently.
+System Requirements: A dedicated server or virtual machine with a minimum of 32GB of RAM, and at least 100GB of fast local SSD storage. dPay is one of the most active blockchains in the world and handles an incredibly large amount of transactions per second, as such, it requires fast storage to run efficiently.
 
-We recommend using docker to both build and run BEX for exchanges. Docker is the world's leading containerization platform and using it guarantees that your build and run environment is identical to what our developers use. You can still build from source and you can keep both blockchain data and wallet data outside of the docker container. The instructions below will show you how to do this in just a few easy steps.
+We recommend using docker to both build and run dPay for exchanges. Docker is the world's leading containerization platform and using it guarantees that your build and run environment is identical to what our developers use. You can still build from source and you can keep both blockchain data and wallet data outside of the docker container. The instructions below will show you how to do this in just a few easy steps.
 
 ### Install docker and git (if not already installed)
 
@@ -18,9 +18,9 @@ curl -fsSL get.docker.com -o get-docker.sh
 sh get-docker.sh
 ```
 
-### Clone the dPay repo
+### Clone the dpay repo
 
-Pull in the dPay repo from the official source on github and then change into the directory that's created for it.
+Pull in the dpay repo from the official source on github and then change into the directory that's created for it.
 ```
 git clone https://github.com/dpays/dpay
 cd dpay

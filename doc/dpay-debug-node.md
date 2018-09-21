@@ -1,11 +1,10 @@
-
-Python Debug Node Readme
+# dPay Debug Node
 ------------------------
 
 The Python Debug Node is a wrapper class that automates the creation and maintenance
 of a running dPay Debug Node. The Debug Node is a plugin for dPay that allows realtime
-local modification of the chain state in a way that mimicks real world behaviors
-without corrupting a localally saved blockchain or propogating changes to the live chain.
+local modification of the chain state in a way that mimics real world behaviors
+without corrupting a locally saved blockchain or propagating changes to the live chain.
 
 More information of the debug node can be found [here](debug_node_plugin.md)
 
@@ -18,8 +17,8 @@ RPC or WebSocket interfaces. Both of these are considered developer level skills
 is a higher level language that many amateur and skilled programmers use. There has already
 been community development of Python libraries to make interfacing with a live node easier.
 This plugin closes the gap by allowing a node to be launched programmatically in Python
-in addition to interfacing with the node. This module utilizes community member Xeroc's
-[dPay Python library](https://github.com/dpays/dpay-python).
+in addition to interfacing with the node. This module utilizes a fork of Steemit/BitShares
+community member Xeroc's [dPay Python library](https://github.com/dpays/dpay-python).
 
 How Do I Use This?
 ------------------
@@ -32,9 +31,9 @@ There are a couple of examples already made that you can try modifying yourself.
 
 [debug_hardforks.py](https://github.com/dpays/dpay/python_scripts/tests/debug_hardforks.py)
 This script starts a debug node, replays blocks, schedules a hardfork, and finally generates
-new blocks after the hardfork. The script also communicates via the general purpose rpc
+new blocks after the hardfork. The script also communicates via the general purpose RPC
 interface in Xeroc's Library to do a simple analysis of the results. In this case it
-generates a historgram of block producers to verify the witness scheduling algorithm works
+generates a histogram of block producers to verify the witness scheduling algorithm works
 properly. The purpose of the script is it verify any given hardfork does not have a bug that
 could crash the chain entirely.
 
@@ -54,8 +53,8 @@ with debug_node:
 
 The module is set up to use the `with` construct. The object construction simply checks
 for the correct directories and sets internal state. `with debug_node:` connects the node
-and establishes the internal rpc connection. The script can then do whatever it wants to.
-When the `with` block ends, the node automatically shutsdown and cleans up. The node uses
+and establishes the internal RPC connection. The script can then do whatever it wants to.
+When the `with` block ends, the node automatically shuts down and cleans up. The node uses
 a system standard temp directory through the standard Python TemporaryDirectory as the
 working data directory for the running node. The only work your script needs to do is
 specify the dpayd binary location and a populated data directory. For most configurations
@@ -71,7 +70,7 @@ stdout and stderr for debugging to dynamically specifying plugins and APIs to ru
 there is a lack of ways to interface. Ideally, there would a Python equivalent wrapper
 for every RPC API call. This is tedious and with plugins, those API calls could change
 revision to revision. For the most part, the exposed Debug Node calls are wrappers for
-the RPC call. Most, if not all, RPC API calls could be programatically generated from
+the RPC call. Most, if not all, RPC API calls could be programmatically generated from
 the C++ source. It would also be a good step forward to introduce a simple testing framework
 that could be used to start a debug node and then run a series of test cases on a common
 starting chain state. This would address much of the integration testing that is sorely

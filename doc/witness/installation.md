@@ -1,32 +1,4 @@
-# Building dPay
-
-## Compile-Time Options (cmake)
-
-### CMAKE_BUILD_TYPE=[Release/Debug]
-
-Specifies whether to build with or without optimization and without or with
-the symbol table for debugging. Unless you are specifically debugging or
-running tests, it is recommended to build as release.
-
-### LOW_MEMORY_NODE=[OFF/ON]
-
-Builds dpayd to be a consensus-only low memory node. Data and fields not
-needed for consensus are not stored in the object database.  This option is
-recommended for witnesses and seed-nodes.
-
-### CLEAR_VOTES=[ON/OFF]
-
-Clears old votes from memory that are no longer required for consensus.
-
-### BUILD_DPAY_TESTNET=[OFF/ON]
-
-Builds dpay for use in a private testnet. Also required for building unit tests.
-
-### SKIP_BY_TX_ID=[OFF/ON]
-
-By default this is off. Enabling will prevent the account history plugin querying transactions
-by id, but saving around 65% of CPU time when reindexing. Enabling this option is a
-huge gain if you do not need this functionality.
+# Building dPay's Daemon For The Live Network
 
 ## Building under Docker
 
@@ -34,6 +6,7 @@ We ship a Dockerfile.  This builds both common node type binaries.
 
     git clone https://github.com/dpays/dpay
     cd dpay
+    git checkout witness
     docker build -t dpay/dpay .
 
 ## Building on Ubuntu 16.04
@@ -48,8 +21,6 @@ will build out of the box without further effort:
         cmake \
         g++ \
         git \
-        libbz2-dev \
-        libsnappy-dev \
         libssl-dev \
         libtool \
         make \
@@ -82,7 +53,7 @@ will build out of the box without further effort:
 
     git clone https://github.com/dpays/dpay
     cd dpay
-    git checkout stable
+    git checkout witness
     git submodule update --init --recursive
     mkdir build
     cd build
@@ -104,8 +75,6 @@ Here are the required packages:
         cmake3 \
         g++ \
         git \
-        libbz2-dev \
-        libsnappy-dev \
         libssl-dev \
         libtool \
         make \
@@ -148,7 +117,7 @@ Then the instructions are the same as for dpay:
 
     git clone https://github.com/dpays/dpay
     cd dpay
-    git checkout stable
+    git checkout witness
     git submodule update --init --recursive
     mkdir build && cd build
     cmake -DCMAKE_BUILD_TYPE=Release ..
@@ -170,10 +139,10 @@ Install Homebrew by following the instructions here: http://brew.sh/
 
 ### Initialize Homebrew:
 
-    brew doctor
-    brew update
+   brew doctor
+   brew update
 
-### Install dpay dependencies:
+### Install dPay dependencies:
 
     brew install \
         autoconf \
@@ -183,11 +152,8 @@ Install Homebrew by following the instructions here: http://brew.sh/
         boost160 \
         libtool \
         openssl \
-        snappy \
-        zlib \
-        python3
-
-    pip3 install --user jinja2
+        python3 \
+        python3-jinja2
 
 Note: brew recently updated to boost 1.61.0, which is not yet supported by
 dpay. Until then, this will allow you to install boost 1.60.0.
@@ -205,15 +171,12 @@ dpay. Until then, this will allow you to install boost 1.60.0.
 
     git clone https://github.com/dpays/dpay.git
     cd dpay
+    git checkout witness
 
 ### Compile
 
     export OPENSSL_ROOT_DIR=$(brew --prefix)/Cellar/openssl/1.0.2h_1/
     export BOOST_ROOT=$(brew --prefix)/Cellar/boost@1.60/1.60.0/
-    export SNAPPY_LIBRARIES=$(brew --prefix)/Cellar/snappy/1.1.7_1/lib/
-    export SNAPPY_INCLUDE_DIR=$(brew --prefix)/Cellar/snappy/1.1.7_1/include/
-    export ZLIB_LIBRARIES=$(brew --prefix)/Cellar/zlib/1.2.11/lib/
-    git checkout stable
     git submodule update --init --recursive
     mkdir build && cd build
     cmake -DBOOST_ROOT="$BOOST_ROOT" -DCMAKE_BUILD_TYPE=Release ..

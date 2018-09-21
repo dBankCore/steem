@@ -1,4 +1,3 @@
-
 # Introduction
 
 In this document we derive the approximate integer square root function used by dPay for the curation curve

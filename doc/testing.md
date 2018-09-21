@@ -1,4 +1,4 @@
-# Testing
+# dPay Testing
 
 The unit test target is `make chain_test`
 This creates an executable `./tests/chain_test` that will run all unit tests.

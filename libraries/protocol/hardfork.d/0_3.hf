@@ -1,6 +1,6 @@
 #ifndef DPAY_HARDFORK_0_3
 #define DPAY_HARDFORK_0_3 3
-// 4/27/2016 13:00:00 GMT
-#define DPAY_HARDFORK_0_3_TIME 1461762000
+// Saturday, December 1, 2018 12:00:00 AM
+#define DPAY_HARDFORK_0_3_TIME 1543622400
 #define DPAY_HARDFORK_0_3_VERSION hardfork_version( 0, 3 )
 #endif

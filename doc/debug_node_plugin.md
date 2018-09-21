@@ -1,5 +1,5 @@
 
-Plugin readme
+# dPay Debug Node How-To
 -------------
 
 The latest release (TODO: Version number) exposes the plugin architecture.
@@ -100,13 +100,13 @@ Let's generate some blocks:
 
 As you can see, the `debug_node` performs a local edit of each witness's public key:
 
-    curl --data '{"jsonrpc": "2.0", "method": "call", "params": [0,"get_witness_by_account",["dantheman4"]], "id": 5}' http://127.0.0.1:8990/rpc
-    curl --data '{"jsonrpc": "2.0", "method": "call", "params": [0,"get_witness_by_account",["thisisnice4"]], "id": 6}' http://127.0.0.1:8990/rpc
+    curl --data '{"jsonrpc": "2.0", "method": "call", "params": [0,"get_witness_by_account",["jared"]], "id": 5}' http://127.0.0.1:8990/rpc
+    curl --data '{"jsonrpc": "2.0", "method": "call", "params": [0,"get_witness_by_account",["nomoreheroes"]], "id": 6}' http://127.0.0.1:8990/rpc
     curl --data '{"jsonrpc": "2.0", "method": "call", "params": [0,"get_dynamic_global_properties",[]], "id": 7}' http://127.0.0.1:1776/rpc
 
 The important information in the above is:
 
-    ... "signing_key":"STM6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV" ...
+    ... "signing_key":"DWB6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV" ...
     ... "head_block_number":1505 ...
 
 which demonstrates the witness keys have been reset and the head block number has been advanced with new blocks.  The blocks are signed by the above private key, and the database is edited to set the block signing key of the scheduled witnesses accordingly so the node accepts the simulated signatures as valid.
@@ -114,7 +114,7 @@ which demonstrates the witness keys have been reset and the head block number ha
 If we want to take control of an account we can do so by editing its key with `debug_update_object` command like this:
 
     curl --data '{"jsonrpc": "2.0", "method": "call", "params": [0,"lookup_account_names",[["dsite"]]], "id": 8}' http://127.0.0.1:1776/rpc    # find out ID of account we want is 2.2.28
-    curl --data '{"jsonrpc": "2.0", "method": "call", "params": [2,"debug_update_object",[{"_action":"update","id":"2.2.28","active":{"weight_threshold":1,"key_auths":[["STM6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",1]]}}]], "id": 9}]' http://127.0.0.1:1776/rpc
+    curl --data '{"jsonrpc": "2.0", "method": "call", "params": [2,"debug_update_object",[{"_action":"update","id":"2.2.28","active":{"weight_threshold":1,"key_auths":[["DWB6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",1]]}}]], "id": 9}]' http://127.0.0.1:1776/rpc
 
 Now that we've reset its key, we can take control of it in the wallet:
     programs/cli_wallet/cli_wallet -w debug_wallet.json -s ws://127.0.0.1:1776
@@ -122,12 +122,12 @@ Now that we've reset its key, we can take control of it in the wallet:
     unlock abc
     import_key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
     list_my_accounts
-    transfer dsite dantheman "1.234 BEX" "make -j100 money" true
+    transfer dsite jared "1.234 BEX" "make -j100 money" true
     list_my_accounts
     get_account_history dsite -1 1000
 
 (For some unknown reason, the current version of the wallet hangs after the transfer command -- why?)
 
-Again, we're not actually taking control of anything, we're doing a "what-if" experiment -- what if the keys to this account had suddenly changed at block 1505 and then this transfer operation was broadcast?  And we find out that the chain and the wallet handle the situation as exepected (processing the transfer, putting it in the account history, and updating the balance).
+Again, we're not actually taking control of anything, we're doing a "what-if" experiment -- what if the keys to this account had suddenly changed at block 1505 and then this transfer operation was broadcast?  And we find out that the chain and the wallet handle the situation as expected (processing the transfer, putting it in the account history, and updating the balance).
 
 This plugin allows all sorts of creative "what-if" experiments with the chain.
