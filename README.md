@@ -67,6 +67,16 @@ dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" socia
   - [dPay Network Ports](https://github.com/dpays/dpay/blob/stable/doc/dpay-network-ports.md)
 
 
+## dPay LiveNet Details
+- Chain was officially started by 21 community members who formed a governance on Sep, 11 2018 07:31:16
+- Currency symbol BEX, short for BenchMark, a private issued currency using the name of an old and out-of-circulation legal tender [Germany currency]()
+- 10% APR inflation narrowing to 1% APR over 20 years.
+- 75% of inflation to "Proof of Brain" social consensus algorithm.
+- 15% of inflation to stake holders.
+- 10% of inflation to block producers.
+- Dollar-backed currency (BBD)
+
+
 ##  Quick Installation
 
   ```
