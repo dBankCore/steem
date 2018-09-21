@@ -21,7 +21,7 @@ endif( MSVC )
 ## SORT .cpp by most likely to change / break compile
 add_library( dpay_protocol
 
-             sdc_operations.cpp
+             smt_operations.cpp
              dpay_operations.cpp
              types.cpp
              schema_types.cpp

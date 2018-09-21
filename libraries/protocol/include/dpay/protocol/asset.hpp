@@ -14,7 +14,7 @@ namespace dpay { namespace protocol {
          :amount(a),symbol(id){}
 
       asset()
-         :amount(0),symbol(BEX_SYMBOL){}
+         :amount(0),symbol(DPAY_SYMBOL){}
 
       share_type        amount;
       asset_symbol_type symbol;

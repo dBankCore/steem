@@ -14,7 +14,7 @@ namespace dpay { namespace chain {
    using protocol::beneficiary_route_type;
    using chainbase::t_vector;
    using chainbase::t_pair;
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
    using protocol::votable_asset_info;
 #endif
 
@@ -52,7 +52,7 @@ namespace dpay { namespace chain {
          template< typename Constructor, typename Allocator >
          comment_object( Constructor&& c, allocator< Allocator > a )
             :category( a ), parent_permlink( a ), permlink( a ), beneficiaries( a )
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
             , allowed_vote_assets( a )
 #endif
          {
@@ -100,14 +100,14 @@ namespace dpay { namespace chain {
          id_type           root_comment;
 
          asset             max_accepted_payout = asset( 1000000000, BBD_SYMBOL );       /// BBD value of the maximum payout this post will receive
-         uint16_t          percent_dpay_dollars = DPAY_100_PERCENT; /// the percent of dPay Dollars to key, unkept amounts will be received as dPay Power
+         uint16_t          percent_dpay_dollars = DPAY_100_PERCENT; /// the percent of BEX Dollars to key, unkept amounts will be received as BEX Power
          bool              allow_replies = true;      /// allows a post to disable replies.
          bool              allow_votes   = true;      /// allows a post to receive votes;
          bool              allow_curation_rewards = true;
 
          using t_beneficiaries = t_vector< beneficiary_route_type >;
          t_beneficiaries   beneficiaries;
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
          using t_votable_assets = t_vector< t_pair< asset_symbol_type, votable_asset_info > >;
          t_votable_assets  allowed_vote_assets;
 #endif
@@ -260,7 +260,7 @@ namespace dpay { namespace chain {
 
 } } // dpay::chain
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
 FC_REFLECT( dpay::chain::comment_object,
              (id)(author)(permlink)
              (category)(parent_author)(parent_permlink)
@@ -306,7 +306,7 @@ namespace helpers
    public:
       typedef dpay::chain::comment_index IndexType;
       typedef typename dpay::chain::comment_object::t_beneficiaries t_beneficiaries;
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
       typedef typename dpay::chain::comment_object::t_votable_assets t_votable_assets;
 #endif
       index_statistic_info gather_statistics(const IndexType& index, bool onlyStaticInfo) const
@@ -322,7 +322,7 @@ namespace helpers
                info._item_additional_allocation += o.parent_permlink.capacity()*sizeof(shared_string::value_type);
                info._item_additional_allocation += o.permlink.capacity()*sizeof(shared_string::value_type);
                info._item_additional_allocation += o.beneficiaries.capacity()*sizeof(t_beneficiaries::value_type);
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
                info._item_additional_allocation += o.allowed_vote_assets.capacity()*sizeof(t_votable_assets::value_type);
 #endif
             }

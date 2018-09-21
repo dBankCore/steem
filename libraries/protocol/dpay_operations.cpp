@@ -17,7 +17,7 @@ namespace dpay { namespace protocol {
    void account_create_operation::validate() const
    {
       validate_account_name( new_account_name );
-      FC_ASSERT( is_asset_type( fee, BEX_SYMBOL ), "Account creation fee must be BEX" );
+      FC_ASSERT( is_asset_type( fee, DPAY_SYMBOL ), "Account creation fee must be BEX" );
       owner.validate();
       active.validate();
 
@@ -26,14 +26,14 @@ namespace dpay { namespace protocol {
          FC_ASSERT( fc::is_utf8(json_metadata), "JSON Metadata not formatted in UTF8" );
          FC_ASSERT( fc::json::is_valid(json_metadata), "JSON Metadata not valid JSON" );
       }
-      FC_ASSERT( fee >= asset( 0, BEX_SYMBOL ), "Account creation fee cannot be negative" );
+      FC_ASSERT( fee >= asset( 0, DPAY_SYMBOL ), "Account creation fee cannot be negative" );
    }
 
    void account_create_with_delegation_operation::validate() const
    {
       validate_account_name( new_account_name );
       validate_account_name( creator );
-      FC_ASSERT( is_asset_type( fee, BEX_SYMBOL ), "Account creation fee must be BEX" );
+      FC_ASSERT( is_asset_type( fee, DPAY_SYMBOL ), "Account creation fee must be BEX" );
       FC_ASSERT( is_asset_type( delegation, VESTS_SYMBOL ), "Delegation must be VESTS" );
 
       owner.validate();
@@ -46,7 +46,7 @@ namespace dpay { namespace protocol {
          FC_ASSERT( fc::json::is_valid(json_metadata), "JSON Metadata not valid JSON" );
       }
 
-      FC_ASSERT( fee >= asset( 0, BEX_SYMBOL ), "Account creation fee cannot be negative" );
+      FC_ASSERT( fee >= asset( 0, DPAY_SYMBOL ), "Account creation fee cannot be negative" );
       FC_ASSERT( delegation >= asset( 0, VESTS_SYMBOL ), "Delegation cannot be negative" );
    }
 
@@ -91,7 +91,7 @@ namespace dpay { namespace protocol {
    {
       typedef void result_type;
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
       void operator()( const allowed_vote_assets& va) const
       {
          va.validate();
@@ -145,9 +145,9 @@ namespace dpay { namespace protocol {
    void claim_account_operation::validate()const
    {
       validate_account_name( creator );
-      FC_ASSERT( is_asset_type( fee, BEX_SYMBOL ), "Account creation fee must be BEX" );
-      FC_ASSERT( fee >= asset( 0, BEX_SYMBOL ), "Account creation fee cannot be negative" );
-      FC_ASSERT( fee <= asset( DPAY_MAX_ACCOUNT_CREATION_FEE, BEX_SYMBOL ), "Account creation fee cannot be too large" );
+      FC_ASSERT( is_asset_type( fee, DPAY_SYMBOL ), "Account creation fee must be BEX" );
+      FC_ASSERT( fee >= asset( 0, DPAY_SYMBOL ), "Account creation fee cannot be negative" );
+      FC_ASSERT( fee <= asset( DPAY_MAX_ACCOUNT_CREATION_FEE, DPAY_SYMBOL ), "Account creation fee cannot be too large" );
 
       FC_ASSERT( extensions.size() == 0, "There are no extensions for claim_account_operation." );
    }
@@ -176,7 +176,7 @@ namespace dpay { namespace protocol {
    {
       validate_account_name( voter );
       validate_account_name( author );\
-      FC_ASSERT( abs(weight) <= DPAY_100_PERCENT, "Weight is not a dPay percentage" );
+      FC_ASSERT( abs(weight) <= DPAY_100_PERCENT, "Weight is not a BEXIT percentage" );
       validate_permlink( permlink );
    }
 
@@ -193,9 +193,9 @@ namespace dpay { namespace protocol {
    void transfer_to_vesting_operation::validate() const
    {
       validate_account_name( from );
-      FC_ASSERT( amount.symbol == BEX_SYMBOL ||
-                 ( amount.symbol.space() == asset_symbol_type::sdc_nai_space && amount.symbol.is_vesting() == false ),
-                 "Amount must be BEX or SDC liquid" );
+      FC_ASSERT( amount.symbol == DPAY_SYMBOL ||
+                 ( amount.symbol.space() == asset_symbol_type::smt_nai_space && amount.symbol.is_vesting() == false ),
+                 "Amount must be BEX or SMT liquid" );
       if ( to != account_name_type() ) validate_account_name( to );
       FC_ASSERT( amount.amount > 0, "Must transfer a nonzero amount" );
    }
@@ -210,7 +210,7 @@ namespace dpay { namespace protocol {
    {
       validate_account_name( from_account );
       validate_account_name( to_account );
-      FC_ASSERT( 0 <= percent && percent <= DPAY_100_PERCENT, "Percent must be valid dPay percent" );
+      FC_ASSERT( 0 <= percent && percent <= DPAY_100_PERCENT, "Percent must be valid BEX percent" );
    }
 
    void witness_update_operation::validate() const
@@ -221,7 +221,7 @@ namespace dpay { namespace protocol {
 
       FC_ASSERT( url.size() > 0, "URL size must be greater than 0" );
       FC_ASSERT( fc::is_utf8( url ), "URL is not valid UTF8" );
-      FC_ASSERT( fee >= asset( 0, BEX_SYMBOL ), "Fee cannot be negative" );
+      FC_ASSERT( fee >= asset( 0, DPAY_SYMBOL ), "Fee cannot be negative" );
       props.validate< false >();
    }
 
@@ -237,7 +237,7 @@ namespace dpay { namespace protocol {
       {
          asset account_creation_fee;
          fc::raw::unpack_from_vector( itr->second, account_creation_fee );
-         FC_ASSERT( account_creation_fee.symbol == BEX_SYMBOL, "account_creation_fee must be in BEX" );
+         FC_ASSERT( account_creation_fee.symbol == DPAY_SYMBOL, "account_creation_fee must be in BEX" );
          FC_ASSERT( account_creation_fee.amount >= DPAY_MIN_ACCOUNT_CREATION_FEE, "account_creation_fee smaller than minimum account creation fee" );
       }
 
@@ -271,7 +271,7 @@ namespace dpay { namespace protocol {
       {
          price bbd_exchange_rate;
          fc::raw::unpack_from_vector( itr->second, bbd_exchange_rate );
-         FC_ASSERT( ( is_asset_type( bbd_exchange_rate.base, BBD_SYMBOL ) && is_asset_type( bbd_exchange_rate.quote, BEX_SYMBOL ) ),
+         FC_ASSERT( ( is_asset_type( bbd_exchange_rate.base, BBD_SYMBOL ) && is_asset_type( bbd_exchange_rate.quote, DPAY_SYMBOL ) ),
             "Price feed must be a BEX/BBD price" );
          bbd_exchange_rate.validate();
       }
@@ -465,8 +465,8 @@ namespace dpay { namespace protocol {
    void feed_publish_operation::validate()const
    {
       validate_account_name( publisher );
-      FC_ASSERT( ( is_asset_type( exchange_rate.base, BEX_SYMBOL ) && is_asset_type( exchange_rate.quote, BBD_SYMBOL ) )
-         || ( is_asset_type( exchange_rate.base, BBD_SYMBOL ) && is_asset_type( exchange_rate.quote, BEX_SYMBOL ) ),
+      FC_ASSERT( ( is_asset_type( exchange_rate.base, DPAY_SYMBOL ) && is_asset_type( exchange_rate.quote, BBD_SYMBOL ) )
+         || ( is_asset_type( exchange_rate.base, BBD_SYMBOL ) && is_asset_type( exchange_rate.quote, DPAY_SYMBOL ) ),
          "Price feed must be a BEX/BBD price" );
       exchange_rate.validate();
    }
@@ -475,17 +475,17 @@ namespace dpay { namespace protocol {
    {
       validate_account_name( owner );
 
-      FC_ASSERT(  ( is_asset_type( amount_to_sell, BEX_SYMBOL ) && is_asset_type( min_to_receive, BBD_SYMBOL ) )
-               || ( is_asset_type( amount_to_sell, BBD_SYMBOL ) && is_asset_type( min_to_receive, BEX_SYMBOL ) )
+      FC_ASSERT(  ( is_asset_type( amount_to_sell, DPAY_SYMBOL ) && is_asset_type( min_to_receive, BBD_SYMBOL ) )
+               || ( is_asset_type( amount_to_sell, BBD_SYMBOL ) && is_asset_type( min_to_receive, DPAY_SYMBOL ) )
                || (
-                     amount_to_sell.symbol.space() == asset_symbol_type::sdc_nai_space
-                     && is_asset_type( min_to_receive, BEX_SYMBOL )
+                     amount_to_sell.symbol.space() == asset_symbol_type::smt_nai_space
+                     && is_asset_type( min_to_receive, DPAY_SYMBOL )
                   )
                || (
-                     is_asset_type( amount_to_sell, BEX_SYMBOL )
-                     && min_to_receive.symbol.space() == asset_symbol_type::sdc_nai_space
+                     is_asset_type( amount_to_sell, DPAY_SYMBOL )
+                     && min_to_receive.symbol.space() == asset_symbol_type::smt_nai_space
                   ),
-               "Limit order must be for the BEX:BBD or SDC:(BEX/BBD) market" );
+               "Limit order must be for the BEX:BBD or SMT:(BEX/BBD) market" );
 
       (amount_to_sell / min_to_receive).validate();
    }
@@ -497,17 +497,17 @@ namespace dpay { namespace protocol {
       FC_ASSERT( amount_to_sell.symbol == exchange_rate.base.symbol, "Sell asset must be the base of the price" );
       exchange_rate.validate();
 
-      FC_ASSERT(  ( is_asset_type( amount_to_sell, BEX_SYMBOL ) && is_asset_type( exchange_rate.quote, BBD_SYMBOL ) )
-               || ( is_asset_type( amount_to_sell, BBD_SYMBOL ) && is_asset_type( exchange_rate.quote, BEX_SYMBOL ) )
+      FC_ASSERT(  ( is_asset_type( amount_to_sell, DPAY_SYMBOL ) && is_asset_type( exchange_rate.quote, BBD_SYMBOL ) )
+               || ( is_asset_type( amount_to_sell, BBD_SYMBOL ) && is_asset_type( exchange_rate.quote, DPAY_SYMBOL ) )
                || (
-                     amount_to_sell.symbol.space() == asset_symbol_type::sdc_nai_space
-                     && is_asset_type( exchange_rate.quote, BEX_SYMBOL )
+                     amount_to_sell.symbol.space() == asset_symbol_type::smt_nai_space
+                     && is_asset_type( exchange_rate.quote, DPAY_SYMBOL )
                   )
                || (
-                     is_asset_type( amount_to_sell, BEX_SYMBOL )
-                     && exchange_rate.quote.symbol.space() == asset_symbol_type::sdc_nai_space
+                     is_asset_type( amount_to_sell, DPAY_SYMBOL )
+                     && exchange_rate.quote.symbol.space() == asset_symbol_type::smt_nai_space
                   ),
-               "Limit order must be for the BEX:BBD or SDC:(BEX/BBD) market" );
+               "Limit order must be for the BEX:BBD or SMT:(BEX/BBD) market" );
 
       FC_ASSERT( ( amount_to_sell * exchange_rate ).amount > 0, "Amount to sell cannot round to 0 when traded" );
    }
@@ -543,12 +543,12 @@ namespace dpay { namespace protocol {
       validate_account_name( agent );
       FC_ASSERT( fee.amount >= 0, "fee cannot be negative" );
       FC_ASSERT( bbd_amount.amount >= 0, "bbd amount cannot be negative" );
-      FC_ASSERT( dpay_amount.amount >= 0, "dPay amount cannot be negative" );
+      FC_ASSERT( dpay_amount.amount >= 0, "BEX amount cannot be negative" );
       FC_ASSERT( bbd_amount.amount > 0 || dpay_amount.amount > 0, "escrow must transfer a non-zero amount" );
       FC_ASSERT( from != agent && to != agent, "agent must be a third party" );
-      FC_ASSERT( (fee.symbol == BEX_SYMBOL) || (fee.symbol == BBD_SYMBOL), "fee must be BEX or BBD" );
-      FC_ASSERT( bbd_amount.symbol == BBD_SYMBOL, "BBD amount must contain BBD" );
-      FC_ASSERT( dpay_amount.symbol == BEX_SYMBOL, "dPay amount must contain BEX" );
+      FC_ASSERT( (fee.symbol == DPAY_SYMBOL) || (fee.symbol == BBD_SYMBOL), "fee must be BEX or BBD" );
+      FC_ASSERT( bbd_amount.symbol == BBD_SYMBOL, "bbd amount must contain BBD" );
+      FC_ASSERT( dpay_amount.symbol == DPAY_SYMBOL, "BEX amount must contain BEX" );
       FC_ASSERT( ratification_deadline < escrow_expiration, "ratification deadline must be before escrow expiration" );
       if ( json_meta.size() > 0 )
       {
@@ -585,10 +585,10 @@ namespace dpay { namespace protocol {
       FC_ASSERT( who == from || who == to || who == agent, "who must be from or to or agent" );
       FC_ASSERT( receiver == from || receiver == to, "receiver must be from or to" );
       FC_ASSERT( bbd_amount.amount >= 0, "bbd amount cannot be negative" );
-      FC_ASSERT( dpay_amount.amount >= 0, "dPay amount cannot be negative" );
+      FC_ASSERT( dpay_amount.amount >= 0, "BEX amount cannot be negative" );
       FC_ASSERT( bbd_amount.amount > 0 || dpay_amount.amount > 0, "escrow must release a non-zero amount" );
-      FC_ASSERT( bbd_amount.symbol == BBD_SYMBOL, "BBD amount must contain BBD" );
-      FC_ASSERT( dpay_amount.symbol == BEX_SYMBOL, "BEX amount must contain BEX" );
+      FC_ASSERT( bbd_amount.symbol == BBD_SYMBOL, "bbd amount must contain BBD" );
+      FC_ASSERT( dpay_amount.symbol == DPAY_SYMBOL, "BEX amount must contain BEX" );
    }
 
    void request_account_recovery_operation::validate()const
@@ -619,7 +619,7 @@ namespace dpay { namespace protocol {
       validate_account_name( from );
       validate_account_name( to );
       FC_ASSERT( amount.amount > 0 );
-      FC_ASSERT( amount.symbol == BEX_SYMBOL || amount.symbol == BBD_SYMBOL );
+      FC_ASSERT( amount.symbol == DPAY_SYMBOL || amount.symbol == BBD_SYMBOL );
       FC_ASSERT( memo.size() < DPAY_MAX_MEMO_SIZE, "Memo is too large" );
       FC_ASSERT( fc::is_utf8( memo ), "Memo is not UTF8" );
    }
@@ -627,7 +627,7 @@ namespace dpay { namespace protocol {
       validate_account_name( from );
       validate_account_name( to );
       FC_ASSERT( amount.amount > 0 );
-      FC_ASSERT( amount.symbol == BEX_SYMBOL || amount.symbol == BBD_SYMBOL );
+      FC_ASSERT( amount.symbol == DPAY_SYMBOL || amount.symbol == BBD_SYMBOL );
       FC_ASSERT( memo.size() < DPAY_MAX_MEMO_SIZE, "Memo is too large" );
       FC_ASSERT( fc::is_utf8( memo ), "Memo is not UTF8" );
    }
@@ -661,7 +661,7 @@ namespace dpay { namespace protocol {
    void claim_reward_balance_operation::validate()const
    {
       validate_account_name( account );
-      FC_ASSERT( is_asset_type( reward_dpay, BEX_SYMBOL ), "Reward BEX must be BEX" );
+      FC_ASSERT( is_asset_type( reward_dpay, DPAY_SYMBOL ), "Reward BEX must be BEX" );
       FC_ASSERT( is_asset_type( reward_bbd, BBD_SYMBOL ), "Reward BEX must be BBD" );
       FC_ASSERT( is_asset_type( reward_vests, VESTS_SYMBOL ), "Reward BEX must be VESTS" );
       FC_ASSERT( reward_dpay.amount >= 0, "Cannot claim a negative amount" );
@@ -670,7 +670,7 @@ namespace dpay { namespace protocol {
       FC_ASSERT( reward_dpay.amount > 0 || reward_bbd.amount > 0 || reward_vests.amount > 0, "Must claim something." );
    }
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
    void claim_reward_balance2_operation::validate()const
    {
       validate_account_name( account );

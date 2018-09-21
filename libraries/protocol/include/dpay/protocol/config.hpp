@@ -1,5 +1,4 @@
 /*
- * Copyright (c) 2018 dPay DAO and contributors.
  * Copyright (c) 2016 Steemit, Inc., and contributors.
  */
 #pragma once
@@ -14,8 +13,8 @@
 
 #define DPAY_INIT_PRIVATE_KEY                (fc::ecc::private_key::regenerate(fc::sha256::hash(std::string("init_key"))))
 #define DPAY_INIT_PUBLIC_KEY_STR             (std::string( dpay::protocol::public_key_type(DPAY_INIT_PRIVATE_KEY.get_public_key()) ))
-#define DPAY_CHAIN_ID (fc::sha256::hash("dpaytestnet"))
-#define DPAY_ADDRESS_PREFIX                  "TEX"
+#define DPAY_CHAIN_ID (fc::sha256::hash("testnet"))
+#define DPAY_ADDRESS_PREFIX                  "TST"
 
 #define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
 #define DPAY_MINING_TIME                     (fc::time_point_sec(1451606400))
@@ -42,12 +41,142 @@
 /// Allows to limit number of total produced blocks.
 #define TESTNET_BLOCK_LIMIT                   (3000000)
 
+#elif IS_JACKSON_NET
+#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 21, 0) )
+
+#define DPAY_INIT_PUBLIC_KEY_STR             "AND6PnZaAX77eS3KGn7ZChXnceoKLf6xDWb4S96Ps9UaVhM7dqjVP"
+#define DPAY_CHAIN_ID (fc::sha256::hash("jackson"))
+#define DPAY_ADDRESS_PREFIX                  "AND"
+
+#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
+#define DPAY_MINING_TIME                     (fc::time_point_sec(1451606400))
+#define DPAY_CASHOUT_WINDOW_SECONDS          (60*60) /// 1 hr
+#define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF12 (DPAY_CASHOUT_WINDOW_SECONDS)
+#define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF17 (DPAY_CASHOUT_WINDOW_SECONDS)
+#define DPAY_SECOND_CASHOUT_WINDOW           (60*60*24*3) /// 3 days
+#define DPAY_MAX_CASHOUT_WINDOW_SECONDS      (60*60*24) /// 1 day
+#define DPAY_UPVOTE_LOCKOUT_HF7              (fc::minutes(1))
+#define DPAY_UPVOTE_LOCKOUT_SECONDS          (60*5)    /// 5 minutes
+#define DPAY_UPVOTE_LOCKOUT_HF17             (fc::minutes(5))
+
+
+#define DPAY_MIN_ACCOUNT_CREATION_FEE          0
+#define DPAY_MAX_ACCOUNT_CREATION_FEE          int64_t(1000000000)
+
+#define DPAY_OWNER_AUTH_RECOVERY_PERIOD                  fc::seconds(60)
+#define DPAY_ACCOUNT_RECOVERY_REQUEST_EXPIRATION_PERIOD  fc::seconds(12)
+#define DPAY_OWNER_UPDATE_LIMIT                          fc::seconds(0)
+#define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 1
+
+#define DPAY_INIT_SUPPLY                     (int64_t( 500 ) * int64_t( 1000000 ) * int64_t( 1000 ))
+
+/// Allows to limit number of total produced blocks.
+#define JACKSON_BLOCK_LIMIT                   (1000000)
+
+#elif IS_JEFFERSON_NET
+#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 21, 0) )
+
+#define DPAY_INIT_PUBLIC_KEY_STR             "JEF6SyB39dThzq94tPR2cYnf7gr391YuhqJajCvVssj1Ddj5qfwxN"
+#define DPAY_CHAIN_ID (fc::sha256::hash("jefferson"))
+#define DPAY_ADDRESS_PREFIX                  "JEF"
+
+#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
+#define DPAY_MINING_TIME                     (fc::time_point_sec(1451606400))
+#define DPAY_CASHOUT_WINDOW_SECONDS          (60*60) /// 1 hr
+#define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF12 (DPAY_CASHOUT_WINDOW_SECONDS)
+#define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF17 (DPAY_CASHOUT_WINDOW_SECONDS)
+#define DPAY_SECOND_CASHOUT_WINDOW           (60*60*24*3) /// 3 days
+#define DPAY_MAX_CASHOUT_WINDOW_SECONDS      (60*60*24) /// 1 day
+#define DPAY_UPVOTE_LOCKOUT_HF7              (fc::minutes(1))
+#define DPAY_UPVOTE_LOCKOUT_SECONDS          (60*5)    /// 5 minutes
+#define DPAY_UPVOTE_LOCKOUT_HF17             (fc::minutes(5))
+
+
+#define DPAY_MIN_ACCOUNT_CREATION_FEE          0
+#define DPAY_MAX_ACCOUNT_CREATION_FEE          int64_t(1000000000)
+
+#define DPAY_OWNER_AUTH_RECOVERY_PERIOD                  fc::seconds(60)
+#define DPAY_ACCOUNT_RECOVERY_REQUEST_EXPIRATION_PERIOD  fc::seconds(12)
+#define DPAY_OWNER_UPDATE_LIMIT                          fc::seconds(0)
+#define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 1
+
+#define DPAY_INIT_SUPPLY                     (int64_t( 250 ) * int64_t( 1000000 ) * int64_t( 1000 ))
+
+/// Allows to limit number of total produced blocks.
+#define JEFFERSON_BLOCK_LIMIT                   (4000000000)
+
+
+#elif IS_FRANKLIN_NET
+#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 21, 0) )
+
+#define DPAY_INIT_PUBLIC_KEY_STR             (std::string( dpay::protocol::public_key_type(DPAY_INIT_PRIVATE_KEY.get_public_key()) ))
+#define DPAY_CHAIN_ID (fc::sha256::hash("franklin"))
+#define DPAY_ADDRESS_PREFIX                  "BELL"
+
+#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
+#define DPAY_MINING_TIME                     (fc::time_point_sec(1451606400))
+#define DPAY_CASHOUT_WINDOW_SECONDS          (60*60) /// 1 hr
+#define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF12 (DPAY_CASHOUT_WINDOW_SECONDS)
+#define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF17 (DPAY_CASHOUT_WINDOW_SECONDS)
+#define DPAY_SECOND_CASHOUT_WINDOW           (60*60*24*3) /// 3 days
+#define DPAY_MAX_CASHOUT_WINDOW_SECONDS      (60*60*24) /// 1 day
+#define DPAY_UPVOTE_LOCKOUT_HF7              (fc::minutes(1))
+#define DPAY_UPVOTE_LOCKOUT_SECONDS          (60*5)    /// 5 minutes
+#define DPAY_UPVOTE_LOCKOUT_HF17             (fc::minutes(5))
+
+
+#define DPAY_MIN_ACCOUNT_CREATION_FEE          0
+#define DPAY_MAX_ACCOUNT_CREATION_FEE          int64_t(1000000000)
+
+#define DPAY_OWNER_AUTH_RECOVERY_PERIOD                  fc::seconds(60)
+#define DPAY_ACCOUNT_RECOVERY_REQUEST_EXPIRATION_PERIOD  fc::seconds(12)
+#define DPAY_OWNER_UPDATE_LIMIT                          fc::seconds(0)
+#define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 1
+
+#define DPAY_INIT_SUPPLY                     (int64_t( 600 ) * int64_t( 1000000 ) * int64_t( 1000 ))
+
+/// Allows to limit number of total produced blocks.
+#define FRANKLIN_BLOCK_LIMIT                   (7000000)
+
+
+#elif IS_KENNEDY_NET
+#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 21, 0) )
+
+#define DPAY_INIT_PUBLIC_KEY_STR             "JFK7UhVHPw6kBCpA2thaAVgVXwGfGbH9r4fRoZ2ro9VbYZXzoY3Dm"
+#define DPAY_CHAIN_ID (fc::sha256::hash("kennedy"))
+#define DPAY_ADDRESS_PREFIX                  "JFK"
+
+#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
+#define DPAY_MINING_TIME                     (fc::time_point_sec(1451606400))
+#define DPAY_CASHOUT_WINDOW_SECONDS          (60*60) /// 1 hr
+#define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF12 (DPAY_CASHOUT_WINDOW_SECONDS)
+#define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF17 (DPAY_CASHOUT_WINDOW_SECONDS)
+#define DPAY_SECOND_CASHOUT_WINDOW           (60*60*24*3) /// 3 days
+#define DPAY_MAX_CASHOUT_WINDOW_SECONDS      (60*60*24) /// 1 day
+#define DPAY_UPVOTE_LOCKOUT_HF7              (fc::minutes(1))
+#define DPAY_UPVOTE_LOCKOUT_SECONDS          (60*5)    /// 5 minutes
+#define DPAY_UPVOTE_LOCKOUT_HF17             (fc::minutes(5))
+
+
+#define DPAY_MIN_ACCOUNT_CREATION_FEE          0
+#define DPAY_MAX_ACCOUNT_CREATION_FEE          int64_t(1000000000)
+
+#define DPAY_OWNER_AUTH_RECOVERY_PERIOD                  fc::seconds(60)
+#define DPAY_ACCOUNT_RECOVERY_REQUEST_EXPIRATION_PERIOD  fc::seconds(12)
+#define DPAY_OWNER_UPDATE_LIMIT                          fc::seconds(0)
+#define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 1
+
+#define DPAY_INIT_SUPPLY                     (int64_t( 800 ) * int64_t( 1000000 ) * int64_t( 1000 ))
+
+/// Allows to limit number of total produced blocks.
+#define KENNEDY_BLOCK_LIMIT                   (9000000)
+
 #else // IS LIVE DPAY NETWORK
 
-#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 20, 0) )
+#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 20, 1) )
 
-#define DPAY_INIT_PUBLIC_KEY_STR             "DWB88FC9nDFczSTfVxrzHvVe8ZuvajLHKikfJYWiKkNvrUebBovzF"
-#define DPAY_CHAIN_ID (fc::sha256::hash("dpay"))
+#define DPAY_INIT_PUBLIC_KEY_STR             "DWB71hoefovfw8xjGiLpxEDBfc2iDJpAVkbR99PZaiLSR8JiYmp6V"
+#define DPAY_CHAIN_ID                        (fc::sha256::hash("dpay"))
 #define DPAY_ADDRESS_PREFIX                  "DWB"
 
 #define DPAY_GENESIS_TIME                    (fc::time_point_sec(1458835200))
@@ -59,9 +188,9 @@
 #define DPAY_MAX_CASHOUT_WINDOW_SECONDS      (60*60*24*14) /// 2 weeks
 #define DPAY_UPVOTE_LOCKOUT_HF7              (fc::minutes(1))
 #define DPAY_UPVOTE_LOCKOUT_SECONDS          (60*60*12)    /// 12 hours
-#define DPAY_UPVOTE_LOCKOUT_HF17             (fc::seconds(12))
+#define DPAY_UPVOTE_LOCKOUT_HF17             (fc::hours(12))
 
-#define DPAY_MIN_ACCOUNT_CREATION_FEE           1
+#define DPAY_MIN_ACCOUNT_CREATION_FEE           0
 #define DPAY_MAX_ACCOUNT_CREATION_FEE           int64_t(1000000000)
 
 #define DPAY_OWNER_AUTH_RECOVERY_PERIOD                  fc::days(30)
@@ -69,12 +198,12 @@
 #define DPAY_OWNER_UPDATE_LIMIT                          fc::minutes(60)
 #define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 3186477
 
-#define DPAY_INIT_SUPPLY                     int64_t(0)
+#define DPAY_INIT_SUPPLY                     (int64_t( 1000 ) * int64_t( 1000000 ) * int64_t( 1000 ))
 
 #endif
 
 #define VESTS_SYMBOL  (dpay::protocol::asset_symbol_type::from_asset_num( DPAY_ASSET_NUM_VESTS ) )
-#define BEX_SYMBOL  (dpay::protocol::asset_symbol_type::from_asset_num( DPAY_ASSET_NUM_DPAY ) )
+#define DPAY_SYMBOL  (dpay::protocol::asset_symbol_type::from_asset_num( DPAY_ASSET_NUM_DPAY ) )
 #define BBD_SYMBOL    (dpay::protocol::asset_symbol_type::from_asset_num( DPAY_ASSET_NUM_BBD ) )
 
 #define DPAY_BLOCKCHAIN_HARDFORK_VERSION     ( hardfork_version( DPAY_BLOCKCHAIN_VERSION ) )
@@ -85,21 +214,21 @@
 #define DPAY_START_VESTING_BLOCK             (DPAY_BLOCKS_PER_DAY * 7)
 #define DPAY_START_MINER_VOTING_BLOCK        (DPAY_BLOCKS_PER_DAY * 30)
 
-#define DPAY_INIT_MINER_NAME                 "initminer"
+#define DPAY_INIT_MINER_NAME                 "dpay"
 #define DPAY_NUM_INIT_MINERS                 1
 #define DPAY_INIT_TIME                       (fc::time_point_sec());
 
 #define DPAY_MAX_WITNESSES                   21
 
-#define DPAY_MAX_VOTED_WITNESSES_HF0         1
-#define DPAY_MAX_MINER_WITNESSES_HF0         19
+#define DPAY_MAX_VOTED_WITNESSES_HF0         19
+#define DPAY_MAX_MINER_WITNESSES_HF0         1
 #define DPAY_MAX_RUNNER_WITNESSES_HF0        1
 
-#define DPAY_MAX_VOTED_WITNESSES_HF17        1
-#define DPAY_MAX_MINER_WITNESSES_HF17        19
+#define DPAY_MAX_VOTED_WITNESSES_HF17        20
+#define DPAY_MAX_MINER_WITNESSES_HF17        0
 #define DPAY_MAX_RUNNER_WITNESSES_HF17       1
 
-#define DPAY_HARDFORK_REQUIRED_WITNESSES     17 // 17 of the 21 dpos witnesses (20 elected and 1 virtual time) required for hardfork. This guarantees 75% participation on all subsequent rounds.
+#define DPAY_HARDFORK_REQUIRED_WITNESSES     1 // 17 of the 21 dpos witnesses (20 elected and 1 virtual time) required for hardfork. This guarantees 75% participation on all subsequent rounds.
 #define DPAY_MAX_TIME_UNTIL_EXPIRATION       (60*60) // seconds,  aka: 1 hour
 #define DPAY_MAX_MEMO_SIZE                   2048
 #define DPAY_MAX_PROXY_RECURSION_DEPTH       4
@@ -145,11 +274,11 @@
 
 #define DPAY_MAX_RESERVE_RATIO               (20000)
 
-#define DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER 30
+#define DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER 0
 #define DPAY_CREATE_ACCOUNT_DELEGATION_RATIO    5
-#define DPAY_CREATE_ACCOUNT_DELEGATION_TIME     fc::days(30)
+#define DPAY_CREATE_ACCOUNT_DELEGATION_TIME     fc::days(0)
 
-#define DPAY_MINING_REWARD                   asset( 1000, BEX_SYMBOL )
+#define DPAY_MINING_REWARD                   asset( 1000, DPAY_SYMBOL )
 #define DPAY_EQUIHASH_N                      140
 #define DPAY_EQUIHASH_K                      6
 
@@ -157,14 +286,14 @@
 #define DPAY_MIN_LIQUIDITY_REWARD_PERIOD_SEC (fc::seconds(60)) // 1 minute required on books to receive volume
 #define DPAY_LIQUIDITY_REWARD_PERIOD_SEC     (60*60)
 #define DPAY_LIQUIDITY_REWARD_BLOCKS         (DPAY_LIQUIDITY_REWARD_PERIOD_SEC/DPAY_BLOCK_INTERVAL)
-#define DPAY_MIN_LIQUIDITY_REWARD            (asset( 1000*DPAY_LIQUIDITY_REWARD_BLOCKS, BEX_SYMBOL )) // Minumum reward to be paid out to liquidity providers
+#define DPAY_MIN_LIQUIDITY_REWARD            (asset( 1000*DPAY_LIQUIDITY_REWARD_BLOCKS, DPAY_SYMBOL )) // Minumum reward to be paid out to liquidity providers
 #define DPAY_MIN_CONTENT_REWARD              DPAY_MINING_REWARD
 #define DPAY_MIN_CURATE_REWARD               DPAY_MINING_REWARD
 #define DPAY_MIN_PRODUCER_REWARD             DPAY_MINING_REWARD
 #define DPAY_MIN_POW_REWARD                  DPAY_MINING_REWARD
 
-#define DPAY_ACTIVE_CHALLENGE_FEE            asset( 2000, BEX_SYMBOL )
-#define DPAY_OWNER_CHALLENGE_FEE             asset( 30000, BEX_SYMBOL )
+#define DPAY_ACTIVE_CHALLENGE_FEE            asset( 2000, DPAY_SYMBOL )
+#define DPAY_OWNER_CHALLENGE_FEE             asset( 30000, DPAY_SYMBOL )
 #define DPAY_ACTIVE_CHALLENGE_COOLDOWN       fc::days(1)
 #define DPAY_OWNER_CHALLENGE_COOLDOWN        fc::days(1)
 
@@ -317,10 +446,10 @@
 #define DPAY_ROOT_POST_PARENT                (account_name_type())
 ///@}
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
 
-#define SDC_MAX_VOTABLE_ASSETS 2
-#define SDC_VESTING_WITHDRAW_INTERVAL_SECONDS   (60*60*24*7) /// 1 week per interval
-#define SDC_UPVOTE_LOCKOUT                      (60*60*12)  /// 12 hours
+#define SMT_MAX_VOTABLE_ASSETS 2
+#define SMT_VESTING_WITHDRAW_INTERVAL_SECONDS   (60*60*24*7) /// 1 week per interval
+#define SMT_UPVOTE_LOCKOUT                      (60*60*12)  /// 12 hours
 
-#endif /// DPAY_ENABLE_SDC
+#endif /// DPAY_ENABLE_SMT

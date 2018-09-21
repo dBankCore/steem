@@ -10,7 +10,6 @@
 #include <dpay/chain/database.hpp>
 #include <dpay/chain/database_exceptions.hpp>
 #include <dpay/chain/index.hpp>
-#include <dpay/chain/operation_notification.hpp>
 
 #include <dpay/jsonball/jsonball.hpp>
 
@@ -623,7 +622,7 @@ struct pre_apply_operation_visitor
       regenerate( op.account );
    }
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
    void operator()( const claim_reward_balance2_operation& op )const
    {
       regenerate( op.account );
@@ -720,7 +719,7 @@ struct post_apply_operation_visitor
    void operator()( const pow_operation& op )const
    {
       // ilog( "handling post-apply pow_operation" );
-      create_rc_account< true >( _db, _current_time, op.worker_account, asset( 0, BEX_SYMBOL ) );
+      create_rc_account< true >( _db, _current_time, op.worker_account, asset( 0, DPAY_SYMBOL ) );
       _mod_accounts.push_back( op.worker_account );
       _mod_accounts.push_back( _current_witness );
    }
@@ -728,7 +727,7 @@ struct post_apply_operation_visitor
    void operator()( const pow2_operation& op )const
    {
       auto worker_name = get_worker_name( op.work );
-      create_rc_account< true >( _db, _current_time, worker_name, asset( 0, BEX_SYMBOL ) );
+      create_rc_account< true >( _db, _current_time, worker_name, asset( 0, DPAY_SYMBOL ) );
       _mod_accounts.push_back( worker_name );
       _mod_accounts.push_back( _current_witness );
    }
@@ -777,7 +776,7 @@ struct post_apply_operation_visitor
       _mod_accounts.push_back( op.account );
    }
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
    void operator()( const claim_reward_balance2_operation& op )const
    {
       _mod_accounts.push_back( op.account );

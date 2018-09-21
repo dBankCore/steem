@@ -380,7 +380,7 @@ class wallet_api
        *  that is paid by the creator. The current account creation fee can be found with the
        *  'info' wallet command.
        *
-       *  These accounts are created with combination of BEX and delegated BP
+       *  These accounts are created with combination of BEX and delegated SP
        *
        *  @param creator The account creating the new account
        *  @param dpay_fee The amount of the fee to be paid with BEX
@@ -403,7 +403,7 @@ class wallet_api
        * wallet. There is a fee associated with account creation that is paid by the creator.
        * The current account creation fee can be found with the 'info' wallet command.
        *
-       * These accounts are created with combination of BEX and delegated BP
+       * These accounts are created with combination of BEX and delegated SP
        *
        * @param creator The account creating the new account
        * @param dpay_fee The amount of the fee to be paid with BEX

@@ -127,15 +127,15 @@ struct operation_exec_info
    int64_t witness_set_properties_operation_exec_time          =   9500;
    int64_t witness_update_operation_exec_time                  =   9500;
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
    int64_t claim_reward_balance2_operation_exec_time           = 0;
-   int64_t sdc_setup_operation_exec_time                       = 0;
-   int64_t sdc_cap_reveal_operation_exec_time                  = 0;
-   int64_t sdc_refund_operation_exec_time                      = 0;
-   int64_t sdc_setup_emissions_operation_exec_time             = 0;
-   int64_t sdc_set_setup_parameters_operation_exec_time        = 0;
-   int64_t sdc_set_runtime_parameters_operation_exec_time      = 0;
-   int64_t sdc_create_operation_exec_time                      = 0;
+   int64_t smt_setup_operation_exec_time                       = 0;
+   int64_t smt_cap_reveal_operation_exec_time                  = 0;
+   int64_t smt_refund_operation_exec_time                      = 0;
+   int64_t smt_setup_emissions_operation_exec_time             = 0;
+   int64_t smt_set_setup_parameters_operation_exec_time        = 0;
+   int64_t smt_set_runtime_parameters_operation_exec_time      = 0;
+   int64_t smt_create_operation_exec_time                      = 0;
 #endif
 };
 
@@ -272,14 +272,14 @@ struct count_operation_visitor
 
    void operator()( const set_withdraw_vesting_route_operation& op )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
       state_bytes_count += _w.withdraw_vesting_route_object_base_size;
       execution_time_count += _e.set_withdraw_vesting_route_operation_exec_time;
    }
 
    void operator()( const vote_operation& op )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
       state_bytes_count += _w.comment_vote_object_base_size;
       execution_time_count += _e.vote_operation_exec_time;
    }
@@ -294,40 +294,40 @@ struct count_operation_visitor
 
    void operator()( const transfer_operation& )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
       execution_time_count += _e.transfer_operation_exec_time;
       market_op_count++;
    }
 
    void operator()( const transfer_to_vesting_operation& )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
       execution_time_count += _e.transfer_to_vesting_operation_exec_time;
       market_op_count++;
    }
 
    void operator()( const transfer_to_savings_operation& )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
       execution_time_count += _e.transfer_to_savings_operation_exec_time;
    }
 
    void operator()( const transfer_from_savings_operation& )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
       state_bytes_count += _w.savings_withdraw_object_byte_size;
       execution_time_count += _e.transfer_from_savings_operation_exec_time;
    }
 
    void operator()( const claim_reward_balance_operation& op )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
       execution_time_count += _e.claim_reward_balance_operation_exec_time;
    }
 
    void operator()( const withdraw_vesting_operation& op )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
       execution_time_count += _e.withdraw_vesting_operation_exec_time;
    }
 
@@ -411,58 +411,58 @@ struct count_operation_visitor
       execution_time_count += _e.witness_set_properties_operation_exec_time;
    }
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
    void operator()( const claim_reward_balance2_operation& op )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
       execution_time_count += _e.claim_reward_balance2_operation_exec_time;
    }
 
-   void operator()( const sdc_setup_operation& op )const
+   void operator()( const smt_setup_operation& op )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
-      execution_time_count += _e.sdc_setup_operation_exec_time;
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
+      execution_time_count += _e.smt_setup_operation_exec_time;
    }
 
-   void operator()( const sdc_cap_reveal_operation& op )const
+   void operator()( const smt_cap_reveal_operation& op )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
-      execution_time_count += _e.sdc_cap_reveal_operation_exec_time;
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
+      execution_time_count += _e.smt_cap_reveal_operation_exec_time;
    }
 
-   void operator()( const sdc_refund_operation& op )const
+   void operator()( const smt_refund_operation& op )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
-      execution_time_count += _e.sdc_refund_operation_exec_time;
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
+      execution_time_count += _e.smt_refund_operation_exec_time;
    }
 
-   void operator()( const sdc_setup_emissions_operation& op )const
+   void operator()( const smt_setup_emissions_operation& op )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
-      execution_time_count += _e.sdc_setup_emissions_operation_exec_time;
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
+      execution_time_count += _e.smt_setup_emissions_operation_exec_time;
    }
 
-   void operator()( const sdc_set_setup_parameters_operation& op )const
+   void operator()( const smt_set_setup_parameters_operation& op )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
-      execution_time_count += _e.sdc_set_setup_parameters_operation_exec_time;
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
+      execution_time_count += _e.smt_set_setup_parameters_operation_exec_time;
    }
 
-   void operator()( const sdc_set_runtime_parameters_operation& op )const
+   void operator()( const smt_set_runtime_parameters_operation& op )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
-      execution_time_count += _e.sdc_set_runtime_parameters_operation_exec_time;
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
+      execution_time_count += _e.smt_set_runtime_parameters_operation_exec_time;
    }
 
-   void operator()( const sdc_create_operation& op )const
+   void operator()( const smt_create_operation& op )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
-      execution_time_count += _e.sdc_create_operation_exec_time;
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
+      execution_time_count += _e.smt_create_operation_exec_time;
    }
 
    void operator()( const allowed_vote_assets& )const
    {
-      FC_TODO( "Change RC state bytes computation to take SDC's into account" )
+      FC_TODO( "Change RC state bytes computation to take SMT's into account" )
    }
 #endif
 
@@ -497,7 +497,7 @@ struct count_operation_visitor
    // withdraw_vesting, convert, set_withdraw_vesting_route, limit_order_create2
    // escrow_transfer, escrow_dispute, escrow_release, escrow_approve,
    // transfer_to_savings, transfer_from_savings, cancel_transfer_from_savings,
-   // claim_reward_balance, delegate_vesting_shares, any SDC operations
+   // claim_reward_balance, delegate_vesting_shares, any SMT operations
 };
 
 void count_resources(

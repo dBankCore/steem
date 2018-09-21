@@ -4,9 +4,9 @@
 #include <dpay/protocol/types_fwd.hpp>
 
 #define DPAY_ASSET_SYMBOL_PRECISION_BITS    4
-#define SDC_MAX_NAI                          99999999
-#define SDC_MIN_NAI                          1
-#define SDC_MIN_NON_RESERVED_NAI             10000000
+#define SMT_MAX_NAI                          99999999
+#define SMT_MIN_NAI                          1
+#define SMT_MIN_NON_RESERVED_NAI             10000000
 #define DPAY_ASSET_SYMBOL_NAI_LENGTH        10
 #define DPAY_ASSET_SYMBOL_NAI_STRING_LENGTH ( DPAY_ASSET_SYMBOL_NAI_LENGTH + 2 )
 
@@ -21,35 +21,59 @@
 #define DPAY_NAI_VESTS (3)
 
 #define DPAY_ASSET_NUM_BBD \
-  (((SDC_MAX_NAI + DPAY_NAI_BBD)   << DPAY_ASSET_SYMBOL_PRECISION_BITS) | DPAY_PRECISION_BBD)
+  (((SMT_MAX_NAI + DPAY_NAI_BBD)   << DPAY_ASSET_SYMBOL_PRECISION_BITS) | DPAY_PRECISION_BBD)
 #define DPAY_ASSET_NUM_DPAY \
-  (((SDC_MAX_NAI + DPAY_NAI_DPAY) << DPAY_ASSET_SYMBOL_PRECISION_BITS) | DPAY_PRECISION_DPAY)
+  (((SMT_MAX_NAI + DPAY_NAI_DPAY) << DPAY_ASSET_SYMBOL_PRECISION_BITS) | DPAY_PRECISION_DPAY)
 #define DPAY_ASSET_NUM_VESTS \
-  (((SDC_MAX_NAI + DPAY_NAI_VESTS) << DPAY_ASSET_SYMBOL_PRECISION_BITS) | DPAY_PRECISION_VESTS)
+  (((SMT_MAX_NAI + DPAY_NAI_VESTS) << DPAY_ASSET_SYMBOL_PRECISION_BITS) | DPAY_PRECISION_VESTS)
 
 #ifdef IS_TEST_NET
 
 #define VESTS_SYMBOL_U64  (uint64_t('V') | (uint64_t('E') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('S') << 32))
-#define BEX_SYMBOL_U64  (uint64_t('T') | (uint64_t('E') << 8) | (uint64_t('X') << 16))
+#define DPAY_SYMBOL_U64  (uint64_t('T') | (uint64_t('E') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('S') << 32))
 #define BBD_SYMBOL_U64    (uint64_t('T') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
+
+#elif IS_JACKSON_NET
+
+#define VESTS_SYMBOL_U64  (uint64_t('V') | (uint64_t('E') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('S') << 32))
+#define DPAY_SYMBOL_U64  (uint64_t('J') | (uint64_t('A') << 8) | (uint64_t('C') << 16) | (uint64_t('K') << 24) | (uint64_t('S') << 32))
+#define BBD_SYMBOL_U64    (uint64_t('J') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
+
+#elif IS_JEFFERSON_NET
+
+#define VESTS_SYMBOL_U64  (uint64_t('V') | (uint64_t('E') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('S') << 32))
+#define DPAY_SYMBOL_U64  (uint64_t('F') | (uint64_t('R') << 8) | (uint64_t('E') << 16) | (uint64_t('E') << 24))
+#define BBD_SYMBOL_U64    (uint64_t('J') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
+
+#elif IS_FRANKLIN_NET
+
+#define VESTS_SYMBOL_U64  (uint64_t('V') | (uint64_t('E') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('S') << 32))
+#define DPAY_SYMBOL_U64  (uint64_t('F') | (uint64_t('R') << 8) | (uint64_t('A') << 16) | (uint64_t('N') << 24) | (uint64_t('K') << 32))
+#define BBD_SYMBOL_U64    (uint64_t('F') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
+
+#elif IS_KENNEDY_NET
+
+#define VESTS_SYMBOL_U64  (uint64_t('V') | (uint64_t('E') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('S') << 32))
+#define DPAY_SYMBOL_U64  (uint64_t('K') | (uint64_t('E') << 8) | (uint64_t('N') << 16))
+#define BBD_SYMBOL_U64    (uint64_t('K') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
 
 #else
 
 #define VESTS_SYMBOL_U64  (uint64_t('V') | (uint64_t('E') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('S') << 32))
-#define BEX_SYMBOL_U64  (uint64_t('B') | (uint64_t('E') << 8) | (uint64_t('X') << 16))
+#define DPAY_SYMBOL_U64  (uint64_t('B') | (uint64_t('E') << 8) | (uint64_t('X') << 16))
 #define BBD_SYMBOL_U64    (uint64_t('B') | (uint64_t('B') << 8) | (uint64_t('D') << 16))
 
 #endif
 
 #define VESTS_SYMBOL_SER  (uint64_t(6) | (VESTS_SYMBOL_U64 << 8)) ///< VESTS|VESTS with 6 digits of precision
-#define BEX_SYMBOL_SER  (uint64_t(3) | (BEX_SYMBOL_U64 << 8)) ///< BEX|TESTS with 3 digits of precision
+#define DPAY_SYMBOL_SER  (uint64_t(3) | (DPAY_SYMBOL_U64 << 8)) ///< BEX|TESTS with 3 digits of precision
 #define BBD_SYMBOL_SER    (uint64_t(3) |   (BBD_SYMBOL_U64 << 8)) ///< BBD|TBD with 3 digits of precision
 
 #define DPAY_ASSET_MAX_DECIMALS 12
 
-#define SDC_ASSET_NUM_PRECISION_MASK   0xF
-#define SDC_ASSET_NUM_CONTROL_MASK     0x10
-#define SDC_ASSET_NUM_VESTING_MASK     0x20
+#define SMT_ASSET_NUM_PRECISION_MASK   0xF
+#define SMT_ASSET_NUM_CONTROL_MASK     0x10
+#define SMT_ASSET_NUM_VESTING_MASK     0x20
 
 namespace dpay { namespace protocol {
 
@@ -59,7 +83,7 @@ class asset_symbol_type
       enum asset_symbol_space
       {
          legacy_space = 1,
-         sdc_nai_space = 2
+         smt_nai_space = 2
       };
 
       asset_symbol_type() {}
@@ -95,11 +119,11 @@ class asset_symbol_type
        */
       asset_symbol_type get_paired_symbol() const;
       /**Returns asset_num stripped of precision holding bits.
-       * \warning checking that it's SDC symbol is caller responsibility.
+       * \warning checking that it's SMT symbol is caller responsibility.
        */
-      uint32_t get_stripped_precision_sdc_num() const
+      uint32_t get_stripped_precision_smt_num() const
       {
-         return asset_num & ~( SDC_ASSET_NUM_PRECISION_MASK );
+         return asset_num & ~( SMT_ASSET_NUM_PRECISION_MASK );
       }
 
       asset_symbol_space space()const;
@@ -150,7 +174,7 @@ inline void pack( Stream& s, const dpay::protocol::asset_symbol_type& sym )
          switch( sym.asset_num )
          {
             case DPAY_ASSET_NUM_DPAY:
-               ser = BEX_SYMBOL_SER;
+               ser = DPAY_SYMBOL_SER;
                break;
             case DPAY_ASSET_NUM_BBD:
                ser = BBD_SYMBOL_SER;
@@ -164,7 +188,7 @@ inline void pack( Stream& s, const dpay::protocol::asset_symbol_type& sym )
          pack( s, ser );
          break;
       }
-      case dpay::protocol::asset_symbol_type::sdc_nai_space:
+      case dpay::protocol::asset_symbol_type::smt_nai_space:
          pack( s, sym.asset_num );
          break;
       default:
@@ -180,9 +204,9 @@ inline void unpack( Stream& s, dpay::protocol::asset_symbol_type& sym )
 
    switch( ser )
    {
-      case BEX_SYMBOL_SER & 0xFFFFFFFF:
+      case DPAY_SYMBOL_SER & 0xFFFFFFFF:
          s.read( ((char*) &ser)+4, 4 );
-         FC_ASSERT( ser == BEX_SYMBOL_SER, "invalid asset bits" );
+         FC_ASSERT( ser == DPAY_SYMBOL_SER, "invalid asset bits" );
          sym.asset_num = DPAY_ASSET_NUM_DPAY;
          break;
       case BBD_SYMBOL_SER & 0xFFFFFFFF:

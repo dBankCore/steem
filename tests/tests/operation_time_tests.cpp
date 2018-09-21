@@ -1,4 +1,4 @@
-#ifdef IS_TEST_NET
+#if defined IS_TEST_NET && defined IS_JACKSON_NET && defined IS_JEFFERSON_NET && defined IS_FRANKLIN_NET && defined IS_KENNEDY_NET
 #include <boost/test/unit_test.hpp>
 
 #include <dpay/protocol/exceptions.hpp>
@@ -23,6 +23,7 @@
 
 using namespace dpay;
 using namespace dpay::chain;
+using namespace dpay::chain::util;
 using namespace dpay::protocol;
 
 BOOST_FIXTURE_TEST_SUITE( operation_time_tests, clean_database_fixture )
@@ -69,7 +70,7 @@ BOOST_AUTO_TEST_CASE( comment_payout_equalize )
       // A,B,D : posters
       // U,V,W : voters
 
-      // set a ridiculously high DPAY price ($1 / satoshi) to disable dust threshold
+      // set a ridiculously high BEX price ($1 / satoshi) to disable dust threshold
       set_price_feed( price( ASSET( "1.000 TBD" ), ASSET( "0.001 TESTS" ) ) );
 
       for( const auto& voter : voters )
@@ -480,11 +481,11 @@ BOOST_AUTO_TEST_CASE( recent_claims_decay )
       auto bob_vest_shares = db->get_account( "bob" ).vesting_shares;
       auto bob_bbd_balance = db->get_account( "bob" ).bbd_balance;
 
-      auto bob_comment_payout = asset( ( ( uint128_t( bob_comment_rshares.value ) * bob_comment_rshares.value * reward_dpay.amount.value ) / total_rshares2 ).to_uint64(), BEX_SYMBOL );
-      auto bob_comment_discussion_rewards = asset( bob_comment_payout.amount / 4, BEX_SYMBOL );
+      auto bob_comment_payout = asset( ( ( uint128_t( bob_comment_rshares.value ) * bob_comment_rshares.value * reward_dpay.amount.value ) / total_rshares2 ).to_uint64(), DPAY_SYMBOL );
+      auto bob_comment_discussion_rewards = asset( bob_comment_payout.amount / 4, DPAY_SYMBOL );
       bob_comment_payout -= bob_comment_discussion_rewards;
-      auto bob_comment_bbd_reward = db->to_bbd( asset( bob_comment_payout.amount / 2, BEX_SYMBOL ) );
-      auto bob_comment_vesting_reward = ( bob_comment_payout - asset( bob_comment_payout.amount / 2, BEX_SYMBOL) ) * db->get_dynamic_global_properties().get_vesting_share_price();
+      auto bob_comment_bbd_reward = db->to_bbd( asset( bob_comment_payout.amount / 2, DPAY_SYMBOL ) );
+      auto bob_comment_vesting_reward = ( bob_comment_payout - asset( bob_comment_payout.amount / 2, DPAY_SYMBOL) ) * db->get_dynamic_global_properties().get_vesting_share_price();
 
       BOOST_TEST_MESSAGE( "Cause first payout" );
 
@@ -691,17 +692,17 @@ BOOST_AUTO_TEST_CASE( comment_payout )
       auto sam_vest_shares = db->get_account( "sam" ).vesting_shares;
       auto dave_vest_shares = db->get_account( "dave" ).vesting_shares;
 
-      auto bob_comment_payout = asset( ( ( uint128_t( bob_comment_rshares.value ) * bob_comment_rshares.value * reward_dpay.amount.value ) / total_rshares2 ).to_uint64(), BEX_SYMBOL );
-      auto bob_comment_vote_rewards = asset( bob_comment_payout.amount / 2, BEX_SYMBOL );
+      auto bob_comment_payout = asset( ( ( uint128_t( bob_comment_rshares.value ) * bob_comment_rshares.value * reward_dpay.amount.value ) / total_rshares2 ).to_uint64(), DPAY_SYMBOL );
+      auto bob_comment_vote_rewards = asset( bob_comment_payout.amount / 2, DPAY_SYMBOL );
       bob_comment_payout -= bob_comment_vote_rewards;
-      auto bob_comment_bbd_reward = asset( bob_comment_payout.amount / 2, BEX_SYMBOL ) * exchange_rate;
-      auto bob_comment_vesting_reward = ( bob_comment_payout - asset( bob_comment_payout.amount / 2, BEX_SYMBOL ) ) * db->get_dynamic_global_properties().get_vesting_share_price();
+      auto bob_comment_bbd_reward = asset( bob_comment_payout.amount / 2, DPAY_SYMBOL ) * exchange_rate;
+      auto bob_comment_vesting_reward = ( bob_comment_payout - asset( bob_comment_payout.amount / 2, DPAY_SYMBOL ) ) * db->get_dynamic_global_properties().get_vesting_share_price();
       auto unclaimed_payments = bob_comment_vote_rewards;
-      auto alice_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "bob", string( "test" ).id, db->get_account( "alice" ) ).id ) )->weight ) * bob_comment_vote_rewards.amount.value ) / bob_comment_vote_total ), BEX_SYMBOL );
+      auto alice_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "bob", string( "test" ).id, db->get_account( "alice" ) ).id ) )->weight ) * bob_comment_vote_rewards.amount.value ) / bob_comment_vote_total ), DPAY_SYMBOL );
       auto alice_vote_vesting = alice_vote_reward * db->get_dynamic_global_properties().get_vesting_share_price();
-      auto bob_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "bob", string( "test" ).id, db->get_account( "bob" ) ).id ) )->weight ) * bob_comment_vote_rewards.amount.value ) / bob_comment_vote_total ), BEX_SYMBOL );
+      auto bob_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "bob", string( "test" ).id, db->get_account( "bob" ) ).id ) )->weight ) * bob_comment_vote_rewards.amount.value ) / bob_comment_vote_total ), DPAY_SYMBOL );
       auto bob_vote_vesting = bob_vote_reward * db->get_dynamic_global_properties().get_vesting_share_price();
-      auto sam_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "bob", string( "test" ).id, db->get_account( "sam" ) ).id ) )->weight ) * bob_comment_vote_rewards.amount.value ) / bob_comment_vote_total ), BEX_SYMBOL );
+      auto sam_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "bob", string( "test" ).id, db->get_account( "sam" ) ).id ) )->weight ) * bob_comment_vote_rewards.amount.value ) / bob_comment_vote_total ), DPAY_SYMBOL );
       auto sam_vote_vesting = sam_vote_reward * db->get_dynamic_global_properties().get_vesting_share_price();
       unclaimed_payments -= ( alice_vote_reward + bob_vote_reward + sam_vote_reward );
 
@@ -766,19 +767,19 @@ BOOST_AUTO_TEST_CASE( comment_payout )
       trs2 = ( trs2 << 64 ) + total_rshares2.lo;
       auto rs2 = rs*rs;
 
-      auto alice_comment_payout = asset( static_cast< uint64_t >( ( rf * rs2 ) / trs2 ), BEX_SYMBOL );
-      auto alice_comment_vote_rewards = asset( alice_comment_payout.amount / 2, BEX_SYMBOL );
+      auto alice_comment_payout = asset( static_cast< uint64_t >( ( rf * rs2 ) / trs2 ), DPAY_SYMBOL );
+      auto alice_comment_vote_rewards = asset( alice_comment_payout.amount / 2, DPAY_SYMBOL );
       alice_comment_payout -= alice_comment_vote_rewards;
-      auto alice_comment_bbd_reward = asset( alice_comment_payout.amount / 2, BEX_SYMBOL ) * exchange_rate;
-      auto alice_comment_vesting_reward = ( alice_comment_payout - asset( alice_comment_payout.amount / 2, BEX_SYMBOL ) ) * db->get_dynamic_global_properties().get_vesting_share_price();
+      auto alice_comment_bbd_reward = asset( alice_comment_payout.amount / 2, DPAY_SYMBOL ) * exchange_rate;
+      auto alice_comment_vesting_reward = ( alice_comment_payout - asset( alice_comment_payout.amount / 2, DPAY_SYMBOL ) ) * db->get_dynamic_global_properties().get_vesting_share_price();
       unclaimed_payments = alice_comment_vote_rewards;
-      alice_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "alice", string( "test" ).id, db->get_account( "alice" ) ).id ) )->weight ) * alice_comment_vote_rewards.amount.value ) / alice_comment_vote_total ), BEX_SYMBOL );
+      alice_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "alice", string( "test" ).id, db->get_account( "alice" ) ).id ) )->weight ) * alice_comment_vote_rewards.amount.value ) / alice_comment_vote_total ), DPAY_SYMBOL );
       alice_vote_vesting = alice_vote_reward * db->get_dynamic_global_properties().get_vesting_share_price();
-      bob_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "alice", string( "test" ).id, db->get_account( "bob" ) ).id ) )->weight ) * alice_comment_vote_rewards.amount.value ) / alice_comment_vote_total ), BEX_SYMBOL );
+      bob_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "alice", string( "test" ).id, db->get_account( "bob" ) ).id ) )->weight ) * alice_comment_vote_rewards.amount.value ) / alice_comment_vote_total ), DPAY_SYMBOL );
       bob_vote_vesting = bob_vote_reward * db->get_dynamic_global_properties().get_vesting_share_price();
-      sam_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "alice", string( "test" ).id, db->get_account( "sam" ) ).id ) )->weight ) * alice_comment_vote_rewards.amount.value ) / alice_comment_vote_total ), BEX_SYMBOL );
+      sam_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "alice", string( "test" ).id, db->get_account( "sam" ) ).id ) )->weight ) * alice_comment_vote_rewards.amount.value ) / alice_comment_vote_total ), DPAY_SYMBOL );
       sam_vote_vesting = sam_vote_reward * db->get_dynamic_global_properties().get_vesting_share_price();
-      auto dave_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "alice", string( "test" ).id, db->get_account( "dave" ) ).id ) )->weight ) * alice_comment_vote_rewards.amount.value ) / alice_comment_vote_total ), BEX_SYMBOL );
+      auto dave_vote_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "alice", string( "test" ).id, db->get_account( "dave" ) ).id ) )->weight ) * alice_comment_vote_rewards.amount.value ) / alice_comment_vote_total ), DPAY_SYMBOL );
       auto dave_vote_vesting = dave_vote_reward * db->get_dynamic_global_properties().get_vesting_share_price();
       unclaimed_payments -= ( alice_vote_reward + bob_vote_reward + sam_vote_reward + dave_vote_reward );
 
@@ -979,8 +980,8 @@ BOOST_AUTO_TEST_CASE( nested_comments )
       auto alice_comment_vote_rewards = alice_comment_reward / 2;
       alice_comment_reward -= alice_comment_vote_rewards;
 
-      auto alice_vote_alice_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "alice", string( "test" ).id, db->get_account( "alice" ) ).id ) )->weight ) * alice_comment_vote_rewards ) / alice_comment.total_vote_weight ), BEX_SYMBOL );
-      auto bob_vote_alice_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "alice", string( "test" ).id, db->get_account( "bob" ) ).id ) )->weight ) * alice_comment_vote_rewards ) / alice_comment.total_vote_weight ), BEX_SYMBOL );
+      auto alice_vote_alice_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "alice", string( "test" ).id, db->get_account( "alice" ) ).id ) )->weight ) * alice_comment_vote_rewards ) / alice_comment.total_vote_weight ), DPAY_SYMBOL );
+      auto bob_vote_alice_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "alice", string( "test" ).id, db->get_account( "bob" ) ).id ) )->weight ) * alice_comment_vote_rewards ) / alice_comment.total_vote_weight ), DPAY_SYMBOL );
       reward_dpay += alice_comment_vote_rewards - ( alice_vote_alice_reward + bob_vote_alice_reward ).amount.value;
 
       auto bob_comment_reward = ( ( reward_dpay * bob_comment.net_rshares.value * bob_comment.net_rshares.value ) / total_rshares2 ).to_uint64();
@@ -989,9 +990,9 @@ BOOST_AUTO_TEST_CASE( nested_comments )
       auto bob_comment_vote_rewards = bob_comment_reward / 2;
       bob_comment_reward -= bob_comment_vote_rewards;
 
-      auto alice_vote_bob_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "bob", string( "test" ).id, db->get_account( "alice" ) ).id ) )->weight ) * bob_comment_vote_rewards ) / bob_comment.total_vote_weight ), BEX_SYMBOL );
-      auto bob_vote_bob_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "bob", string( "test" ).id, db->get_account( "bob" ) ).id ) )->weight ) * bob_comment_vote_rewards ) / bob_comment.total_vote_weight ), BEX_SYMBOL );
-      auto sam_vote_bob_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "bob", string( "test" ).id, db->get_account( "sam" ) ).id ) )->weight ) * bob_comment_vote_rewards ) / bob_comment.total_vote_weight ), BEX_SYMBOL );
+      auto alice_vote_bob_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "bob", string( "test" ).id, db->get_account( "alice" ) ).id ) )->weight ) * bob_comment_vote_rewards ) / bob_comment.total_vote_weight ), DPAY_SYMBOL );
+      auto bob_vote_bob_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "bob", string( "test" ).id, db->get_account( "bob" ) ).id ) )->weight ) * bob_comment_vote_rewards ) / bob_comment.total_vote_weight ), DPAY_SYMBOL );
+      auto sam_vote_bob_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "bob", string( "test" ).id, db->get_account( "sam" ) ).id ) )->weight ) * bob_comment_vote_rewards ) / bob_comment.total_vote_weight ), DPAY_SYMBOL );
       reward_dpay += bob_comment_vote_rewards - ( alice_vote_bob_reward + bob_vote_bob_reward + sam_vote_bob_reward ).amount.value;
 
       auto dave_comment_reward = ( ( reward_dpay * dave_comment.net_rshares.value * dave_comment.net_rshares.value ) / total_rshares2 ).to_uint64();
@@ -1000,7 +1001,7 @@ BOOST_AUTO_TEST_CASE( nested_comments )
       auto dave_comment_vote_rewards = dave_comment_reward / 2;
       dave_comment_reward -= dave_comment_vote_rewards;
 
-      auto bob_vote_dave_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "dave", string( "test" ).id, db->get_account( "bob" ) ).id ) )->weight ) * dave_comment_vote_rewards ) / dave_comment.total_vote_weight ), BEX_SYMBOL );
+      auto bob_vote_dave_reward = asset( static_cast< uint64_t >( ( u256( vote_idx.find( std::make_tuple( db->get_comment( "dave", string( "test" ).id, db->get_account( "bob" ) ).id ) )->weight ) * dave_comment_vote_rewards ) / dave_comment.total_vote_weight ), DPAY_SYMBOL );
       reward_dpay += dave_comment_vote_rewards - bob_vote_dave_reward.amount.value;
 
       // Calculate rewards paid to parent posts
@@ -1030,13 +1031,13 @@ BOOST_AUTO_TEST_CASE( nested_comments )
       dave_pays_bob_vest -= dave_pays_alice_vest;
 
       // Calculate total comment payouts
-      auto alice_comment_total_payout = db->to_bbd( asset( alice_pays_alice_bbd + alice_pays_alice_vest, BEX_SYMBOL ) );
-      alice_comment_total_payout += db->to_bbd( asset( bob_pays_alice_bbd + bob_pays_alice_vest, BEX_SYMBOL ) );
-      alice_comment_total_payout += db->to_bbd( asset( dave_pays_alice_bbd + dave_pays_alice_vest, BEX_SYMBOL ) );
-      auto bob_comment_total_payout = db->to_bbd( asset( bob_pays_bob_bbd + bob_pays_bob_vest, BEX_SYMBOL ) );
-      bob_comment_total_payout += db->to_bbd( asset( dave_pays_bob_bbd + dave_pays_bob_vest, BEX_SYMBOL ) );
-      auto sam_comment_total_payout = db->to_bbd( asset( dave_pays_sam_bbd + dave_pays_sam_vest, BEX_SYMBOL ) );
-      auto dave_comment_total_payout = db->to_bbd( asset( dave_pays_dave_bbd + dave_pays_dave_vest, BEX_SYMBOL ) );
+      auto alice_comment_total_payout = db->to_bbd( asset( alice_pays_alice_bbd + alice_pays_alice_vest, DPAY_SYMBOL ) );
+      alice_comment_total_payout += db->to_bbd( asset( bob_pays_alice_bbd + bob_pays_alice_vest, DPAY_SYMBOL ) );
+      alice_comment_total_payout += db->to_bbd( asset( dave_pays_alice_bbd + dave_pays_alice_vest, DPAY_SYMBOL ) );
+      auto bob_comment_total_payout = db->to_bbd( asset( bob_pays_bob_bbd + bob_pays_bob_vest, DPAY_SYMBOL ) );
+      bob_comment_total_payout += db->to_bbd( asset( dave_pays_bob_bbd + dave_pays_bob_vest, DPAY_SYMBOL ) );
+      auto sam_comment_total_payout = db->to_bbd( asset( dave_pays_sam_bbd + dave_pays_sam_vest, DPAY_SYMBOL ) );
+      auto dave_comment_total_payout = db->to_bbd( asset( dave_pays_dave_bbd + dave_pays_dave_vest, DPAY_SYMBOL ) );
 
       auto alice_starting_vesting = db->get_account( "alice" ).vesting_shares;
       auto alice_starting_bbd = db->get_account( "alice" ).bbd_balance;
@@ -1165,23 +1166,23 @@ BOOST_AUTO_TEST_CASE( nested_comments )
 
       BOOST_TEST_MESSAGE( "Checking account balances" );
 
-      auto alice_total_bbd = alice_starting_bbd + asset( alice_pays_alice_bbd + bob_pays_alice_bbd + dave_pays_alice_bbd, BEX_SYMBOL ) * exchange_rate;
-      auto alice_total_vesting = alice_starting_vesting + asset( alice_pays_alice_vest + bob_pays_alice_vest + dave_pays_alice_vest + alice_vote_alice_reward.amount + alice_vote_bob_reward.amount, BEX_SYMBOL ) * gpo.get_vesting_share_price();
+      auto alice_total_bbd = alice_starting_bbd + asset( alice_pays_alice_bbd + bob_pays_alice_bbd + dave_pays_alice_bbd, DPAY_SYMBOL ) * exchange_rate;
+      auto alice_total_vesting = alice_starting_vesting + asset( alice_pays_alice_vest + bob_pays_alice_vest + dave_pays_alice_vest + alice_vote_alice_reward.amount + alice_vote_bob_reward.amount, DPAY_SYMBOL ) * gpo.get_vesting_share_price();
       BOOST_REQUIRE( db->get_account( "alice" ).bbd_balance.amount.value == alice_total_bbd.amount.value );
       BOOST_REQUIRE( db->get_account( "alice" ).vesting_shares.amount.value == alice_total_vesting.amount.value );
 
-      auto bob_total_bbd = bob_starting_bbd + asset( bob_pays_bob_bbd + dave_pays_bob_bbd, BEX_SYMBOL ) * exchange_rate;
-      auto bob_total_vesting = bob_starting_vesting + asset( bob_pays_bob_vest + dave_pays_bob_vest + bob_vote_alice_reward.amount + bob_vote_bob_reward.amount + bob_vote_dave_reward.amount, BEX_SYMBOL ) * gpo.get_vesting_share_price();
+      auto bob_total_bbd = bob_starting_bbd + asset( bob_pays_bob_bbd + dave_pays_bob_bbd, DPAY_SYMBOL ) * exchange_rate;
+      auto bob_total_vesting = bob_starting_vesting + asset( bob_pays_bob_vest + dave_pays_bob_vest + bob_vote_alice_reward.amount + bob_vote_bob_reward.amount + bob_vote_dave_reward.amount, DPAY_SYMBOL ) * gpo.get_vesting_share_price();
       BOOST_REQUIRE( db->get_account( "bob" ).bbd_balance.amount.value == bob_total_bbd.amount.value );
       BOOST_REQUIRE( db->get_account( "bob" ).vesting_shares.amount.value == bob_total_vesting.amount.value );
 
-      auto sam_total_bbd = sam_starting_bbd + asset( dave_pays_sam_bbd, BEX_SYMBOL ) * exchange_rate;
-      auto sam_total_vesting = bob_starting_vesting + asset( dave_pays_sam_vest + sam_vote_bob_reward.amount, BEX_SYMBOL ) * gpo.get_vesting_share_price();
+      auto sam_total_bbd = sam_starting_bbd + asset( dave_pays_sam_bbd, DPAY_SYMBOL ) * exchange_rate;
+      auto sam_total_vesting = bob_starting_vesting + asset( dave_pays_sam_vest + sam_vote_bob_reward.amount, DPAY_SYMBOL ) * gpo.get_vesting_share_price();
       BOOST_REQUIRE( db->get_account( "sam" ).bbd_balance.amount.value == sam_total_bbd.amount.value );
       BOOST_REQUIRE( db->get_account( "sam" ).vesting_shares.amount.value == sam_total_vesting.amount.value );
 
-      auto dave_total_bbd = dave_starting_bbd + asset( dave_pays_dave_bbd, BEX_SYMBOL ) * exchange_rate;
-      auto dave_total_vesting = dave_starting_vesting + asset( dave_pays_dave_vest, BEX_SYMBOL ) * gpo.get_vesting_share_price();
+      auto dave_total_bbd = dave_starting_bbd + asset( dave_pays_dave_bbd, DPAY_SYMBOL ) * exchange_rate;
+      auto dave_total_vesting = dave_starting_vesting + asset( dave_pays_dave_vest, DPAY_SYMBOL ) * gpo.get_vesting_share_price();
       BOOST_REQUIRE( db->get_account( "dave" ).bbd_balance.amount.value == dave_total_bbd.amount.value );
       BOOST_REQUIRE( db->get_account( "dave" ).vesting_shares.amount.value == dave_total_vesting.amount.value );
    }
@@ -1463,7 +1464,7 @@ BOOST_AUTO_TEST_CASE( feed_publish_mean )
       // Upgrade accounts to witnesses
       for( int i = 0; i < 7; i++ )
       {
-         transfer( DPAY_INIT_MINER_NAME, accounts[i], asset( 10000, BEX_SYMBOL ) );
+         transfer( DPAY_INIT_MINER_NAME, accounts[i], asset( 10000, DPAY_SYMBOL ) );
          witness_create( accounts[i], keys[i], "foo.bar", keys[i].get_public_key(), 1000 );
 
          ops.push_back( feed_publish_operation() );
@@ -1472,13 +1473,13 @@ BOOST_AUTO_TEST_CASE( feed_publish_mean )
          txs.push_back( signed_transaction() );
       }
 
-      ops[0].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset( 100000, BEX_SYMBOL ) );
-      ops[1].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset( 105000, BEX_SYMBOL ) );
-      ops[2].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset(  98000, BEX_SYMBOL ) );
-      ops[3].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset(  97000, BEX_SYMBOL ) );
-      ops[4].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset(  99000, BEX_SYMBOL ) );
-      ops[5].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset(  97500, BEX_SYMBOL ) );
-      ops[6].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset( 102000, BEX_SYMBOL ) );
+      ops[0].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset( 100000, DPAY_SYMBOL ) );
+      ops[1].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset( 105000, DPAY_SYMBOL ) );
+      ops[2].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset(  98000, DPAY_SYMBOL ) );
+      ops[3].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset(  97000, DPAY_SYMBOL ) );
+      ops[4].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset(  99000, DPAY_SYMBOL ) );
+      ops[5].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset(  97500, DPAY_SYMBOL ) );
+      ops[6].exchange_rate = price( asset( 1000, BBD_SYMBOL ), asset( 102000, DPAY_SYMBOL ) );
 
       for( int i = 0; i < 7; i++ )
       {
@@ -1494,8 +1495,8 @@ BOOST_AUTO_TEST_CASE( feed_publish_mean )
       BOOST_TEST_MESSAGE( "Get feed history object" );
       feed_history_object feed_history = db->get_feed_history();
       BOOST_TEST_MESSAGE( "Check state" );
-      BOOST_REQUIRE( feed_history.current_median_history == price( asset( 1000, BBD_SYMBOL ), asset( 99000, BEX_SYMBOL) ) );
-      BOOST_REQUIRE( feed_history.price_history[ 0 ] == price( asset( 1000, BBD_SYMBOL ), asset( 99000, BEX_SYMBOL) ) );
+      BOOST_REQUIRE( feed_history.current_median_history == price( asset( 1000, BBD_SYMBOL ), asset( 99000, DPAY_SYMBOL) ) );
+      BOOST_REQUIRE( feed_history.price_history[ 0 ] == price( asset( 1000, BBD_SYMBOL ), asset( 99000, DPAY_SYMBOL) ) );
       validate_database();
 
       for ( int i = 0; i < 23; i++ )
@@ -1506,7 +1507,7 @@ BOOST_AUTO_TEST_CASE( feed_publish_mean )
          {
             txs[j].operations.clear();
             txs[j].signatures.clear();
-            ops[j].exchange_rate = price( ops[j].exchange_rate.base, asset( ops[j].exchange_rate.quote.amount + 10, BEX_SYMBOL ) );
+            ops[j].exchange_rate = price( ops[j].exchange_rate.base, asset( ops[j].exchange_rate.quote.amount + 10, DPAY_SYMBOL ) );
             txs[j].set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
             txs[j].operations.push_back( ops[j] );
             sign( txs[j], keys[j] );
@@ -1593,7 +1594,7 @@ BOOST_AUTO_TEST_CASE( dpay_inflation )
    try
    {
    /*
-      BOOST_TEST_MESSAGE( "Testing DPAY Inflation until the vesting start block" );
+      BOOST_TEST_MESSAGE( "Testing BEX Inflation until the vesting start block" );
 
       auto gpo = db->get_dynamic_global_properties();
       auto virtual_supply = gpo.virtual_supply;
@@ -1601,11 +1602,11 @@ BOOST_AUTO_TEST_CASE( dpay_inflation )
       auto old_witness_balance = db->get_account( witness_name ).balance;
       auto old_witness_shares = db->get_account( witness_name ).vesting_shares;
 
-      auto new_rewards = std::max( DPAY_MIN_CONTENT_REWARD, asset( ( DPAY_CONTENT_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), BEX_SYMBOL ) )
-         + std::max( DPAY_MIN_CURATE_REWARD, asset( ( DPAY_CURATE_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), BEX_SYMBOL ) );
-      auto witness_pay = std::max( DPAY_MIN_PRODUCER_REWARD, asset( ( DPAY_PRODUCER_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), BEX_SYMBOL ) );
+      auto new_rewards = std::max( DPAY_MIN_CONTENT_REWARD, asset( ( DPAY_CONTENT_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), DPAY_SYMBOL ) )
+         + std::max( DPAY_MIN_CURATE_REWARD, asset( ( DPAY_CURATE_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), DPAY_SYMBOL ) );
+      auto witness_pay = std::max( DPAY_MIN_PRODUCER_REWARD, asset( ( DPAY_PRODUCER_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), DPAY_SYMBOL ) );
       auto witness_pay_shares = asset( 0, VESTS_SYMBOL );
-      auto new_vesting_dpay = asset( 0, BEX_SYMBOL );
+      auto new_vesting_dpay = asset( 0, DPAY_SYMBOL );
       auto new_vesting_shares = gpo.total_vesting_shares;
 
       if ( db->get_account( witness_name ).vesting_shares.amount.value == 0 )
@@ -1639,10 +1640,10 @@ BOOST_AUTO_TEST_CASE( dpay_inflation )
          old_witness_shares = db->get_account( witness_name ).vesting_shares;
 
 
-         new_rewards = std::max( DPAY_MIN_CONTENT_REWARD, asset( ( DPAY_CONTENT_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), BEX_SYMBOL ) )
-            + std::max( DPAY_MIN_CURATE_REWARD, asset( ( DPAY_CURATE_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), BEX_SYMBOL ) );
-         witness_pay = std::max( DPAY_MIN_PRODUCER_REWARD, asset( ( DPAY_PRODUCER_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), BEX_SYMBOL ) );
-         new_vesting_dpay = asset( 0, BEX_SYMBOL );
+         new_rewards = std::max( DPAY_MIN_CONTENT_REWARD, asset( ( DPAY_CONTENT_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), DPAY_SYMBOL ) )
+            + std::max( DPAY_MIN_CURATE_REWARD, asset( ( DPAY_CURATE_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), DPAY_SYMBOL ) );
+         witness_pay = std::max( DPAY_MIN_PRODUCER_REWARD, asset( ( DPAY_PRODUCER_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), DPAY_SYMBOL ) );
+         new_vesting_dpay = asset( 0, DPAY_SYMBOL );
          new_vesting_shares = gpo.total_vesting_shares;
 
          if ( db->get_account( witness_name ).vesting_shares.amount.value == 0 )
@@ -1651,7 +1652,7 @@ BOOST_AUTO_TEST_CASE( dpay_inflation )
             witness_pay_shares = witness_pay * gpo.get_vesting_share_price();
             new_vesting_shares += witness_pay_shares;
             new_supply += witness_pay;
-            witness_pay = asset( 0, BEX_SYMBOL );
+            witness_pay = asset( 0, DPAY_SYMBOL );
          }
 
          new_supply = gpo.current_supply + new_rewards + witness_pay + new_vesting_dpay;
@@ -1681,11 +1682,11 @@ BOOST_AUTO_TEST_CASE( dpay_inflation )
          witness_name = db->get_scheduled_witness(1);
          old_witness_balance = db->get_account( witness_name ).balance;
 
-         new_rewards = std::max( DPAY_MIN_CONTENT_REWARD, asset( ( DPAY_CONTENT_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), BEX_SYMBOL ) )
-            + std::max( DPAY_MIN_CURATE_REWARD, asset( ( DPAY_CURATE_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), BEX_SYMBOL ) );
-         witness_pay = std::max( DPAY_MIN_PRODUCER_REWARD, asset( ( DPAY_PRODUCER_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), BEX_SYMBOL ) );
+         new_rewards = std::max( DPAY_MIN_CONTENT_REWARD, asset( ( DPAY_CONTENT_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), DPAY_SYMBOL ) )
+            + std::max( DPAY_MIN_CURATE_REWARD, asset( ( DPAY_CURATE_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), DPAY_SYMBOL ) );
+         witness_pay = std::max( DPAY_MIN_PRODUCER_REWARD, asset( ( DPAY_PRODUCER_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), DPAY_SYMBOL ) );
          auto witness_pay_shares = asset( 0, VESTS_SYMBOL );
-         new_vesting_dpay = asset( ( witness_pay + new_rewards ).amount * 9, BEX_SYMBOL );
+         new_vesting_dpay = asset( ( witness_pay + new_rewards ).amount * 9, DPAY_SYMBOL );
          new_vesting_shares = gpo.total_vesting_shares;
 
          if ( db->get_account( witness_name ).vesting_shares.amount.value == 0 )
@@ -1694,7 +1695,7 @@ BOOST_AUTO_TEST_CASE( dpay_inflation )
             witness_pay_shares = witness_pay * gpo.get_vesting_share_price();
             new_vesting_shares += witness_pay_shares;
             new_supply += witness_pay;
-            witness_pay = asset( 0, BEX_SYMBOL );
+            witness_pay = asset( 0, DPAY_SYMBOL );
          }
 
          new_supply = gpo.current_supply + new_rewards + witness_pay + new_vesting_dpay;
@@ -1722,11 +1723,11 @@ BOOST_AUTO_TEST_CASE( dpay_inflation )
          witness_name = db->get_scheduled_witness(1);
          old_witness_balance = db->get_account( witness_name ).balance;
 
-         new_rewards = std::max( DPAY_MIN_CONTENT_REWARD, asset( ( DPAY_CONTENT_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), BEX_SYMBOL ) )
-            + std::max( DPAY_MIN_CURATE_REWARD, asset( ( DPAY_CURATE_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), BEX_SYMBOL ) );
-         witness_pay = std::max( DPAY_MIN_PRODUCER_REWARD, asset( ( DPAY_PRODUCER_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), BEX_SYMBOL ) );
+         new_rewards = std::max( DPAY_MIN_CONTENT_REWARD, asset( ( DPAY_CONTENT_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), DPAY_SYMBOL ) )
+            + std::max( DPAY_MIN_CURATE_REWARD, asset( ( DPAY_CURATE_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), DPAY_SYMBOL ) );
+         witness_pay = std::max( DPAY_MIN_PRODUCER_REWARD, asset( ( DPAY_PRODUCER_APR * gpo.virtual_supply.amount ) / ( DPAY_BLOCKS_PER_YEAR * 100 ), DPAY_SYMBOL ) );
          witness_pay_shares = witness_pay * gpo.get_vesting_share_price();
-         new_vesting_dpay = asset( ( witness_pay + new_rewards ).amount * 9, BEX_SYMBOL ) + witness_pay;
+         new_vesting_dpay = asset( ( witness_pay + new_rewards ).amount * 9, DPAY_SYMBOL ) + witness_pay;
          new_vesting_shares = gpo.total_vesting_shares + witness_pay_shares;
          new_supply = gpo.current_supply + new_rewards + new_vesting_dpay;
          new_rewards += gpo.total_reward_fund_dpay;
@@ -1765,7 +1766,7 @@ BOOST_AUTO_TEST_CASE( dpay_inflation )
       BOOST_REQUIRE_EQUAL( gpo.total_reward_fund_dpay.amount.value,
          reward_dpay.amount.value + virtual_supply.amount.value / 10 / DPAY_BLOCKS_PER_YEAR + virtual_supply.amount.value / 10 / DPAY_BLOCKS_PER_DAY );
       BOOST_REQUIRE_EQUAL( db->get_account( witness_name ).vesting_shares.amount.value,
-         old_witness_shares.amount.value + ( asset( ( ( virtual_supply.amount.value / DPAY_BLOCKS_PER_YEAR ) * DPAY_1_PERCENT ) / DPAY_100_PERCENT, BEX_SYMBOL ) * ( vesting_shares / vesting_dpay ) ).amount.value );
+         old_witness_shares.amount.value + ( asset( ( ( virtual_supply.amount.value / DPAY_BLOCKS_PER_YEAR ) * DPAY_1_PERCENT ) / DPAY_100_PERCENT, DPAY_SYMBOL ) * ( vesting_shares / vesting_dpay ) ).amount.value );
       validate_database();
       */
    }
@@ -1898,7 +1899,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
       int64_t dave_dpay_volume = 0;
       time_point_sec dave_reward_last_update = fc::time_point_sec::min();
 
-      BOOST_TEST_MESSAGE( "Creating Limit Order for DPAY that will stay on the books for 30 minutes exactly." );
+      BOOST_TEST_MESSAGE( "Creating Limit Order for BEX that will stay on the books for 30 minutes exactly." );
 
       limit_order_create_operation op;
       op.owner = "alice";
@@ -1971,7 +1972,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
       BOOST_TEST_MESSAGE( "Creating Limit Order for BBD that will stay on the books for 60 minutes." );
 
       op.owner = "sam";
-      op.amount_to_sell = asset( ( alice_bbd.amount.value / 20 ), BEX_SYMBOL );
+      op.amount_to_sell = asset( ( alice_bbd.amount.value / 20 ), DPAY_SYMBOL );
       op.min_to_receive = asset( ( alice_bbd.amount.value / 20 ), BBD_SYMBOL );
       op.orderid = 3;
 
@@ -1989,7 +1990,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
 
       op.owner = "bob";
       op.orderid = 4;
-      op.amount_to_sell = asset( ( alice_bbd.amount.value / 10 ) * 3 - alice_bbd.amount.value / 20, BEX_SYMBOL );
+      op.amount_to_sell = asset( ( alice_bbd.amount.value / 10 ) * 3 - alice_bbd.amount.value / 20, DPAY_SYMBOL );
       op.min_to_receive = asset( ( alice_bbd.amount.value / 10 ) * 3 - alice_bbd.amount.value / 20, BBD_SYMBOL );
 
       tx.signatures.clear();
@@ -2008,7 +2009,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
       op.owner = "alice";
       op.orderid = 5;
       op.amount_to_sell = asset( ( alice_bbd.amount.value / 10 ) * 3, BBD_SYMBOL );
-      op.min_to_receive = asset( ( alice_bbd.amount.value / 10 ) * 3, BEX_SYMBOL );
+      op.min_to_receive = asset( ( alice_bbd.amount.value / 10 ) * 3, DPAY_SYMBOL );
 
       tx.signatures.clear();
       tx.operations.clear();
@@ -2028,7 +2029,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
       fill_order_op = ops[1].get< fill_order_operation >();
       BOOST_REQUIRE( fill_order_op.open_owner == "bob" );
       BOOST_REQUIRE( fill_order_op.open_orderid == 4 );
-      BOOST_REQUIRE( fill_order_op.open_pays.amount.value == asset( ( alice_bbd.amount.value / 10 ) * 3 - alice_bbd.amount.value / 20, BEX_SYMBOL ).amount.value );
+      BOOST_REQUIRE( fill_order_op.open_pays.amount.value == asset( ( alice_bbd.amount.value / 10 ) * 3 - alice_bbd.amount.value / 20, DPAY_SYMBOL ).amount.value );
       BOOST_REQUIRE( fill_order_op.current_owner == "alice" );
       BOOST_REQUIRE( fill_order_op.current_orderid == 5 );
       BOOST_REQUIRE( fill_order_op.current_pays.amount.value == asset( ( alice_bbd.amount.value / 10 ) * 3 - alice_bbd.amount.value / 20, BBD_SYMBOL ).amount.value );
@@ -2036,7 +2037,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
       fill_order_op = ops[3].get< fill_order_operation >();
       BOOST_REQUIRE( fill_order_op.open_owner == "sam" );
       BOOST_REQUIRE( fill_order_op.open_orderid == 3 );
-      BOOST_REQUIRE( fill_order_op.open_pays.amount.value == asset( alice_bbd.amount.value / 20, BEX_SYMBOL ).amount.value );
+      BOOST_REQUIRE( fill_order_op.open_pays.amount.value == asset( alice_bbd.amount.value / 20, DPAY_SYMBOL ).amount.value );
       BOOST_REQUIRE( fill_order_op.current_owner == "alice" );
       BOOST_REQUIRE( fill_order_op.current_orderid == 5 );
       BOOST_REQUIRE( fill_order_op.current_pays.amount.value == asset( alice_bbd.amount.value / 20, BBD_SYMBOL ).amount.value );
@@ -2066,7 +2067,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
 
       op.orderid = 6;
       op.amount_to_sell = asset( alice_bbd.amount.value / 20 * 2, BBD_SYMBOL );
-      op.min_to_receive = asset( alice_bbd.amount.value / 20 * 2, BEX_SYMBOL );
+      op.min_to_receive = asset( alice_bbd.amount.value / 20 * 2, DPAY_SYMBOL );
 
       tx.signatures.clear();
       tx.operations.clear();
@@ -2079,7 +2080,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
 
       op.owner = "bob";
       op.orderid = 7;
-      op.amount_to_sell = asset( alice_bbd.amount.value / 20, BEX_SYMBOL );
+      op.amount_to_sell = asset( alice_bbd.amount.value / 20, DPAY_SYMBOL );
       op.min_to_receive = asset( alice_bbd.amount.value / 20, BBD_SYMBOL );
 
       tx.signatures.clear();
@@ -2099,7 +2100,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
       BOOST_REQUIRE( fill_order_op.open_pays.amount.value == asset( alice_bbd.amount.value / 20, BBD_SYMBOL ).amount.value );
       BOOST_REQUIRE( fill_order_op.current_owner == "bob" );
       BOOST_REQUIRE( fill_order_op.current_orderid == 7 );
-      BOOST_REQUIRE( fill_order_op.current_pays.amount.value == asset( alice_bbd.amount.value / 20, BEX_SYMBOL ).amount.value );
+      BOOST_REQUIRE( fill_order_op.current_pays.amount.value == asset( alice_bbd.amount.value / 20, DPAY_SYMBOL ).amount.value );
 
       reward = liquidity_idx.find( db->get_account( "alice" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
@@ -2147,7 +2148,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
       BOOST_REQUIRE( fill_order_op.open_pays.amount.value == asset( alice_bbd.amount.value / 20, BBD_SYMBOL ).amount.value );
       BOOST_REQUIRE( fill_order_op.current_owner == "sam" );
       BOOST_REQUIRE( fill_order_op.current_orderid == 8 );
-      BOOST_REQUIRE( fill_order_op.current_pays.amount.value == asset( alice_bbd.amount.value / 20, BEX_SYMBOL ).amount.value );
+      BOOST_REQUIRE( fill_order_op.current_pays.amount.value == asset( alice_bbd.amount.value / 20, DPAY_SYMBOL ).amount.value );
 
       reward = liquidity_idx.find( db->get_account( "alice" ).id );
       BOOST_REQUIRE( reward == liquidity_idx.end() );
@@ -2185,7 +2186,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
       db->push_transaction( tx, 0 );
 
       op.owner = "alice";
-      op.amount_to_sell = asset( 8 * ( alice_bbd.amount.value / 20 ), BEX_SYMBOL );
+      op.amount_to_sell = asset( 8 * ( alice_bbd.amount.value / 20 ), DPAY_SYMBOL );
       op.min_to_receive = asset( op.amount_to_sell.amount, BBD_SYMBOL );
       op.orderid = 9;
       tx.operations.clear();
@@ -2198,7 +2199,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
 
       op.owner = "dave";
       op.amount_to_sell = asset( 7 * ( alice_bbd.amount.value / 20 ), BBD_SYMBOL );;
-      op.min_to_receive = asset( op.amount_to_sell.amount, BEX_SYMBOL );
+      op.min_to_receive = asset( op.amount_to_sell.amount, DPAY_SYMBOL );
       op.orderid = 10;
       tx.operations.clear();
       tx.signatures.clear();
@@ -2316,7 +2317,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
       op.owner = "bob";
       op.orderid = 12;
       op.amount_to_sell = asset( 3 * ( alice_bbd.amount / 40 ), BBD_SYMBOL );
-      op.min_to_receive = asset( op.amount_to_sell.amount, BEX_SYMBOL );
+      op.min_to_receive = asset( op.amount_to_sell.amount, DPAY_SYMBOL );
       tx.operations.clear();
       tx.signatures.clear();
       tx.operations.push_back( op );
@@ -2456,7 +2457,7 @@ BOOST_AUTO_TEST_CASE( liquidity_rewards )
       op.owner = "alice";
       op.orderid = 15;
       op.amount_to_sell.symbol = BBD_SYMBOL;
-      op.min_to_receive.symbol = BEX_SYMBOL;
+      op.min_to_receive.symbol = DPAY_SYMBOL;
       tx.operations.clear();
       tx.signatures.clear();
       tx.operations.push_back( op );
@@ -2734,7 +2735,7 @@ BOOST_AUTO_TEST_CASE( bbd_stability )
 
       BOOST_TEST_MESSAGE( "Changing sam and gpo to set up market cap conditions" );
 
-      asset bbd_balance = asset( ( gpo.virtual_supply.amount * ( gpo.bbd_stop_percent + 112 ) ) / DPAY_100_PERCENT, BEX_SYMBOL ) * exchange_rate;
+      asset bbd_balance = asset( ( gpo.virtual_supply.amount * ( gpo.bbd_stop_percent + 112 ) ) / DPAY_100_PERCENT, DPAY_SYMBOL ) * exchange_rate;
       db_plugin->debug_update( [=]( database& db )
       {
          db.modify( db.get_account( "sam" ), [&]( account_object& a )
@@ -2759,13 +2760,13 @@ BOOST_AUTO_TEST_CASE( bbd_stability )
       auto comment_reward = ( gpo.total_reward_fund_dpay.amount + 2000 ) - ( ( gpo.total_reward_fund_dpay.amount + 2000 ) * 25 * DPAY_1_PERCENT ) / DPAY_100_PERCENT ;
       comment_reward /= 2;
       auto bbd_reward = ( comment_reward * gpo.bbd_print_rate ) / DPAY_100_PERCENT;
-      auto alice_bbd = db->get_account( "alice" ).bbd_balance + db->get_account( "alice" ).reward_bbd_balance + asset( bbd_reward, BEX_SYMBOL ) * exchange_rate;
+      auto alice_bbd = db->get_account( "alice" ).bbd_balance + db->get_account( "alice" ).reward_bbd_balance + asset( bbd_reward, DPAY_SYMBOL ) * exchange_rate;
       auto alice_dpay = db->get_account( "alice" ).balance + db->get_account( "alice" ).reward_dpay_balance ;
 
       BOOST_TEST_MESSAGE( "Checking printing BBD has slowed" );
       BOOST_REQUIRE( db->get_dynamic_global_properties().bbd_print_rate < DPAY_100_PERCENT );
 
-      BOOST_TEST_MESSAGE( "Pay out comment and check rewards are paid as DPAY" );
+      BOOST_TEST_MESSAGE( "Pay out comment and check rewards are paid as BEX" );
       db_plugin->debug_generate_blocks( debug_key, 1, database::skip_witness_signature );
 
       validate_database();
@@ -2854,7 +2855,7 @@ BOOST_AUTO_TEST_CASE( bbd_price_feed_limit )
 
       db->skip_price_feed_limit_check = false;
       const auto& gpo = db->get_dynamic_global_properties();
-      auto new_exchange_rate = price( gpo.current_bbd_supply, asset( ( DPAY_100_PERCENT ) * gpo.current_supply.amount, BEX_SYMBOL ) );
+      auto new_exchange_rate = price( gpo.current_bbd_supply, asset( ( DPAY_100_PERCENT ) * gpo.current_supply.amount, DPAY_SYMBOL ) );
       set_price_feed( new_exchange_rate );
       set_price_feed( new_exchange_rate );
 
@@ -2973,52 +2974,50 @@ BOOST_AUTO_TEST_CASE( generate_account_subsidies )
    try
    {
       BOOST_TEST_MESSAGE( "Testing: generate_account_subsidies" );
-      FC_TODO( "Rewrite account subsidy tests" );
-/*
-      generate_block();
-      generate_block();
 
-      BOOST_REQUIRE( db->get_dynamic_global_properties().available_account_subsidies == 0 );
-      BOOST_REQUIRE( db->get< plugins::rc::rc_pool_object >().pool_array[ plugins::rc::resource_new_accounts ] == 0 );
+      // The purpose of this test is to validate the dynamics of available_account_subsidies.
 
-      db_plugin->debug_update( [=]( database& db )
+      // set_subsidy_budget creates a lot of blocks, so there should be enough for a few accounts
+      // half-life of 10 minutes
+      flat_map< string, vector<char> > props;
+      props["account_subsidy_budget"] = fc::raw::pack_to_vector( int32_t( 5123 ) );
+      props["account_subsidy_decay"] = fc::raw::pack_to_vector( uint32_t( 249617279 ) );
+      set_witness_props( props );
+
+      while( true )
       {
-         db.modify( db.get_witness_schedule_object(), [&]( witness_schedule_object& wso )
-         {
-            wso.median_props.account_subsidy_daily_rate = 1000;
-            wso.median_props.account_subsidy_pool_cap = 2000;
-            wso.account_subsidy_print_rate = 1000;
-         });
-      });
+         const witness_schedule_object& wso = db->get_witness_schedule_object();
+         if(    (wso.account_subsidy_rd.budget_per_time_unit == 5123)
+             && (wso.account_subsidy_rd.decay_params.decay_per_time_unit == 249617279) )
+            break;
+         generate_block();
+      }
 
-      BOOST_REQUIRE( db->get_dynamic_global_properties().available_account_subsidies == 0 );
-      BOOST_REQUIRE( db->get< plugins::rc::rc_pool_object >().pool_array[ plugins::rc::resource_new_accounts ] == 0 );
-
-      generate_block();
-      BOOST_REQUIRE( db->get_dynamic_global_properties().available_account_subsidies == 1000 );
-      BOOST_REQUIRE( db->get< plugins::rc::rc_pool_object >().pool_array[ plugins::rc::resource_new_accounts ] == 1000 );
-
-      generate_block();
-      BOOST_REQUIRE( db->get_dynamic_global_properties().available_account_subsidies == 2000 );
-      BOOST_REQUIRE( db->get< plugins::rc::rc_pool_object >().pool_array[ plugins::rc::resource_new_accounts ] == 2000 );
-
-      db_plugin->debug_update( [=]( database& db )
+      auto is_pool_in_equilibrium = []( int64_t pool, int32_t budget, const rd_decay_params& decay_params ) -> bool
       {
-         db.modify( db.get_dynamic_global_properties(), [&]( dynamic_global_property_object& gpo )
-         {
-            gpo.available_account_subsidies = 1000 * DPAY_ACCOUNT_SUBSIDY_PRECISION * DPAY_ACCOUNT_SUBSIDY_BURST_DAYS;
-         });
-      });
+         int64_t decay = rd_compute_pool_decay( decay_params, pool, 1 );
+         return (decay == budget);
+      };
 
-      BOOST_REQUIRE( db->get_dynamic_global_properties().available_account_subsidies == 1000 * DPAY_ACCOUNT_SUBSIDY_PRECISION * DPAY_ACCOUNT_SUBSIDY_BURST_DAYS );
+      const witness_schedule_object& wso = db->get_witness_schedule_object();
+      BOOST_CHECK_EQUAL( wso.account_subsidy_rd.resource_unit, DPAY_ACCOUNT_SUBSIDY_PRECISION );
+      BOOST_CHECK_EQUAL( wso.account_subsidy_rd.budget_per_time_unit, 5123 );
+      BOOST_CHECK(  is_pool_in_equilibrium( int64_t( wso.account_subsidy_rd.pool_eq )  , wso.account_subsidy_rd.budget_per_time_unit, wso.account_subsidy_rd.decay_params ) );
+      BOOST_CHECK( !is_pool_in_equilibrium( int64_t( wso.account_subsidy_rd.pool_eq )-1, wso.account_subsidy_rd.budget_per_time_unit, wso.account_subsidy_rd.decay_params ) );
 
-      generate_block();
-      BOOST_REQUIRE( db->get_dynamic_global_properties().available_account_subsidies == 1000 * DPAY_ACCOUNT_SUBSIDY_PRECISION * DPAY_ACCOUNT_SUBSIDY_BURST_DAYS );
-      BOOST_REQUIRE( db->get< plugins::rc::rc_pool_object >().pool_array[ plugins::rc::resource_new_accounts ]
-         == ( 1000 * DPAY_ACCOUNT_SUBSIDY_PRECISION * DPAY_ACCOUNT_SUBSIDY_BURST_DAYS ) );
+      int64_t pool = db->get_dynamic_global_properties().available_account_subsidies;
+
+      while( true )
+      {
+         const dynamic_global_property_object& gpo = db->get_dynamic_global_properties();
+         BOOST_CHECK_EQUAL( pool, gpo.available_account_subsidies );
+         if( gpo.available_account_subsidies >= 100 * DPAY_ACCOUNT_SUBSIDY_PRECISION )
+            break;
+         generate_block();
+         pool = pool + 5123 - ((249617279 * pool) >> DPAY_RD_DECAY_DENOM_SHIFT);
+      }
 
       validate_database();
-*/
    }
    FC_LOG_AND_RETHROW()
 }

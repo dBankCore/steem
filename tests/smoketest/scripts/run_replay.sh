@@ -9,7 +9,7 @@ then
    echo "Usage: path_to_tested_dpayd path_to_reference_dpayd"
    echo "       path_to_test_blockchain_directory path_to_reference_blockchain_directory"
    echo "       number_of_blocks_to_replay [--dont-copy-config]"
-   echo "Example: ~/work/dpays/dpay/build/programs/dpayd/dpayd ~/master/dpays/dpay/build/programs/dpayd/dpayd ~/dpays/dpay/work1 ~/dpays/dpay/work2 2000000"
+   echo "Example: ~/work/dpay/dpay/build/programs/dpayd/dpayd ~/master/dpay/dpay/build/programs/dpayd/dpayd ~/dpay/dpay/work1 ~/dpay/dpay/work2 2000000"
    echo "Note: Run this script from test group directory."
    exit -1
 fi

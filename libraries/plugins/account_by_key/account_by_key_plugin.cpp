@@ -4,7 +4,6 @@
 #include <dpay/chain/account_object.hpp>
 #include <dpay/chain/database.hpp>
 #include <dpay/chain/index.hpp>
-#include <dpay/chain/operation_notification.hpp>
 
 namespace dpay { namespace plugins { namespace account_by_key {
 

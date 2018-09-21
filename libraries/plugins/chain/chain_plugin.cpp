@@ -317,6 +317,19 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
 #ifdef IS_TEST_NET
          ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "chain ID to connect to")
 #endif
+#ifdef IS_JACKSON_NET
+         ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "chain ID to connect to")
+#endif
+#ifdef IS_JEFFERSON_NET
+         ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "chain ID to connect to")
+#endif
+#ifdef IS_FRANKLIN_NET
+         ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "chain ID to connect to")
+#endif
+#ifdef IS_KENNEDY_NET
+         ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "chain ID to connect to")
+#endif
+
          ;
 }
 
@@ -383,7 +396,67 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
       }
       catch( fc::exception& )
       {
-         FC_ASSERT( false, "Could not parse chain_id as hex string. Chain ID String: ${s}", ("s", chain_id_str) );
+         FC_ASSERT( false, "Could not parse chain_id as hex string. Sidechain Chain ID String: ${s}", ("s", chain_id_str) );
+      }
+   }
+#endif
+#ifdef IS_JACKSON_NET
+   if( options.count( "chain-id" ) )
+   {
+      auto chain_id_str = options.at("chain-id").as< std::string >();
+
+      try
+      {
+         my->db.set_chain_id( chain_id_type( chain_id_str) );
+      }
+      catch( fc::exception& )
+      {
+         FC_ASSERT( false, "Could not parse chain_id as hex string. Jackson Chain ID String: ${s}", ("s", chain_id_str) );
+      }
+   }
+#endif
+#ifdef IS_JEFFERSON_NET
+   if( options.count( "chain-id" ) )
+   {
+      auto chain_id_str = options.at("chain-id").as< std::string >();
+
+      try
+      {
+         my->db.set_chain_id( chain_id_type( chain_id_str) );
+      }
+      catch( fc::exception& )
+      {
+         FC_ASSERT( false, "Could not parse chain_id as hex string. Jefferson Chain ID String: ${s}", ("s", chain_id_str) );
+      }
+   }
+#endif
+#ifdef IS_FRANKLIN_NET
+   if( options.count( "chain-id" ) )
+   {
+      auto chain_id_str = options.at("chain-id").as< std::string >();
+
+      try
+      {
+         my->db.set_chain_id( chain_id_type( chain_id_str) );
+      }
+      catch( fc::exception& )
+      {
+         FC_ASSERT( false, "Could not parse chain_id as hex string. Franklin Network Chain ID String: ${s}", ("s", chain_id_str) );
+      }
+   }
+#endif
+#ifdef IS_KENNEDY_NET
+   if( options.count( "chain-id" ) )
+   {
+      auto chain_id_str = options.at("chain-id").as< std::string >();
+
+      try
+      {
+         my->db.set_chain_id( chain_id_type( chain_id_str) );
+      }
+      catch( fc::exception& )
+      {
+         FC_ASSERT( false, "Could not parse chain_id as hex string. Kennedy Network Chain ID String: ${s}", ("s", chain_id_str) );
       }
    }
 #endif

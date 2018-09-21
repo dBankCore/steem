@@ -38,9 +38,9 @@ DEFINE_API_IMPL( market_history_api_impl, get_ticker )
 
    if( itr != bucket_idx.end() )
    {
-      auto open = ASSET_TO_REAL( asset( itr->non_dpay.open, BBD_SYMBOL ) ) / ASSET_TO_REAL( asset( itr->dpay.open, BEX_SYMBOL ) );
+      auto open = ASSET_TO_REAL( asset( itr->non_dpay.open, BBD_SYMBOL ) ) / ASSET_TO_REAL( asset( itr->dpay.open, DPAY_SYMBOL ) );
       itr = bucket_idx.lower_bound( boost::make_tuple( 0, _db.head_block_time() ) );
-      result.latest = ASSET_TO_REAL( asset( itr->non_dpay.close, BBD_SYMBOL ) ) / ASSET_TO_REAL( asset( itr->dpay.close, BEX_SYMBOL ) );
+      result.latest = ASSET_TO_REAL( asset( itr->non_dpay.close, BBD_SYMBOL ) ) / ASSET_TO_REAL( asset( itr->dpay.close, DPAY_SYMBOL ) );
       result.percent_change = ( (result.latest - open ) / open ) * 100;
    }
 
@@ -83,7 +83,7 @@ DEFINE_API_IMPL( market_history_api_impl, get_order_book )
    FC_ASSERT( args.limit <= 500 );
 
    const auto& order_idx = _db.get_index< chain::limit_order_index, chain::by_price >();
-   auto itr = order_idx.lower_bound( price::max( BBD_SYMBOL, BEX_SYMBOL ) );
+   auto itr = order_idx.lower_bound( price::max( BBD_SYMBOL, DPAY_SYMBOL ) );
 
    get_order_book_return result;
 
@@ -99,15 +99,15 @@ DEFINE_API_IMPL( market_history_api_impl, get_order_book )
       ++itr;
    }
 
-   itr = order_idx.lower_bound( price::max( BEX_SYMBOL, BBD_SYMBOL ) );
+   itr = order_idx.lower_bound( price::max( DPAY_SYMBOL, BBD_SYMBOL ) );
 
-   while( itr != order_idx.end() && itr->sell_price.base.symbol == BEX_SYMBOL && result.asks.size() < args.limit )
+   while( itr != order_idx.end() && itr->sell_price.base.symbol == DPAY_SYMBOL && result.asks.size() < args.limit )
    {
       order cur;
       cur.order_price = itr->sell_price;
       cur.real_price = ASSET_TO_REAL( itr->sell_price.quote ) / ASSET_TO_REAL( itr->sell_price.base );
       cur.dpay = itr->for_sale;
-      cur.bbd = ( asset( itr->for_sale, BEX_SYMBOL ) * itr->sell_price ).amount;
+      cur.bbd = ( asset( itr->for_sale, DPAY_SYMBOL ) * itr->sell_price ).amount;
       cur.created = itr->created;
       result.asks.push_back( cur );
       ++itr;

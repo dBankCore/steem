@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifdef IS_TEST_NET
+#if defined IS_TEST_NET && defined IS_JACKSON_NET && defined IS_JEFFERSON_NET && defined IS_FRANKLIN_NET && defined IS_KENNEDY_NET
 #include <boost/test/unit_test.hpp>
 
 #include <dpay/chain/dpay_objects.hpp>
@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE( serialization_raw_test )
       transfer_operation op;
       op.from = "alice";
       op.to = "bob";
-      op.amount = asset(100,BEX_SYMBOL);
+      op.amount = asset(100,DPAY_SYMBOL);
 
       trx.operations.push_back( op );
       auto packed = fc::raw::pack_to_vector( trx );
@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE( serialization_json_test )
       transfer_operation op;
       op.from = "alice";
       op.to = "bob";
-      op.amount = asset(100,BEX_SYMBOL);
+      op.amount = asset(100,DPAY_SYMBOL);
 
       fc::variant test(op.amount);
       auto tmp = test.as<asset>();
@@ -123,7 +123,7 @@ BOOST_AUTO_TEST_CASE( legacy_asset_test )
       BOOST_CHECK_EQUAL( legacy_asset().to_string(), "0.000 TESTS" );
 
       BOOST_TEST_MESSAGE( "Asset Test" );
-      legacy_asset dpay = legacy_asset::from_string( "123.456 TESTS" );
+      legacy_asset d = legacy_asset::from_string( "123.456 TESTS" );
       legacy_asset bbd = legacy_asset::from_string( "654.321 TBD" );
       legacy_asset tmp = legacy_asset::from_string( "0.456 TESTS" );
       BOOST_CHECK_EQUAL( tmp.amount.value, 456 );
@@ -133,9 +133,9 @@ BOOST_AUTO_TEST_CASE( legacy_asset_test )
       BOOST_CHECK_EQUAL( dpay.amount.value, 123456 );
       BOOST_CHECK_EQUAL( dpay.symbol.decimals(), 3 );
       BOOST_CHECK_EQUAL( dpay.to_string(), "123.456 TESTS" );
-      BOOST_CHECK( dpay.symbol == BEX_SYMBOL );
-      BOOST_CHECK_EQUAL( legacy_asset::from_asset( asset( 50, BEX_SYMBOL ) ).to_string(), "0.050 TESTS" );
-      BOOST_CHECK_EQUAL( legacy_asset::from_asset( asset(50000, BEX_SYMBOL ) ) .to_string(), "50.000 TESTS" );
+      BOOST_CHECK( dpay.symbol == DPAY_SYMBOL );
+      BOOST_CHECK_EQUAL( legacy_asset::from_asset( asset( 50, DPAY_SYMBOL ) ).to_string(), "0.050 TESTS" );
+      BOOST_CHECK_EQUAL( legacy_asset::from_asset( asset(50000, DPAY_SYMBOL ) ) .to_string(), "50.000 TESTS" );
 
       BOOST_CHECK_EQUAL( bbd.amount.value, 654321 );
       BOOST_CHECK_EQUAL( bbd.symbol.decimals(), 3 );
@@ -188,8 +188,8 @@ BOOST_AUTO_TEST_CASE( asset_test )
       BOOST_CHECK_EQUAL( dpay.symbol.decimals(), 3 );
       BOOST_CHECK_EQUAL( fc::json::to_string( dpay ), "{\"amount\":\"123456\",\"precision\":3,\"nai\":\"@@000000021\"}" );
       BOOST_CHECK( dpay.symbol.asset_num == DPAY_ASSET_NUM_DPAY );
-      BOOST_CHECK_EQUAL( fc::json::to_string( asset( 50, BEX_SYMBOL ) ), "{\"amount\":\"50\",\"precision\":3,\"nai\":\"@@000000021\"}" );
-      BOOST_CHECK_EQUAL( fc::json::to_string( asset( 50000, BEX_SYMBOL ) ), "{\"amount\":\"50000\",\"precision\":3,\"nai\":\"@@000000021\"}" );
+      BOOST_CHECK_EQUAL( fc::json::to_string( asset( 50, DPAY_SYMBOL ) ), "{\"amount\":\"50\",\"precision\":3,\"nai\":\"@@000000021\"}" );
+      BOOST_CHECK_EQUAL( fc::json::to_string( asset( 50000, DPAY_SYMBOL ) ), "{\"amount\":\"50000\",\"precision\":3,\"nai\":\"@@000000021\"}" );
 
       BOOST_CHECK_EQUAL( bbd.amount.value, 654321 );
       BOOST_CHECK_EQUAL( bbd.symbol.decimals(), 3 );
@@ -249,7 +249,7 @@ std::string hex_bytes( const T& obj )
 
 void old_pack_symbol(vector<char>& v, asset_symbol_type sym)
 {
-   if( sym == BEX_SYMBOL )
+   if( sym == DPAY_SYMBOL )
    {
       v.push_back('\x03'); v.push_back('T' ); v.push_back('E' ); v.push_back('S' );
       v.push_back('T'   ); v.push_back('S' ); v.push_back('\0'); v.push_back('\0');
@@ -292,7 +292,7 @@ void old_pack_asset( vector<char>& v, const asset& a )
 std::string old_json_asset( const asset& a )
 {
    size_t decimal_places = 0;
-   if( (a.symbol == BEX_SYMBOL) || (a.symbol == BBD_SYMBOL) )
+   if( (a.symbol == DPAY_SYMBOL) || (a.symbol == BBD_SYMBOL) )
       decimal_places = 3;
    else if( a.symbol == VESTS_SYMBOL )
       decimal_places = 6;
@@ -300,7 +300,7 @@ std::string old_json_asset( const asset& a )
    ss << std::setfill('0') << std::setw(decimal_places+1) << a.amount.value;
    std::string result = ss.str();
    result.insert( result.length() - decimal_places, 1, '.' );
-   if( a.symbol == BEX_SYMBOL )
+   if( a.symbol == DPAY_SYMBOL )
       result += " TESTS";
    else if( a.symbol == BBD_SYMBOL )
       result += " TBD";
@@ -315,8 +315,8 @@ BOOST_AUTO_TEST_CASE( asset_raw_test )
 {
    try
    {
-      BOOST_CHECK( BBD_SYMBOL < BEX_SYMBOL );
-      BOOST_CHECK( BEX_SYMBOL < VESTS_SYMBOL );
+      BOOST_CHECK( BBD_SYMBOL < DPAY_SYMBOL );
+      BOOST_CHECK( DPAY_SYMBOL < VESTS_SYMBOL );
 
       // get a bunch of random bits
       fc::sha256 h = fc::sha256::hash("");
@@ -335,12 +335,12 @@ BOOST_AUTO_TEST_CASE( asset_raw_test )
 
 /*      asset dpay = asset::from_string( "0.001 TESTS" );
 #define VESTS_SYMBOL  (uint64_t(6) | (uint64_t('V') << 8) | (uint64_t('E') << 16) | (uint64_t('S') << 24) | (uint64_t('T') << 32) | (uint64_t('S') << 40)) ///< VESTS with 6 digits of precision
-#define BEX_SYMBOL  (uint64_t(3) | (uint64_t('T') << 8) | (uint64_t('E') << 16) | (uint64_t('S') << 24) | (uint64_t('T') << 32) | (uint64_t('S') << 40)) ///< DPAY with 3 digits of precision
+#define DPAY_SYMBOL  (uint64_t(3) | (uint64_t('T') << 8) | (uint64_t('E') << 16) | (uint64_t('S') << 24) | (uint64_t('T') << 32) | (uint64_t('S') << 40)) ///< BEX with 3 digits of precision
 #define BBD_SYMBOL    (uint64_t(3) | (uint64_t('T') << 8) | (uint64_t('B') << 16) | (uint64_t('D') << 24) ) ///< Test Backed Dollars with 3 digits of precision
 */
       std::vector< asset_symbol_type > symbols;
 
-      symbols.push_back( BEX_SYMBOL );
+      symbols.push_back( DPAY_SYMBOL );
       symbols.push_back( BBD_SYMBOL   );
       symbols.push_back( VESTS_SYMBOL );
 
@@ -570,7 +570,7 @@ BOOST_AUTO_TEST_CASE( static_variant_json_test )
       transfer_operation t = op.get< transfer_operation >();
       BOOST_CHECK( t.from == "foo" );
       BOOST_CHECK( t.to == "bar" );
-      BOOST_CHECK( t.amount == asset( 1000, BEX_SYMBOL ) );
+      BOOST_CHECK( t.amount == asset( 1000, DPAY_SYMBOL ) );
       BOOST_CHECK( t.memo == "" );
 
       json_str = "{\"type\":1,\"value\":{\"parent_author\":\"foo\",\"parent_permlink\":\"bar\",\"author\":\"foo1\",\"permlink\":\"bar1\",\"title\":\"\",\"body\":\"\",\"json_metadata\":\"\"}}";

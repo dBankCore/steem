@@ -42,7 +42,7 @@ uint32_t string_to_asset_num( const char* p, uint8_t decimals )
          }
          switch( name_u64 )
          {
-            case BEX_SYMBOL_U64:
+            case DPAY_SYMBOL_U64:
                FC_ASSERT( decimals == 3, "Incorrect decimal places" );
                asset_num = DPAY_ASSET_NUM_DPAY;
                break;
@@ -88,9 +88,29 @@ std::string asset_num_to_string( uint32_t asset_num )
    {
 #ifdef IS_TEST_NET
       case DPAY_ASSET_NUM_DPAY:
-         return "TESTS";
+         return "CHAIN";
       case DPAY_ASSET_NUM_BBD:
-         return "TBD";
+         return "CBD";
+#elif IS_JACKSON_NET
+     case DPAY_ASSET_NUM_DPAY:
+        return "JACKS";
+     case DPAY_ASSET_NUM_BBD:
+        return "JBD";
+#elif IS_JEFFERSON_NET
+      case DPAY_ASSET_NUM_DPAY:
+         return "FREE";
+      case DPAY_ASSET_NUM_BBD:
+         return "JBD";
+#elif IS_FRANKLIN_NET
+     case DPAY_ASSET_NUM_DPAY:
+        return "FRANK";
+     case DPAY_ASSET_NUM_BBD:
+        return "FBD";
+#elif IS_KENNEDY_NET
+    case DPAY_ASSET_NUM_DPAY:
+       return "KEN";
+    case DPAY_ASSET_NUM_BBD:
+       return "KBD";
 #else
       case DPAY_ASSET_NUM_DPAY:
          return "BEX";
@@ -100,7 +120,7 @@ std::string asset_num_to_string( uint32_t asset_num )
       case DPAY_ASSET_NUM_VESTS:
          return "VESTS";
       default:
-         return "UNKN"; // SDCs will return this symbol if returned as a legacy asset
+         return "UNKN"; // SMTs will return this symbol if returned as a legacy asset
    }
 }
 

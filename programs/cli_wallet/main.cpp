@@ -81,7 +81,19 @@ int main( int argc, char** argv )
          ("rpc-http-allowip", bpo::value<vector<string>>()->multitoken(), "Allows only specified IPs to connect to the HTTP endpoint" )
          ("wallet-file,w", bpo::value<string>()->implicit_value("wallet.json"), "wallet to load")
 #ifdef IS_TEST_NET
-         ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "chain ID to connect to")
+         ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "SidechainID to connect to")
+#endif
+#ifdef IS_JACKSON_NET
+         ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "Kennedy ChainID to connect to")
+#endif
+#ifdef IS_JEFFERSON_NET
+         ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "Jefferson ChainID to connect to")
+#endif
+#ifdef IS_FRANKLIN_NET
+         ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "Franklin ChainID to connect to")
+#endif
+#ifdef IS_KENNEDY_NET
+         ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "Kennedy ChainID to connect to")
 #endif
          ;
       vector<string> allowed_ips;
@@ -117,7 +129,66 @@ int main( int argc, char** argv )
          }
       }
 #endif
+#ifdef IS_JACKSON_NET
+      if( options.count("chain-id") )
+      {
+         auto chain_id_str = options.at("chain-id").as< std::string >();
 
+         try
+         {
+            _dpay_chain_id = chain_id_type( chain_id_str);
+         }
+         catch( fc::exception& )
+         {
+            FC_ASSERT( false, "Could not parse chain_id as hex string. Jackson ChainID String: ${s}", ("s", chain_id_str) );
+         }
+      }
+#endif
+#ifdef IS_JEFFERSON_NET
+      if( options.count("chain-id") )
+      {
+         auto chain_id_str = options.at("chain-id").as< std::string >();
+
+         try
+         {
+            _dpay_chain_id = chain_id_type( chain_id_str);
+         }
+         catch( fc::exception& )
+         {
+            FC_ASSERT( false, "Could not parse chain_id as hex string. Jefferson ChainID String: ${s}", ("s", chain_id_str) );
+         }
+      }
+#endif
+#ifdef IS_FRANKLIN_NET
+      if( options.count("chain-id") )
+      {
+         auto chain_id_str = options.at("chain-id").as< std::string >();
+
+         try
+         {
+            _dpay_chain_id = chain_id_type( chain_id_str);
+         }
+         catch( fc::exception& )
+         {
+            FC_ASSERT( false, "Could not parse chain_id as hex string. Franklin ChainID String: ${s}", ("s", chain_id_str) );
+         }
+      }
+#endif
+#ifdef IS_KENNEDY_NET
+      if( options.count("chain-id") )
+      {
+         auto chain_id_str = options.at("chain-id").as< std::string >();
+
+         try
+         {
+            _dpay_chain_id = chain_id_type( chain_id_str);
+         }
+         catch( fc::exception& )
+         {
+            FC_ASSERT( false, "Could not parse chain_id as hex string. Kennedy ChainID String: ${s}", ("s", chain_id_str) );
+         }
+      }
+#endif
       fc::path data_dir;
       fc::logging_config cfg;
       fc::path log_dir = data_dir / "logs";

@@ -20,7 +20,7 @@ namespace dpay { namespace chain {
    typedef protocol::fixed_string< 16 > reward_fund_name_type;
 
    /**
-    *  This object is used to track pending requests to convert bbd to dpay
+    *  This object is used to track pending requests to convert bbd to BEX
     */
    class convert_request_object : public object< convert_request_object_type, convert_request_object >
    {
@@ -267,7 +267,7 @@ namespace dpay { namespace chain {
 
          reward_fund_id_type     id;
          reward_fund_name_type   name;
-         asset                   reward_balance = asset( 0, BEX_SYMBOL );
+         asset                   reward_balance = asset( 0, DPAY_SYMBOL );
          fc::uint128_t           recent_claims = 0;
          time_point_sec          last_update;
          uint128_t               content_constant = 0;

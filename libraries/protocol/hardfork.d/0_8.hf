@@ -2,7 +2,8 @@
 #define DPAY_HARDFORK_0_8 8
 #define DPAY_HARDFORK_0_8__116 DPAY_HARDFORK_0_8
 
-// Saturday, May 4, 2019 12:00:00 AM
-#define DPAY_HARDFORK_0_8_TIME 1556928000
+// Mon Jul  4 01:00:00 UTC 2016
+// Sun Jul  3 21:00:00 EDT 2016
+#define DPAY_HARDFORK_0_8_TIME 1467594000
 #define DPAY_HARDFORK_0_8_VERSION hardfork_version( 0, 8 )
 #endif

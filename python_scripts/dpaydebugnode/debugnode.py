@@ -11,7 +11,7 @@ from tempfile import TemporaryDirectory
 from threading import Lock
 from time import sleep
 
-from dpayapi.dpaynoderpc import DPayNodeRPC
+from dpaypyapi.dpaynoderpc import DPayNodeRPC
 
 class DebugNode( object ):
    """ Wraps the dpayd debug node plugin for easier automated testing of the dPay Network"""
@@ -23,7 +23,7 @@ class DebugNode( object ):
       While in the context of 'with' the debug node will continue to run.
       Upon exit of 'with' the debug will exit and clean up temporary files.
       This class also contains methods to allow basic manipulation of the blockchain.
-      For all other requests, the python-dpay library should be used.
+      For all other requests, the dpay-python library should be used.
 
       args:
          dpayd -- The string path to the location of the dpayd binary

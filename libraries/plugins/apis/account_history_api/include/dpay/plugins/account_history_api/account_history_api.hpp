@@ -2,7 +2,6 @@
 #include <dpay/plugins/json_rpc/utility.hpp>
 
 #include <dpay/chain/history_object.hpp>
-#include <dpay/chain/operation_notification.hpp>
 
 #include <dpay/protocol/types.hpp>
 

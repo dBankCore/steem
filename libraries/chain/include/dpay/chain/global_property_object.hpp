@@ -49,22 +49,22 @@ namespace dpay { namespace chain {
           */
          uint32_t num_pow_witnesses = 0;
 
-         asset       virtual_supply             = asset( 0, BEX_SYMBOL );
-         asset       current_supply             = asset( 0, BEX_SYMBOL );
-         asset       confidential_supply        = asset( 0, BEX_SYMBOL ); ///< total asset held in confidential balances
+         asset       virtual_supply             = asset( 0, DPAY_SYMBOL );
+         asset       current_supply             = asset( 0, DPAY_SYMBOL );
+         asset       confidential_supply        = asset( 0, DPAY_SYMBOL ); ///< total asset held in confidential balances
          asset       current_bbd_supply         = asset( 0, BBD_SYMBOL );
          asset       confidential_bbd_supply    = asset( 0, BBD_SYMBOL ); ///< total asset held in confidential balances
-         asset       total_vesting_fund_dpay   = asset( 0, BEX_SYMBOL );
+         asset       total_vesting_fund_dpay   = asset( 0, DPAY_SYMBOL );
          asset       total_vesting_shares       = asset( 0, VESTS_SYMBOL );
-         asset       total_reward_fund_dpay    = asset( 0, BEX_SYMBOL );
+         asset       total_reward_fund_dpay    = asset( 0, DPAY_SYMBOL );
          fc::uint128 total_reward_shares2; ///< the running total of REWARD^2
          asset       pending_rewarded_vesting_shares = asset( 0, VESTS_SYMBOL );
-         asset       pending_rewarded_vesting_dpay = asset( 0, BEX_SYMBOL );
+         asset       pending_rewarded_vesting_dpay = asset( 0, DPAY_SYMBOL );
 
          price       get_vesting_share_price() const
          {
             if ( total_vesting_fund_dpay.amount == 0 || total_vesting_shares.amount == 0 )
-               return price ( asset( 1000, BEX_SYMBOL ), asset( 1000000, VESTS_SYMBOL ) );
+               return price ( asset( 1000, DPAY_SYMBOL ), asset( 1000000, VESTS_SYMBOL ) );
 
             return price( total_vesting_shares, total_vesting_fund_dpay );
          }
@@ -122,8 +122,8 @@ namespace dpay { namespace chain {
 
          uint16_t bbd_stop_percent = 0;
          uint16_t bbd_start_percent = 0;
-#ifdef DPAY_ENABLE_SDC
-         asset sdc_creation_fee = asset( 1000000, BBD_SYMBOL );
+#ifdef DPAY_ENABLE_SMT
+         asset smt_creation_fee = asset( 1000000, BBD_SYMBOL );
 #endif
    };
 
@@ -170,8 +170,8 @@ FC_REFLECT( dpay::chain::dynamic_global_property_object,
              (available_account_subsidies)
              (bbd_stop_percent)
              (bbd_start_percent)
-#ifdef DPAY_ENABLE_SDC
-             (sdc_creation_fee)
+#ifdef DPAY_ENABLE_SMT
+             (smt_creation_fee)
 #endif
           )
 CHAINBASE_SET_INDEX_TYPE( dpay::chain::dynamic_global_property_object, dpay::chain::dynamic_global_property_index )

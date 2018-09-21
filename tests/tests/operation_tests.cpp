@@ -1,4 +1,4 @@
-#ifdef IS_TEST_NET
+#if defined IS_TEST_NET && defined IS_JACKSON_NET && defined IS_JEFFERSON_NET && defined IS_FRANKLIN_NET && defined IS_KENNEDY_NET
 #include <boost/test/unit_test.hpp>
 
 #include <dpay/protocol/exceptions.hpp>
@@ -108,7 +108,7 @@ BOOST_AUTO_TEST_CASE( account_create_apply )
       op.json_metadata = "{\"foo\":\"bar\"}";
 
       BOOST_TEST_MESSAGE( "--- Test failure paying more than the fee" );
-      op.fee = asset( 101, BEX_SYMBOL );
+      op.fee = asset( 101, DPAY_SYMBOL );
       tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       tx.operations.push_back( op );
       sign( tx, init_account_priv_key );
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE( account_create_apply )
       DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::assert_exception );
 
       BOOST_TEST_MESSAGE( "--- Test normal account creation" );
-      op.fee = asset( 100, BEX_SYMBOL );
+      op.fee = asset( 100, DPAY_SYMBOL );
       tx.clear();
       tx.operations.push_back( op );
       sign( tx, init_account_priv_key );
@@ -162,7 +162,7 @@ BOOST_AUTO_TEST_CASE( account_create_apply )
       BOOST_TEST_MESSAGE( "--- Test failure when creator cannot cover fee" );
       tx.signatures.clear();
       tx.operations.clear();
-      op.fee = asset( db->get_account( DPAY_INIT_MINER_NAME ).balance.amount + 1, BEX_SYMBOL );
+      op.fee = asset( db->get_account( DPAY_INIT_MINER_NAME ).balance.amount + 1, DPAY_SYMBOL );
       op.new_account_name = "bob";
       tx.operations.push_back( op );
       sign( tx, init_account_priv_key );
@@ -1374,7 +1374,7 @@ BOOST_AUTO_TEST_CASE( transfer_to_vesting_apply )
       BOOST_REQUIRE( alice.balance == ASSET( "10.000 TESTS" ) );
 
       auto shares = asset( gpo.total_vesting_shares.amount, VESTS_SYMBOL );
-      auto vests = asset( gpo.total_vesting_fund_dpay.amount, BEX_SYMBOL );
+      auto vests = asset( gpo.total_vesting_fund_dpay.amount, DPAY_SYMBOL );
       auto alice_shares = alice.vesting_shares;
       auto bob_shares = bob.vesting_shares;
 
@@ -1401,7 +1401,7 @@ BOOST_AUTO_TEST_CASE( transfer_to_vesting_apply )
       validate_database();
 
       op.to = "bob";
-      op.amount = asset( 2000, BEX_SYMBOL );
+      op.amount = asset( 2000, DPAY_SYMBOL );
       tx.operations.clear();
       tx.signatures.clear();
       tx.operations.push_back( op );
@@ -1714,7 +1714,7 @@ BOOST_AUTO_TEST_CASE( witness_update_apply )
       op.url = "foo.bar";
       op.fee = ASSET( "1.000 TESTS" );
       op.block_signing_key = signing_key.get_public_key();
-      op.props.account_creation_fee = legacy_dpay_asset::from_asset( asset(DPAY_MIN_ACCOUNT_CREATION_FEE + 10, BEX_SYMBOL) );
+      op.props.account_creation_fee = legacy_dpay_asset::from_asset( asset(DPAY_MIN_ACCOUNT_CREATION_FEE + 10, DPAY_SYMBOL) );
       op.props.maximum_block_size = DPAY_MIN_BLOCK_SIZE_LIMIT + 100;
 
       signed_transaction tx;
@@ -2343,7 +2343,7 @@ BOOST_AUTO_TEST_CASE( feed_publish_apply )
       BOOST_TEST_MESSAGE( "--- Test publishing price feed" );
       feed_publish_operation op;
       op.publisher = "alice";
-      op.exchange_rate = price( ASSET( "1.000 TBD" ), ASSET( "1000.000 TESTS" ) ); // 1000 DPAY : 1 BBD
+      op.exchange_rate = price( ASSET( "1.000 TBD" ), ASSET( "1000.000 TESTS" ) ); // 1000 BEX : 1 BBD
 
       signed_transaction tx;
       tx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
@@ -2718,7 +2718,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create_apply )
       BOOST_REQUIRE( limit_order->orderid == op.orderid );
       BOOST_REQUIRE( limit_order->for_sale == op.amount_to_sell.amount );
       BOOST_REQUIRE( limit_order->sell_price == price( op.amount_to_sell / op.min_to_receive ) );
-      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, BEX_SYMBOL ) );
+      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, DPAY_SYMBOL ) );
       BOOST_REQUIRE( alice.balance.amount.value == ASSET( "990.000 TESTS" ).amount.value );
       BOOST_REQUIRE( alice.bbd_balance.amount.value == ASSET( "0.000 TBD" ).amount.value );
       validate_database();
@@ -2738,7 +2738,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create_apply )
       BOOST_REQUIRE( limit_order->orderid == op.orderid );
       BOOST_REQUIRE( limit_order->for_sale == 10000 );
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "10.000 TESTS" ), op.min_to_receive ) );
-      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, BEX_SYMBOL ) );
+      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, DPAY_SYMBOL ) );
       BOOST_REQUIRE( alice.balance.amount.value == ASSET( "990.000 TESTS" ).amount.value );
       BOOST_REQUIRE( alice.bbd_balance.amount.value == ASSET( "0.000 TBD" ).amount.value );
       validate_database();
@@ -2760,7 +2760,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create_apply )
 
       BOOST_TEST_MESSAGE( "--- Test having a partial match to limit order" );
       // Alice has order for 15 BBD at a price of 2:3
-      // Fill 5 DPAY for 7.5 BBD
+      // Fill 5 BEX for 7.5 BBD
 
       op.owner = "bob";
       op.orderid = 1;
@@ -2782,7 +2782,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create_apply )
       BOOST_REQUIRE( limit_order->orderid == op.orderid );
       BOOST_REQUIRE( limit_order->for_sale == 5000 );
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "10.000 TESTS" ), ASSET( "15.000 TBD" ) ) );
-      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, BEX_SYMBOL ) );
+      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, DPAY_SYMBOL ) );
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "bob", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( alice.balance.amount.value == ASSET( "990.000 TESTS" ).amount.value );
       BOOST_REQUIRE( alice.bbd_balance.amount.value == ASSET( "7.500 TBD" ).amount.value );
@@ -2812,7 +2812,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create_apply )
       BOOST_REQUIRE( limit_order->orderid == 1 );
       BOOST_REQUIRE( limit_order->for_sale.value == 7500 );
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "15.000 TBD" ), ASSET( "10.000 TESTS" ) ) );
-      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, BEX_SYMBOL ) );
+      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, DPAY_SYMBOL ) );
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", 1 ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( alice.balance.amount.value == ASSET( "990.000 TESTS" ).amount.value );
       BOOST_REQUIRE( alice.bbd_balance.amount.value == ASSET( "15.000 TBD" ).amount.value );
@@ -2869,7 +2869,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create_apply )
       BOOST_REQUIRE( limit_order->orderid == 4 );
       BOOST_REQUIRE( limit_order->for_sale.value == 1000 );
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "12.000 TBD" ), ASSET( "10.000 TESTS" ) ) );
-      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, BEX_SYMBOL ) );
+      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, DPAY_SYMBOL ) );
       BOOST_REQUIRE( alice.balance.amount.value == ASSET( "975.000 TESTS" ).amount.value );
       BOOST_REQUIRE( alice.bbd_balance.amount.value == ASSET( "33.500 TBD" ).amount.value );
       BOOST_REQUIRE( bob.balance.amount.value == ASSET( "25.000 TESTS" ).amount.value );
@@ -2917,7 +2917,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create_apply )
       BOOST_REQUIRE( limit_order->orderid == 5 );
       BOOST_REQUIRE( limit_order->for_sale.value == 9091 );
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "20.000 TESTS" ), ASSET( "22.000 TBD" ) ) );
-      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, BEX_SYMBOL ) );
+      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, DPAY_SYMBOL ) );
       BOOST_REQUIRE( alice.balance.amount.value == ASSET( "955.000 TESTS" ).amount.value );
       BOOST_REQUIRE( alice.bbd_balance.amount.value == ASSET( "45.500 TBD" ).amount.value );
       BOOST_REQUIRE( bob.balance.amount.value == ASSET( "35.909 TESTS" ).amount.value );
@@ -3083,7 +3083,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create2_apply )
       BOOST_REQUIRE( limit_order->orderid == op.orderid );
       BOOST_REQUIRE( limit_order->for_sale == op.amount_to_sell.amount );
       BOOST_REQUIRE( limit_order->sell_price == op.exchange_rate );
-      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, BEX_SYMBOL ) );
+      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, DPAY_SYMBOL ) );
       BOOST_REQUIRE( alice.balance.amount.value == ASSET( "990.000 TESTS" ).amount.value );
       BOOST_REQUIRE( alice.bbd_balance.amount.value == ASSET( "0.000 TBD" ).amount.value );
       validate_database();
@@ -3103,7 +3103,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create2_apply )
       BOOST_REQUIRE( limit_order->orderid == op.orderid );
       BOOST_REQUIRE( limit_order->for_sale == 10000 );
       BOOST_REQUIRE( limit_order->sell_price == op.exchange_rate );
-      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, BEX_SYMBOL ) );
+      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, DPAY_SYMBOL ) );
       BOOST_REQUIRE( alice.balance.amount.value == ASSET( "990.000 TESTS" ).amount.value );
       BOOST_REQUIRE( alice.bbd_balance.amount.value == ASSET( "0.000 TBD" ).amount.value );
       validate_database();
@@ -3125,7 +3125,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create2_apply )
 
       BOOST_TEST_MESSAGE( "--- Test having a partial match to limit order" );
       // Alice has order for 15 BBD at a price of 2:3
-      // Fill 5 DPAY for 7.5 BBD
+      // Fill 5 BEX for 7.5 BBD
 
       op.owner = "bob";
       op.orderid = 1;
@@ -3147,7 +3147,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create2_apply )
       BOOST_REQUIRE( limit_order->orderid == op.orderid );
       BOOST_REQUIRE( limit_order->for_sale == 5000 );
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "2.000 TESTS" ), ASSET( "3.000 TBD" ) ) );
-      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, BEX_SYMBOL ) );
+      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, DPAY_SYMBOL ) );
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "bob", op.orderid ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( alice.balance.amount.value == ASSET( "990.000 TESTS" ).amount.value );
       BOOST_REQUIRE( alice.bbd_balance.amount.value == ASSET( "7.500 TBD" ).amount.value );
@@ -3177,7 +3177,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create2_apply )
       BOOST_REQUIRE( limit_order->orderid == 1 );
       BOOST_REQUIRE( limit_order->for_sale.value == 7500 );
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "3.000 TBD" ), ASSET( "2.000 TESTS" ) ) );
-      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, BEX_SYMBOL ) );
+      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, DPAY_SYMBOL ) );
       BOOST_REQUIRE( limit_order_idx.find( std::make_tuple( "alice", 1 ) ) == limit_order_idx.end() );
       BOOST_REQUIRE( alice.balance.amount.value == ASSET( "990.000 TESTS" ).amount.value );
       BOOST_REQUIRE( alice.bbd_balance.amount.value == ASSET( "15.000 TBD" ).amount.value );
@@ -3234,7 +3234,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create2_apply )
       BOOST_REQUIRE( limit_order->orderid == 4 );
       BOOST_REQUIRE( limit_order->for_sale.value == 1000 );
       BOOST_REQUIRE( limit_order->sell_price == op.exchange_rate );
-      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, BEX_SYMBOL ) );
+      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, DPAY_SYMBOL ) );
       BOOST_REQUIRE( alice.balance.amount.value == ASSET( "975.000 TESTS" ).amount.value );
       BOOST_REQUIRE( alice.bbd_balance.amount.value == ASSET( "33.500 TBD" ).amount.value );
       BOOST_REQUIRE( bob.balance.amount.value == ASSET( "25.000 TESTS" ).amount.value );
@@ -3283,7 +3283,7 @@ BOOST_AUTO_TEST_CASE( limit_order_create2_apply )
       BOOST_REQUIRE( limit_order->orderid == 5 );
       BOOST_REQUIRE( limit_order->for_sale.value == 9091 );
       BOOST_REQUIRE( limit_order->sell_price == price( ASSET( "1.000 TESTS" ), ASSET( "1.100 TBD" ) ) );
-      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, BEX_SYMBOL ) );
+      BOOST_REQUIRE( limit_order->get_market() == std::make_pair( BBD_SYMBOL, DPAY_SYMBOL ) );
       BOOST_REQUIRE( alice.balance.amount.value == ASSET( "955.000 TESTS" ).amount.value );
       BOOST_REQUIRE( alice.bbd_balance.amount.value == ASSET( "45.500 TBD" ).amount.value );
       BOOST_REQUIRE( bob.balance.amount.value == ASSET( "35.909 TESTS" ).amount.value );
@@ -3553,7 +3553,7 @@ BOOST_AUTO_TEST_CASE( account_recovery )
       sign( tx, alice_private_key );
       db->push_transaction( tx, 0 );
 
-      vest( DPAY_INIT_MINER_NAME, "bob", asset( 1000, BEX_SYMBOL ) );
+      vest( DPAY_INIT_MINER_NAME, "bob", asset( 1000, DPAY_SYMBOL ) );
 
       const auto& bob_auth = db->get< account_authority_object, by_account >( "bob" );
       BOOST_REQUIRE( bob_auth.owner == acc_create.owner );
@@ -3891,21 +3891,21 @@ BOOST_AUTO_TEST_CASE( escrow_transfer_validate )
       op.escrow_expiration = db->head_block_time() + 200;
 
       BOOST_TEST_MESSAGE( "--- failure when bbd symbol != BBD" );
-      op.bbd_amount.symbol = BEX_SYMBOL;
+      op.bbd_amount.symbol = DPAY_SYMBOL;
       DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
-      BOOST_TEST_MESSAGE( "--- failure when dpay symbol != BEX" );
+      BOOST_TEST_MESSAGE( "--- failure when BEX symbol != BEX" );
       op.bbd_amount.symbol = BBD_SYMBOL;
       op.dpay_amount.symbol = BBD_SYMBOL;
       DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       BOOST_TEST_MESSAGE( "--- failure when fee symbol != BBD and fee symbol != BEX" );
-      op.dpay_amount.symbol = BEX_SYMBOL;
+      op.dpay_amount.symbol = DPAY_SYMBOL;
       op.fee.symbol = VESTS_SYMBOL;
       DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
-      BOOST_TEST_MESSAGE( "--- failure when bbd == 0 and dpay == 0" );
-      op.fee.symbol = BEX_SYMBOL;
+      BOOST_TEST_MESSAGE( "--- failure when bbd == 0 and BEX == 0" );
+      op.fee.symbol = DPAY_SYMBOL;
       op.bbd_amount.amount = 0;
       op.dpay_amount.amount = 0;
       DPAY_REQUIRE_THROW( op.validate(), fc::exception );
@@ -3915,7 +3915,7 @@ BOOST_AUTO_TEST_CASE( escrow_transfer_validate )
       op.dpay_amount.amount = 1000;
       DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
-      BOOST_TEST_MESSAGE( "--- failure when dpay < 0" );
+      BOOST_TEST_MESSAGE( "--- failure when BEX < 0" );
       op.bbd_amount.amount = 1000;
       op.dpay_amount.amount = -100;
       DPAY_REQUIRE_THROW( op.validate(), fc::exception );
@@ -4679,7 +4679,7 @@ BOOST_AUTO_TEST_CASE( escrow_release_validate )
       op.receiver = "bob";
 
 
-      BOOST_TEST_MESSAGE( "--- failure when dpay < 0" );
+      BOOST_TEST_MESSAGE( "--- failure when BEX < 0" );
       op.dpay_amount.amount = -1;
       DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
@@ -4690,7 +4690,7 @@ BOOST_AUTO_TEST_CASE( escrow_release_validate )
       DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
 
-      BOOST_TEST_MESSAGE( "--- failure when dpay == 0 and bbd == 0" );
+      BOOST_TEST_MESSAGE( "--- failure when BEX == 0 and bbd == 0" );
       op.bbd_amount.amount = 0;
       DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
@@ -4700,14 +4700,14 @@ BOOST_AUTO_TEST_CASE( escrow_release_validate )
       DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
 
-      BOOST_TEST_MESSAGE( "--- failure when dpay is not dpay symbol" );
+      BOOST_TEST_MESSAGE( "--- failure when BEX is not BEX symbol" );
       op.bbd_amount.symbol = BBD_SYMBOL;
       op.dpay_amount = ASSET( "1.000 TBD" );
       DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
 
       BOOST_TEST_MESSAGE( "--- success" );
-      op.dpay_amount.symbol = BEX_SYMBOL;
+      op.dpay_amount.symbol = DPAY_SYMBOL;
       op.validate();
    }
    FC_LOG_AND_RETHROW()
@@ -4955,7 +4955,7 @@ BOOST_AUTO_TEST_CASE( escrow_release_apply )
       DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
 
-      BOOST_TEST_MESSAGE( "--- failure when releasing less dpay than available" );
+      BOOST_TEST_MESSAGE( "--- failure when releasing less BEX than available" );
       op.dpay_amount = ASSET( "0.000 TESTS" );
       op.bbd_amount = ASSET( "1.000 TBD" );
 
@@ -5253,7 +5253,7 @@ BOOST_AUTO_TEST_CASE( transfer_to_savings_validate )
       op.validate();
 
 
-      BOOST_TEST_MESSAGE( "success when amount is DPAY" );
+      BOOST_TEST_MESSAGE( "success when amount is BEX" );
       op.amount = ASSET( "1.000 TESTS" );
       op.validate();
    }
@@ -5335,7 +5335,7 @@ BOOST_AUTO_TEST_CASE( transfer_to_savings_apply )
       validate_database();
 
 
-      BOOST_TEST_MESSAGE( "--- success transferring DPAY to self" );
+      BOOST_TEST_MESSAGE( "--- success transferring BEX to self" );
       op.to = "alice";
 
       tx.clear();
@@ -5430,7 +5430,7 @@ BOOST_AUTO_TEST_CASE( transfer_from_savings_validate )
       op.validate();
 
 
-      BOOST_TEST_MESSAGE( "success when amount is DPAY" );
+      BOOST_TEST_MESSAGE( "success when amount is BEX" );
       op.amount = ASSET( "1.000 TESTS" );
       op.validate();
    }
@@ -5524,7 +5524,7 @@ BOOST_AUTO_TEST_CASE( transfer_from_savings_apply )
       DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
 
-      BOOST_TEST_MESSAGE( "--- success withdrawing DPAY to self" );
+      BOOST_TEST_MESSAGE( "--- success withdrawing BEX to self" );
       op.to = "alice";
 
       tx.clear();
@@ -5574,7 +5574,7 @@ BOOST_AUTO_TEST_CASE( transfer_from_savings_apply )
       DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), fc::exception );
 
 
-      BOOST_TEST_MESSAGE( "--- success withdrawing DPAY to other" );
+      BOOST_TEST_MESSAGE( "--- success withdrawing BEX to other" );
       op.to = "bob";
       op.amount = ASSET( "1.000 TESTS" );
       op.request_id = 3;
@@ -6043,7 +6043,7 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance_validate )
       op.reward_vests.amount = 0;
 
 
-      BOOST_TEST_MESSAGE( "Testing wrong DPAY symbol" );
+      BOOST_TEST_MESSAGE( "Testing wrong BEX symbol" );
       op.reward_dpay = ASSET( "1.000 TBD" );
       DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
 
@@ -6128,7 +6128,7 @@ BOOST_AUTO_TEST_CASE( account_create_with_delegation_apply )
       BOOST_TEST_MESSAGE( "Testing: account_create_with_delegation_apply" );
       signed_transaction tx;
       ACTORS( (alice) );
-      // 150 * fee = ( 5 * BEX ) + BP
+      // 150 * fee = ( 5 * BEX ) + SP
       //auto gpo = db->get_dynamic_global_properties();
       generate_blocks(1);
       fund( "alice", ASSET("1510.000 TESTS") );
@@ -6207,7 +6207,7 @@ BOOST_AUTO_TEST_CASE( claim_reward_balance_apply )
       auto alice_vests = db->get_account( "alice" ).vesting_shares;
 
 
-      BOOST_TEST_MESSAGE( "--- Attempting to claim more DPAY than exists in the reward balance." );
+      BOOST_TEST_MESSAGE( "--- Attempting to claim more BEX than exists in the reward balance." );
 
       claim_reward_balance_operation op;
       signed_transaction tx;
@@ -6808,7 +6808,7 @@ BOOST_AUTO_TEST_CASE( witness_set_properties_validate )
       op.url = "foo.bar";
       op.fee = ASSET( "1.000 TESTS" );
       op.block_signing_key = signing_key.get_public_key();
-      op.props.account_creation_fee = legacy_dpay_asset::from_asset( asset(DPAY_MIN_ACCOUNT_CREATION_FEE + 10, BEX_SYMBOL) );
+      op.props.account_creation_fee = legacy_dpay_asset::from_asset( asset(DPAY_MIN_ACCOUNT_CREATION_FEE + 10, DPAY_SYMBOL) );
       op.props.maximum_block_size = DPAY_MIN_BLOCK_SIZE_LIMIT + 100;
 
       signed_transaction tx;
@@ -6846,7 +6846,7 @@ BOOST_AUTO_TEST_CASE( witness_set_properties_validate )
       prop_op.props[ "bbd_interest_rate" ] = fc::raw::pack_to_vector( DPAY_100_PERCENT + 1 );
       DPAY_REQUIRE_THROW( prop_op.validate(), fc::assert_exception );
 
-      BOOST_TEST_MESSAGE( "--- failure when setting new bbd_exchange_rate with BBD / DPAY" );
+      BOOST_TEST_MESSAGE( "--- failure when setting new bbd_exchange_rate with BBD / BEX" );
       prop_op.props.erase( "bbd_interest_rate" );
       prop_op.props[ "bbd_exchange_rate" ] = fc::raw::pack_to_vector( price( ASSET( "1.000 TESTS" ), ASSET( "10.000 TBD" ) ) );
       DPAY_REQUIRE_THROW( prop_op.validate(), fc::assert_exception );
@@ -6982,7 +6982,7 @@ BOOST_AUTO_TEST_CASE( witness_set_properties_apply )
       op.url = "foo.bar";
       op.fee = ASSET( "1.000 TESTS" );
       op.block_signing_key = signing_key.get_public_key();
-      op.props.account_creation_fee = legacy_dpay_asset::from_asset( asset(DPAY_MIN_ACCOUNT_CREATION_FEE + 10, BEX_SYMBOL) );
+      op.props.account_creation_fee = legacy_dpay_asset::from_asset( asset(DPAY_MIN_ACCOUNT_CREATION_FEE + 10, DPAY_SYMBOL) );
       op.props.maximum_block_size = DPAY_MIN_BLOCK_SIZE_LIMIT + 100;
 
       signed_transaction tx;

@@ -5,7 +5,7 @@
 #include <dpay/chain/global_property_object.hpp>
 #include <dpay/chain/history_object.hpp>
 #include <dpay/chain/dpay_objects.hpp>
-#include <dpay/chain/sdc_objects.hpp>
+#include <dpay/chain/smt_objects.hpp>
 #include <dpay/chain/transaction_object.hpp>
 #include <dpay/chain/witness_objects.hpp>
 #include <dpay/chain/database.hpp>
@@ -205,7 +205,9 @@ struct api_account_object
       witnesses_voted_for( a.witnesses_voted_for ),
       last_post( a.last_post ),
       last_root_post( a.last_root_post ),
-      last_vote_time( a.last_vote_time )
+      last_vote_time( a.last_vote_time ),
+      post_bandwidth( a.post_bandwidth ),
+      pending_claimed_accounts( a.pending_claimed_accounts )
    {
       size_t n = a.proxied_vsf_votes.size();
       proxied_vsf_votes.reserve( n );
@@ -217,10 +219,10 @@ struct api_account_object
       active = authority( auth.active );
       posting = authority( auth.posting );
       last_owner_update = auth.last_owner_update;
-#ifdef DPAY_ENABLE_SDC
-      const auto& by_control_account_index = db.get_index<sdc_token_index>().indices().get<by_control_account>();
-      auto sdc_obj_itr = by_control_account_index.find( name );
-      is_sdc = sdc_obj_itr != by_control_account_index.end();
+#ifdef DPAY_ENABLE_SMT
+      const auto& by_control_account_index = db.get_index<smt_token_index>().indices().get<by_control_account>();
+      auto smt_obj_itr = by_control_account_index.find( name );
+      is_smt = smt_obj_itr != by_control_account_index.end();
 #endif
    }
 
@@ -291,8 +293,11 @@ struct api_account_object
    time_point_sec    last_post;
    time_point_sec    last_root_post;
    time_point_sec    last_vote_time;
+   uint32_t          post_bandwidth = 0;
 
-   bool              is_sdc = false;
+   share_type        pending_claimed_accounts = 0;
+
+   bool              is_smt = false;
 };
 
 struct api_owner_authority_history_object
@@ -395,7 +400,8 @@ struct api_witness_object
       last_work( w.last_work ),
       running_version( w.running_version ),
       hardfork_version_vote( w.hardfork_version_vote ),
-      hardfork_time_vote( w.hardfork_time_vote )
+      hardfork_time_vote( w.hardfork_time_vote ),
+      available_witness_account_subsidies( w.available_witness_account_subsidies )
    {}
 
    api_witness_object() {}
@@ -420,6 +426,7 @@ struct api_witness_object
    version           running_version;
    hardfork_version  hardfork_version_vote;
    time_point_sec    hardfork_time_vote;
+   int64_t           available_witness_account_subsidies = 0;
 };
 
 struct api_witness_schedule_object
@@ -440,7 +447,10 @@ struct api_witness_schedule_object
       max_voted_witnesses( wso.max_voted_witnesses ),
       max_miner_witnesses( wso.max_miner_witnesses ),
       max_runner_witnesses( wso.max_runner_witnesses ),
-      hardfork_required_witnesses( wso.hardfork_required_witnesses )
+      hardfork_required_witnesses( wso.hardfork_required_witnesses ),
+      account_subsidy_rd( wso.account_subsidy_rd ),
+      account_subsidy_witness_rd( wso.account_subsidy_witness_rd ),
+      min_witness_account_subsidy_decay( wso.min_witness_account_subsidy_decay )
    {
       size_t n = wso.current_shuffled_witnesses.size();
       current_shuffled_witnesses.reserve( n );
@@ -467,6 +477,10 @@ struct api_witness_schedule_object
    uint8_t                    max_miner_witnesses;
    uint8_t                    max_runner_witnesses;
    uint8_t                    hardfork_required_witnesses;
+
+   rd_dynamics_params         account_subsidy_rd;
+   rd_dynamics_params         account_subsidy_witness_rd;
+   int64_t                    min_witness_account_subsidy_decay = 0;
 };
 
 struct api_signed_block_object : public signed_block
@@ -563,7 +577,8 @@ FC_REFLECT( dpay::plugins::database_api::api_account_object,
              (posting_rewards)
              (proxied_vsf_votes)(witnesses_voted_for)
              (last_post)(last_root_post)(last_vote_time)
-             (is_sdc)
+             (post_bandwidth)(pending_claimed_accounts)
+             (is_smt)
           )
 
 FC_REFLECT( dpay::plugins::database_api::api_owner_authority_history_object,
@@ -607,6 +622,7 @@ FC_REFLECT( dpay::plugins::database_api::api_witness_object,
              (last_work)
              (running_version)
              (hardfork_version_vote)(hardfork_time_vote)
+             (available_witness_account_subsidies)
           )
 
 FC_REFLECT( dpay::plugins::database_api::api_witness_schedule_object,
@@ -625,6 +641,9 @@ FC_REFLECT( dpay::plugins::database_api::api_witness_schedule_object,
              (max_miner_witnesses)
              (max_runner_witnesses)
              (hardfork_required_witnesses)
+             (account_subsidy_rd)
+             (account_subsidy_witness_rd)
+             (min_witness_account_subsidy_decay)
           )
 
 FC_REFLECT_DERIVED( dpay::plugins::database_api::api_signed_block_object, (dpay::protocol::signed_block),

@@ -100,14 +100,14 @@ struct bucket_object : public object< bucket_object_type, bucket_object >
    bucket_object_details dpay;
    bucket_object_details non_dpay;
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
    asset_symbol_type symbol = BBD_SYMBOL;
 
-   price high()const { return asset( non_dpay.high, symbol ) / asset( dpay.high, BEX_SYMBOL ); }
-   price low()const { return asset( non_dpay.low, symbol ) / asset( dpay.low, BEX_SYMBOL ); }
+   price high()const { return asset( non_dpay.high, symbol ) / asset( dpay.high, DPAY_SYMBOL ); }
+   price low()const { return asset( non_dpay.low, symbol ) / asset( dpay.low, DPAY_SYMBOL ); }
 #else
-   price high()const { return asset( non_dpay.high, BBD_SYMBOL ) / asset( dpay.high, BEX_SYMBOL ); }
-   price low()const { return asset( non_dpay.low, BBD_SYMBOL ) / asset( dpay.low, BEX_SYMBOL ); }
+   price high()const { return asset( non_dpay.high, BBD_SYMBOL ) / asset( dpay.high, DPAY_SYMBOL ); }
+   price low()const { return asset( non_dpay.low, BBD_SYMBOL ) / asset( dpay.low, DPAY_SYMBOL ); }
 #endif
 };
 
@@ -166,7 +166,7 @@ FC_REFLECT( dpay::plugins::market_history::bucket_object_details,
             (close)
             (volume) )
 
-#if defined DPAY_ENABLE_SDC
+#if defined DPAY_ENABLE_SMT
 FC_REFLECT( dpay::plugins::market_history::bucket_object,
                      (id)
                      (open)(seconds)

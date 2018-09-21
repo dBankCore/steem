@@ -7,7 +7,6 @@
 
 #include <dpay/chain/database.hpp>
 #include <dpay/chain/index.hpp>
-#include <dpay/chain/operation_notification.hpp>
 #include <dpay/chain/account_object.hpp>
 #include <dpay/chain/comment_object.hpp>
 

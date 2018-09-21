@@ -4,7 +4,6 @@
 
 #include <dpay/protocol/config.hpp>
 
-#include <dpay/chain/operation_notification.hpp>
 #include <dpay/chain/history_object.hpp>
 
 #include <dpay/utilities/plugin_utilities.hpp>

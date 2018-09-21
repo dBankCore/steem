@@ -8,7 +8,7 @@ If there is an existing feature that is not working correctly, or a glitch in th
 
 ## Enhancement Suggestions
 
-Do **not** use the issue tracker to suggest enhancements or improvements to the platform. The best place for these discussions is on dSite.com. If there is a well vetted idea that has the support of the community that you feel should be considered by the development team, please email it to [labs@dpays.io](mailto:labs@dpays.io) for review.
+Do **not** use the issue tracker to suggest enhancements or improvements to the platform. The best place for these discussions is on dSite.io. If there is a well vetted idea that has the support of the community that you feel should be considered by the development team, please email it to [labs@dpays.io](mailto:labs@dpays.io) for review.
 
 ## Implementation Discussion
 
@@ -22,9 +22,9 @@ This is not the place to make suggestions for product improvement (please see th
 
 Please do a keyword search to see if there is already an existing issue before opening a new one.
 
-## dSite.com vs. dPay Blockchain
+## dSite.io vs. dPay Blockchain
 
-This issue tracker is only intended to track issues for the dPay blockchain. If the issue is with the dSite.com website, please open an issue in the [dSite.com Repository](https://github.com/dpays/dpaysit.com/).
+This issue tracker is only intended to track issues for the dPay blockchain. If the issue is with the dSite.io website, please open an issue in the [dSite.io Repository](https://github.com/dsites/).
 
 ## Pull Requests
 

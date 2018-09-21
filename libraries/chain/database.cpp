@@ -10,12 +10,13 @@
 #include <dpay/chain/global_property_object.hpp>
 #include <dpay/chain/history_object.hpp>
 #include <dpay/chain/index.hpp>
-#include <dpay/chain/sdc_objects.hpp>
+#include <dpay/chain/pending_required_action_object.hpp>
+#include <dpay/chain/pending_optional_action_object.hpp>
+#include <dpay/chain/smt_objects.hpp>
 #include <dpay/chain/dpay_evaluator.hpp>
 #include <dpay/chain/dpay_objects.hpp>
 #include <dpay/chain/transaction_object.hpp>
 #include <dpay/chain/shared_db_merkle.hpp>
-#include <dpay/chain/operation_notification.hpp>
 #include <dpay/chain/witness_schedule.hpp>
 
 #include <dpay/chain/util/asset.hpp>
@@ -74,7 +75,7 @@ using boost::container::flat_set;
 struct reward_fund_context
 {
    uint128_t   recent_claims = 0;
-   asset       reward_balance = asset( 0, BEX_SYMBOL );
+   asset       reward_balance = asset( 0, DPAY_SYMBOL );
    share_type  dpay_awarded = 0;
 };
 
@@ -357,10 +358,10 @@ optional<signed_block> database::fetch_block_by_id( const block_id_type& id )con
 optional<signed_block> database::fetch_block_by_number( uint32_t block_num )const
 { try {
    optional< signed_block > b;
+   shared_ptr< fork_item > fitem = _fork_db.fetch_block_on_main_branch_by_number( block_num );
 
-   auto results = _fork_db.fetch_block_by_number( block_num );
-   if( results.size() == 1 )
-      b = results[0]->data;
+   if( fitem )
+      b = fitem->data;
    else
       b = _block_log.read_block_by_num( block_num );
 
@@ -587,11 +588,11 @@ asset database::get_effective_vesting_shares( const account_object& account, ass
    if( vested_symbol == VESTS_SYMBOL )
       return account.vesting_shares - account.delegated_vesting_shares + account.received_vesting_shares;
 
-#ifdef DPAY_ENABLE_SDC
-   FC_ASSERT( vested_symbol.space() == asset_symbol_type::sdc_nai_space );
+#ifdef DPAY_ENABLE_SMT
+   FC_ASSERT( vested_symbol.space() == asset_symbol_type::smt_nai_space );
    FC_ASSERT( vested_symbol.is_vesting() );
 
-#pragma message( "TODO: Update the code below when delegation is modified to support SDCs." )
+#pragma message( "TODO: Update the code below when delegation is modified to support SMTs." )
    const account_regular_balance_object* bo = find< account_regular_balance_object, by_owner_liquid_symbol >(
       boost::make_tuple( account.name, vested_symbol.get_paired_symbol() ) );
    if( bo == nullptr )
@@ -629,6 +630,29 @@ bool database::before_last_checkpoint()const
 bool database::push_block(const signed_block& new_block, uint32_t skip)
 {
    //fc::time_point begin_time = fc::time_point::now();
+
+   auto block_num = new_block.block_num();
+   if( _checkpoints.size() && _checkpoints.rbegin()->second != block_id_type() )
+   {
+      auto itr = _checkpoints.find( block_num );
+      if( itr != _checkpoints.end() )
+         FC_ASSERT( new_block.id() == itr->second, "Block did not match checkpoint", ("checkpoint",*itr)("block_id",new_block.id()) );
+
+      if( _checkpoints.rbegin()->first >= block_num )
+         skip = skip_witness_signature
+              | skip_transaction_signatures
+              | skip_transaction_dupe_check
+              /*| skip_fork_db Fork db cannot be skipped or else blocks will not be written out to block log */
+              | skip_block_size_check
+              | skip_tapos_check
+              | skip_authority_check
+              /* | skip_merkle_check While blockchain is being downloaded, txs need to be validated against block headers */
+              | skip_undo_history_check
+              | skip_witness_schedule_check
+              | skip_validate
+              | skip_validate_invariants
+              ;
+   }
 
    bool result;
    detail::with_skip_flags( *this, skip, [&]()
@@ -673,6 +697,18 @@ bool database::_push_block(const signed_block& new_block)
    #ifdef IS_TEST_NET
    FC_ASSERT(new_block.block_num() < TESTNET_BLOCK_LIMIT, "Testnet block limit exceeded");
    #endif /// IS_TEST_NET
+   #ifdef IS_JACKSON_NET
+   FC_ASSERT(new_block.block_num() < TESTNET_BLOCK_LIMIT, "Testnet block limit exceeded");
+   #endif /// IS_JACKSON_NET
+   #ifdef IS_JEFFERSON_NET
+   FC_ASSERT(new_block.block_num() < TESTNET_BLOCK_LIMIT, "Testnet block limit exceeded");
+   #endif /// IS_JEFFERSON_NET
+   #ifdef IS_FRANKLIN_NET
+   FC_ASSERT(new_block.block_num() < TESTNET_BLOCK_LIMIT, "Testnet block limit exceeded");
+   #endif /// IS_FRANKLIN_NET
+   #ifdef IS_KENNEDY_NET
+   FC_ASSERT(new_block.block_num() < TESTNET_BLOCK_LIMIT, "Testnet block limit exceeded");
+   #endif /// IS_KENNEDY_NET
 
    uint32_t skip = get_node_properties().skip_flags;
    //uint32_t skip_undo_db = skip & skip_undo_block;
@@ -689,7 +725,7 @@ bool database::_push_block(const signed_block& new_block)
          //Only switch forks if new_head is actually higher than head
          if( new_head->data.block_num() > head_block_num() )
          {
-            // wlog( "Switching to fork: ${id}", ("id",new_head->data.id()) );
+            wlog( "Switching to fork: ${id}", ("id",new_head->data.id()) );
             auto branches = _fork_db.fetch_branch_from(new_head->data.id(), head_block_id());
 
             // pop blocks until we hit the forked block
@@ -699,10 +735,11 @@ bool database::_push_block(const signed_block& new_block)
             // push all blocks on the new fork
             for( auto ritr = branches.first.rbegin(); ritr != branches.first.rend(); ++ritr )
             {
-                // ilog( "pushing blocks from fork ${n} ${id}", ("n",(*ritr)->data.block_num())("id",(*ritr)->data.id()) );
+                ilog( "pushing blocks from fork ${n} ${id}", ("n",(*ritr)->data.block_num())("id",(*ritr)->data.id()) );
                 optional<fc::exception> except;
                 try
                 {
+                   _fork_db.set_head( *ritr );
                    auto session = start_undo_session();
                    apply_block( (*ritr)->data, skip );
                    session.push();
@@ -710,14 +747,13 @@ bool database::_push_block(const signed_block& new_block)
                 catch ( const fc::exception& e ) { except = e; }
                 if( except )
                 {
-                   // wlog( "exception thrown while switching forks ${e}", ("e",except->to_detail_string() ) );
+                   wlog( "exception thrown while switching forks ${e}", ("e",except->to_detail_string() ) );
                    // remove the rest of branches.first from the fork_db, those blocks are invalid
                    while( ritr != branches.first.rend() )
                    {
                       _fork_db.remove( (*ritr)->data.id() );
                       ++ritr;
                    }
-                   _fork_db.set_head( branches.second.front() );
 
                    // pop all blocks from the bad fork
                    while( head_block_id() != branches.second.back()->data.previous )
@@ -726,6 +762,7 @@ bool database::_push_block(const signed_block& new_block)
                    // restore all blocks from the good fork
                    for( auto ritr = branches.second.rbegin(); ritr != branches.second.rend(); ++ritr )
                    {
+                      _fork_db.set_head( *ritr );
                       auto session = start_undo_session();
                       apply_block( (*ritr)->data, skip );
                       session.push();
@@ -1043,6 +1080,42 @@ void database::notify_pre_apply_operation( operation_notification& note )
    DPAY_TRY_NOTIFY( _pre_apply_operation_signal, note )
 }
 
+void database::push_required_action( const required_automated_action& a )
+{
+   create< pending_required_action_object >( [&]( pending_required_action_object& pending_action )
+   {
+      pending_action.action = a;
+   });
+}
+
+void database::push_optional_action( const optional_automated_action& a )
+{
+   create< pending_optional_action_object >( [&]( pending_optional_action_object& pending_action )
+   {
+      pending_action.action = a;
+   });
+}
+
+void database::notify_pre_apply_required_action( const required_action_notification& note )
+{
+   DPAY_TRY_NOTIFY( _pre_apply_required_action_signal, note );
+}
+
+void database::notify_post_apply_required_action( const required_action_notification& note )
+{
+   DPAY_TRY_NOTIFY( _post_apply_required_action_signal, note );
+}
+
+void database::notify_pre_apply_optional_action( const optional_action_notification& note )
+{
+   DPAY_TRY_NOTIFY( _pre_apply_optional_action_signal, note );
+}
+
+void database::notify_post_apply_optional_action( const optional_action_notification& note )
+{
+   DPAY_TRY_NOTIFY( _post_apply_optional_action_signal, note );
+}
+
 void database::notify_post_apply_operation( const operation_notification& note )
 {
    DPAY_TRY_NOTIFY( _post_apply_operation_signal, note )
@@ -1120,7 +1193,7 @@ uint32_t database::get_slot_at_time(fc::time_point_sec when)const
  */
 std::pair< asset, asset > database::create_bbd( const account_object& to_account, asset dpay, bool to_reward_balance )
 {
-   std::pair< asset, asset > assets( asset( 0, BBD_SYMBOL ), asset( 0, BEX_SYMBOL ) );
+   std::pair< asset, asset > assets( asset( 0, BBD_SYMBOL ), asset( 0, DPAY_SYMBOL ) );
 
    try
    {
@@ -1135,23 +1208,23 @@ std::pair< asset, asset > database::create_bbd( const account_object& to_account
          auto to_bbd = ( gpo.bbd_print_rate * dpay.amount ) / DPAY_100_PERCENT;
          auto to_dpay = dpay.amount - to_bbd;
 
-         auto bbd = asset( to_bbd, BEX_SYMBOL ) * median_price;
+         auto bbd = asset( to_bbd, DPAY_SYMBOL ) * median_price;
 
          if( to_reward_balance )
          {
             adjust_reward_balance( to_account, bbd );
-            adjust_reward_balance( to_account, asset( to_dpay, BEX_SYMBOL ) );
+            adjust_reward_balance( to_account, asset( to_dpay, DPAY_SYMBOL ) );
          }
          else
          {
             adjust_balance( to_account, bbd );
-            adjust_balance( to_account, asset( to_dpay, BEX_SYMBOL ) );
+            adjust_balance( to_account, asset( to_dpay, DPAY_SYMBOL ) );
          }
 
-         adjust_supply( asset( -to_bbd, BEX_SYMBOL ) );
+         adjust_supply( asset( -to_bbd, DPAY_SYMBOL ) );
          adjust_supply( bbd );
          assets.first = bbd;
-         assets.second = asset( to_dpay, BEX_SYMBOL );
+         assets.second = asset( to_dpay, DPAY_SYMBOL );
       }
       else
       {
@@ -1192,14 +1265,14 @@ asset create_vesting2( database& db, const account_object& to_account, asset liq
          return new_vesting;
          };
 
-#ifdef DPAY_ENABLE_SDC
-      if( liquid.symbol.space() == asset_symbol_type::sdc_nai_space )
+#ifdef DPAY_ENABLE_SMT
+      if( liquid.symbol.space() == asset_symbol_type::smt_nai_space )
       {
          FC_ASSERT( liquid.symbol.is_vesting() == false );
          // Get share price.
-         const auto& sdc = db.get< sdc_token_object, by_symbol >( liquid.symbol );
-         FC_ASSERT( sdc.allow_voting == to_reward_balance, "No voting - no rewards" );
-         price vesting_share_price = to_reward_balance ? sdc.get_reward_vesting_share_price() : sdc.get_vesting_share_price();
+         const auto& smt = db.get< smt_token_object, by_symbol >( liquid.symbol );
+         FC_ASSERT( smt.allow_voting == to_reward_balance, "No voting - no rewards" );
+         price vesting_share_price = to_reward_balance ? smt.get_reward_vesting_share_price() : smt.get_vesting_share_price();
          // Calculate new vesting from provided liquid using share price.
          asset new_vesting = calculate_new_vesting( vesting_share_price );
          before_vesting_callback( new_vesting );
@@ -1209,27 +1282,27 @@ asset create_vesting2( database& db, const account_object& to_account, asset liq
          else
             db.adjust_balance( to_account, new_vesting );
          // Update global vesting pool numbers.
-         db.modify( sdc, [&]( sdc_token_object& sdc_object )
+         db.modify( smt, [&]( smt_token_object& smt_object )
          {
             if( to_reward_balance )
             {
-               sdc_object.pending_rewarded_vesting_shares += new_vesting.amount;
-               sdc_object.pending_rewarded_vesting_sdc += liquid.amount;
+               smt_object.pending_rewarded_vesting_shares += new_vesting.amount;
+               smt_object.pending_rewarded_vesting_smt += liquid.amount;
             }
             else
             {
-               sdc_object.total_vesting_fund_sdc += liquid.amount;
-               sdc_object.total_vesting_shares += new_vesting.amount;
+               smt_object.total_vesting_fund_smt += liquid.amount;
+               smt_object.total_vesting_shares += new_vesting.amount;
             }
          } );
 
-         // NOTE that SDC vesting does not impact witness voting.
+         // NOTE that SMT vesting does not impact witness voting.
 
          return new_vesting;
       }
 #endif
 
-      FC_ASSERT( liquid.symbol == BEX_SYMBOL );
+      FC_ASSERT( liquid.symbol == DPAY_SYMBOL );
       // ^ A novelty, needed but risky in case someone managed to slip BBD/TESTS here in blockchain history.
       // Get share price.
       const auto& cprops = db.get_dynamic_global_properties();
@@ -1281,7 +1354,7 @@ asset create_vesting2( database& db, const account_object& to_account, asset liq
 
 /**
  * @param to_account - the account to receive the new vesting shares
- * @param liquid     - BEX or liquid SDC to be converted to vesting shares
+ * @param liquid     - BEX or liquid SMT to be converted to vesting shares
  */
 asset database::create_vesting( const account_object& to_account, asset liquid, bool to_reward_balance )
 {
@@ -1426,11 +1499,11 @@ void database::clear_null_account_balance()
    if( !has_hardfork( DPAY_HARDFORK_0_14__327 ) ) return;
 
    const auto& null_account = get_account( DPAY_NULL_ACCOUNT );
-   asset total_dpay( 0, BEX_SYMBOL );
+   asset total_dpay( 0, DPAY_SYMBOL );
    asset total_bbd( 0, BBD_SYMBOL );
    asset total_vests( 0, VESTS_SYMBOL );
 
-   asset vesting_shares_dpay_value = asset( 0, BEX_SYMBOL );
+   asset vesting_shares_dpay_value = asset( 0, DPAY_SYMBOL );
 
    if( null_account.balance.amount > 0 )
    {
@@ -1627,7 +1700,7 @@ void database::process_vesting_withdrawals()
 
       share_type vests_deposited_as_dpay = 0;
       share_type vests_deposited_as_vests = 0;
-      asset total_dpay_converted = asset( 0, BEX_SYMBOL );
+      asset total_dpay_converted = asset( 0, DPAY_SYMBOL );
 
       // Do two passes, the first for vests, the second for dpay. Try to maintain as much accuracy for vests as possible.
       for( auto itr = didx.upper_bound( boost::make_tuple( from_account.name, account_name_type() ) );
@@ -1794,7 +1867,7 @@ share_type database::pay_curators( const comment_object& c, share_type& max_rewa
                unclaimed_rewards -= claim;
                const auto& voter = get( item->voter );
                operation vop = curation_reward_operation( voter.name, asset(0, VESTS_SYMBOL), c.author, to_string( c.permlink ) );
-               create_vesting2( *this, voter, asset( claim, BEX_SYMBOL ), has_hardfork( DPAY_HARDFORK_0_17__659 ),
+               create_vesting2( *this, voter, asset( claim, DPAY_SYMBOL ), has_hardfork( DPAY_HARDFORK_0_17__659 ),
                   [&]( const asset& reward )
                   {
                      vop.get< curation_reward_operation >().reward = reward;
@@ -1861,19 +1934,19 @@ share_type database::cashout_comment_helper( util::comment_reward_context& ctx, 
             {
                auto benefactor_tokens = ( author_tokens * b.weight ) / DPAY_100_PERCENT;
                auto benefactor_vesting_dpay = benefactor_tokens;
-               auto vop = comment_benefactor_reward_operation( b.account, comment.author, to_string( comment.permlink ), asset( 0, BBD_SYMBOL ), asset( 0, BEX_SYMBOL ), asset( 0, VESTS_SYMBOL ) );
+               auto vop = comment_benefactor_reward_operation( b.account, comment.author, to_string( comment.permlink ), asset( 0, BBD_SYMBOL ), asset( 0, DPAY_SYMBOL ), asset( 0, VESTS_SYMBOL ) );
 
                if( has_hardfork( DPAY_HARDFORK_0_20__2022 ) )
                {
                   auto benefactor_bbd_dpay = ( benefactor_tokens * comment.percent_dpay_dollars ) / ( 2 * DPAY_100_PERCENT ) ;
                   benefactor_vesting_dpay  = benefactor_tokens - benefactor_bbd_dpay;
-                  auto bbd_payout           = create_bbd( get_account( b.account ), asset( benefactor_bbd_dpay, BEX_SYMBOL ), true );
+                  auto bbd_payout           = create_bbd( get_account( b.account ), asset( benefactor_bbd_dpay, DPAY_SYMBOL ), true );
 
                   vop.bbd_payout   = bbd_payout.first; // BBD portion
                   vop.dpay_payout = bbd_payout.second; // BEX portion
                }
 
-               create_vesting2( *this, get_account( b.account ), asset( benefactor_vesting_dpay, BEX_SYMBOL ), has_hardfork( DPAY_HARDFORK_0_17__659 ),
+               create_vesting2( *this, get_account( b.account ), asset( benefactor_vesting_dpay, DPAY_SYMBOL ), has_hardfork( DPAY_HARDFORK_0_17__659 ),
                [&]( const asset& reward )
                {
                   vop.vesting_payout = reward;
@@ -1890,20 +1963,20 @@ share_type database::cashout_comment_helper( util::comment_reward_context& ctx, 
             auto vesting_dpay = author_tokens - bbd_dpay;
 
             const auto& author = get_account( comment.author );
-            auto bbd_payout = create_bbd( author, asset( bbd_dpay, BEX_SYMBOL ), has_hardfork( DPAY_HARDFORK_0_17__659 ) );
+            auto bbd_payout = create_bbd( author, asset( bbd_dpay, DPAY_SYMBOL ), has_hardfork( DPAY_HARDFORK_0_17__659 ) );
             operation vop = author_reward_operation( comment.author, to_string( comment.permlink ), bbd_payout.first, bbd_payout.second, asset( 0, VESTS_SYMBOL ) );
 
-            create_vesting2( *this, author, asset( vesting_dpay, BEX_SYMBOL ), has_hardfork( DPAY_HARDFORK_0_17__659 ),
+            create_vesting2( *this, author, asset( vesting_dpay, DPAY_SYMBOL ), has_hardfork( DPAY_HARDFORK_0_17__659 ),
                [&]( const asset& vesting_payout )
                {
                   vop.get< author_reward_operation >().vesting_payout = vesting_payout;
                   pre_push_virtual_operation( vop );
                } );
 
-            adjust_total_payout( comment, bbd_payout.first + to_bbd( bbd_payout.second + asset( vesting_dpay, BEX_SYMBOL ) ), to_bbd( asset( curation_tokens, BEX_SYMBOL ) ), to_bbd( asset( total_beneficiary, BEX_SYMBOL ) ) );
+            adjust_total_payout( comment, bbd_payout.first + to_bbd( bbd_payout.second + asset( vesting_dpay, DPAY_SYMBOL ) ), to_bbd( asset( curation_tokens, DPAY_SYMBOL ) ), to_bbd( asset( total_beneficiary, DPAY_SYMBOL ) ) );
 
             post_push_virtual_operation( vop );
-            vop = comment_reward_operation( comment.author, to_string( comment.permlink ), to_bbd( asset( claimed_reward, BEX_SYMBOL ) ) );
+            vop = comment_reward_operation( comment.author, to_string( comment.permlink ), to_bbd( asset( claimed_reward, DPAY_SYMBOL ) ) );
             pre_push_virtual_operation( vop );
             post_push_virtual_operation( vop );
 
@@ -2102,7 +2175,7 @@ void database::process_comment_cashout()
          modify( get< reward_fund_object, by_id >( reward_fund_id_type( i ) ), [&]( reward_fund_object& rfo )
          {
             rfo.recent_claims = funds[ i ].recent_claims;
-            rfo.reward_balance -= asset( funds[ i ].dpay_awarded, BEX_SYMBOL );
+            rfo.reward_balance -= asset( funds[ i ].dpay_awarded, DPAY_SYMBOL );
          });
       }
    }
@@ -2161,15 +2234,15 @@ void database::process_funds()
 
       modify( props, [&]( dynamic_global_property_object& p )
       {
-         p.total_vesting_fund_dpay += asset( vesting_reward, BEX_SYMBOL );
+         p.total_vesting_fund_dpay += asset( vesting_reward, DPAY_SYMBOL );
          if( !has_hardfork( DPAY_HARDFORK_0_17__774 ) )
-            p.total_reward_fund_dpay  += asset( content_reward, BEX_SYMBOL );
-         p.current_supply           += asset( new_dpay, BEX_SYMBOL );
-         p.virtual_supply           += asset( new_dpay, BEX_SYMBOL );
+            p.total_reward_fund_dpay  += asset( content_reward, DPAY_SYMBOL );
+         p.current_supply           += asset( new_dpay, DPAY_SYMBOL );
+         p.virtual_supply           += asset( new_dpay, DPAY_SYMBOL );
       });
 
       operation vop = producer_reward_operation( cwit.owner, asset( 0, VESTS_SYMBOL ) );
-      create_vesting2( *this, get_account( cwit.owner ), asset( witness_reward, BEX_SYMBOL ), false,
+      create_vesting2( *this, get_account( cwit.owner ), asset( witness_reward, DPAY_SYMBOL ), false,
          [&]( const asset& vesting_shares )
          {
             vop.get< producer_reward_operation >().vesting_shares = vesting_shares;
@@ -2244,13 +2317,13 @@ void database::process_subsidized_accounts()
    }
 }
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
 
 template< typename T, bool ALLOW_REMOVE >
-void process_sdc_objects_internal( database* db, dpay::chain::sdc_phase phase )
+void process_smt_objects_internal( database* db, dpay::chain::smt_phase phase )
 {
    FC_ASSERT( db != nullptr );
-   const auto& idx = db->get_index< sdc_event_token_index >().indices().get< T >();
+   const auto& idx = db->get_index< smt_event_token_index >().indices().get< T >();
    auto itr = idx.lower_bound( std::make_tuple( phase, db->head_block_time() ) );
 
    while( itr != idx.end() && itr->phase == phase )
@@ -2268,12 +2341,12 @@ void process_sdc_objects_internal( database* db, dpay::chain::sdc_phase phase )
    }
 }
 
-void database::process_sdc_objects()
+void database::process_smt_objects()
 {
-   process_sdc_objects_internal< by_interval_gen_begin, false >( this, sdc_phase::setup_completed );
-   process_sdc_objects_internal< by_interval_gen_end, false >( this, sdc_phase::contribution_begin_time_completed );
-   process_sdc_objects_internal< by_interval_launch, false >( this, sdc_phase::contribution_end_time_completed );
-   process_sdc_objects_internal< by_interval_launch_exp, true >( this, sdc_phase::launch_time_completed );
+   process_smt_objects_internal< by_interval_gen_begin, false >( this, smt_phase::setup_completed );
+   process_smt_objects_internal< by_interval_gen_end, false >( this, smt_phase::contribution_begin_time_completed );
+   process_smt_objects_internal< by_interval_launch, false >( this, smt_phase::contribution_end_time_completed );
+   process_smt_objects_internal< by_interval_launch_exp, true >( this, smt_phase::launch_time_completed );
 }
 
 #endif
@@ -2281,11 +2354,11 @@ void database::process_sdc_objects()
 asset database::get_liquidity_reward()const
 {
    if( has_hardfork( DPAY_HARDFORK_0_12__178 ) )
-      return asset( 0, BEX_SYMBOL );
+      return asset( 0, DPAY_SYMBOL );
 
    const auto& props = get_dynamic_global_properties();
    static_assert( DPAY_LIQUIDITY_REWARD_PERIOD_SEC == 60*60, "this code assumes a 1 hour time interval" );
-   asset percent( protocol::calc_percent_reward_per_hour< DPAY_LIQUIDITY_APR_PERCENT >( props.virtual_supply.amount ), BEX_SYMBOL );
+   asset percent( protocol::calc_percent_reward_per_hour< DPAY_LIQUIDITY_APR_PERCENT >( props.virtual_supply.amount ), DPAY_SYMBOL );
    return std::max( percent, DPAY_MIN_LIQUIDITY_REWARD );
 }
 
@@ -2293,7 +2366,7 @@ asset database::get_content_reward()const
 {
    const auto& props = get_dynamic_global_properties();
    static_assert( DPAY_BLOCK_INTERVAL == 3, "this code assumes a 3-second time interval" );
-   asset percent( protocol::calc_percent_reward_per_block< DPAY_CONTENT_APR_PERCENT >( props.virtual_supply.amount ), BEX_SYMBOL );
+   asset percent( protocol::calc_percent_reward_per_block< DPAY_CONTENT_APR_PERCENT >( props.virtual_supply.amount ), DPAY_SYMBOL );
    return std::max( percent, DPAY_MIN_CONTENT_REWARD );
 }
 
@@ -2301,7 +2374,7 @@ asset database::get_curation_reward()const
 {
    const auto& props = get_dynamic_global_properties();
    static_assert( DPAY_BLOCK_INTERVAL == 3, "this code assumes a 3-second time interval" );
-   asset percent( protocol::calc_percent_reward_per_block< DPAY_CURATE_APR_PERCENT >( props.virtual_supply.amount ), BEX_SYMBOL);
+   asset percent( protocol::calc_percent_reward_per_block< DPAY_CURATE_APR_PERCENT >( props.virtual_supply.amount ), DPAY_SYMBOL);
    return std::max( percent, DPAY_MIN_CURATE_REWARD );
 }
 
@@ -2309,7 +2382,7 @@ asset database::get_producer_reward()
 {
    const auto& props = get_dynamic_global_properties();
    static_assert( DPAY_BLOCK_INTERVAL == 3, "this code assumes a 3-second time interval" );
-   asset percent( protocol::calc_percent_reward_per_block< DPAY_PRODUCER_APR_PERCENT >( props.virtual_supply.amount ), BEX_SYMBOL);
+   asset percent( protocol::calc_percent_reward_per_block< DPAY_PRODUCER_APR_PERCENT >( props.virtual_supply.amount ), DPAY_SYMBOL);
    auto pay = std::max( percent, DPAY_MIN_PRODUCER_REWARD );
    const auto& witness_account = get_account( props.current_witness );
 
@@ -2344,12 +2417,32 @@ asset database::get_pow_reward()const
 #ifndef IS_TEST_NET
    /// 0 block rewards until at least DPAY_MAX_WITNESSES have produced a POW
    if( props.num_pow_witnesses < DPAY_MAX_WITNESSES && props.head_block_number < DPAY_START_VESTING_BLOCK )
-      return asset( 0, BEX_SYMBOL );
+      return asset( 0, DPAY_SYMBOL );
+#endif
+#ifndef IS_JACKSON_NET
+   /// 0 block rewards until at least DPAY_MAX_WITNESSES have produced a POW
+   if( props.num_pow_witnesses < DPAY_MAX_WITNESSES && props.head_block_number < DPAY_START_VESTING_BLOCK )
+      return asset( 0, DPAY_SYMBOL );
+#endif
+#ifndef IS_JEFFERSON_NET
+   /// 0 block rewards until at least DPAY_MAX_WITNESSES have produced a POW
+   if( props.num_pow_witnesses < DPAY_MAX_WITNESSES && props.head_block_number < DPAY_START_VESTING_BLOCK )
+      return asset( 0, DPAY_SYMBOL );
+#endif
+#ifndef IS_FRANKLIN_NET
+   /// 0 block rewards until at least DPAY_MAX_WITNESSES have produced a POW
+   if( props.num_pow_witnesses < DPAY_MAX_WITNESSES && props.head_block_number < DPAY_START_VESTING_BLOCK )
+      return asset( 0, DPAY_SYMBOL );
+#endif
+#ifndef IS_KENNEDY_NET
+   /// 0 block rewards until at least DPAY_MAX_WITNESSES have produced a POW
+   if( props.num_pow_witnesses < DPAY_MAX_WITNESSES && props.head_block_number < DPAY_START_VESTING_BLOCK )
+      return asset( 0, DPAY_SYMBOL );
 #endif
 
    static_assert( DPAY_BLOCK_INTERVAL == 3, "this code assumes a 3-second time interval" );
    static_assert( DPAY_MAX_WITNESSES == 21, "this code assumes 21 per round" );
-   asset percent( calc_percent_reward_per_round< DPAY_POW_APR_PERCENT >( props.virtual_supply.amount ), BEX_SYMBOL);
+   asset percent( calc_percent_reward_per_round< DPAY_POW_APR_PERCENT >( props.virtual_supply.amount ), DPAY_SYMBOL);
    return std::max( percent, DPAY_MIN_POW_REWARD );
 }
 
@@ -2357,6 +2450,22 @@ asset database::get_pow_reward()const
 void database::pay_liquidity_reward()
 {
 #ifdef IS_TEST_NET
+   if( !liquidity_rewards_enabled )
+      return;
+#endif
+#ifdef IS_JACKSON_NET
+   if( !liquidity_rewards_enabled )
+      return;
+#endif
+#ifdef IS_JEFFERSON_NET
+   if( !liquidity_rewards_enabled )
+      return;
+#endif
+#ifdef IS_FRANKLIN_NET
+   if( !liquidity_rewards_enabled )
+      return;
+#endif
+#ifdef IS_KENNEDY_NET
    if( !liquidity_rewards_enabled )
       return;
 #endif
@@ -2409,7 +2518,7 @@ share_type database::pay_reward_funds( share_type reward )
 
       modify( *itr, [&]( reward_fund_object& rfo )
       {
-         rfo.reward_balance += asset( r, BEX_SYMBOL );
+         rfo.reward_balance += asset( r, DPAY_SYMBOL );
       });
 
       used_rewards += r;
@@ -2437,7 +2546,7 @@ void database::process_conversions()
       return;
 
    asset net_bbd( 0, BBD_SYMBOL );
-   asset net_dpay( 0, BEX_SYMBOL );
+   asset net_dpay( 0, DPAY_SYMBOL );
 
    while( itr != request_by_date.end() && itr->conversion_date <= now )
    {
@@ -2626,21 +2735,21 @@ void database::initialize_evaluators()
    _my->_evaluator_registry.register_evaluator< reset_account_evaluator                  >();
    _my->_evaluator_registry.register_evaluator< set_reset_account_evaluator              >();
    _my->_evaluator_registry.register_evaluator< claim_reward_balance_evaluator           >();
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
    _my->_evaluator_registry.register_evaluator< claim_reward_balance2_evaluator          >();
 #endif
    _my->_evaluator_registry.register_evaluator< account_create_with_delegation_evaluator >();
    _my->_evaluator_registry.register_evaluator< delegate_vesting_shares_evaluator        >();
    _my->_evaluator_registry.register_evaluator< witness_set_properties_evaluator         >();
 
-#ifdef DPAY_ENABLE_SDC
-   _my->_evaluator_registry.register_evaluator< sdc_setup_evaluator                      >();
-   _my->_evaluator_registry.register_evaluator< sdc_cap_reveal_evaluator                 >();
-   _my->_evaluator_registry.register_evaluator< sdc_refund_evaluator                     >();
-   _my->_evaluator_registry.register_evaluator< sdc_setup_emissions_evaluator            >();
-   _my->_evaluator_registry.register_evaluator< sdc_set_setup_parameters_evaluator       >();
-   _my->_evaluator_registry.register_evaluator< sdc_set_runtime_parameters_evaluator     >();
-   _my->_evaluator_registry.register_evaluator< sdc_create_evaluator                     >();
+#ifdef DPAY_ENABLE_SMT
+   _my->_evaluator_registry.register_evaluator< smt_setup_evaluator                      >();
+   _my->_evaluator_registry.register_evaluator< smt_cap_reveal_evaluator                 >();
+   _my->_evaluator_registry.register_evaluator< smt_refund_evaluator                     >();
+   _my->_evaluator_registry.register_evaluator< smt_setup_emissions_evaluator            >();
+   _my->_evaluator_registry.register_evaluator< smt_set_setup_parameters_evaluator       >();
+   _my->_evaluator_registry.register_evaluator< smt_set_runtime_parameters_evaluator     >();
+   _my->_evaluator_registry.register_evaluator< smt_create_evaluator                     >();
 #endif
 }
 
@@ -2690,9 +2799,11 @@ void database::initialize_indexes()
    add_core_index< reward_fund_index                       >(*this);
    add_core_index< vesting_delegation_index                >(*this);
    add_core_index< vesting_delegation_expiration_index     >(*this);
-#ifdef DPAY_ENABLE_SDC
-   add_core_index< sdc_token_index                         >(*this);
-   add_core_index< sdc_event_token_index                   >(*this);
+   add_core_index< pending_required_action_index           >(*this);
+   add_core_index< pending_optional_action_index           >(*this);
+#ifdef DPAY_ENABLE_SMT
+   add_core_index< smt_token_index                         >(*this);
+   add_core_index< smt_event_token_index                   >(*this);
    add_core_index< account_regular_balance_index           >(*this);
    add_core_index< account_rewards_balance_index           >(*this);
 #endif
@@ -2823,7 +2934,7 @@ void database::init_genesis( uint64_t init_supply )
          {
             a.name = DPAY_INIT_MINER_NAME + ( i ? fc::to_string( i ) : std::string() );
             a.memo_key = init_public_key;
-            a.balance  = asset( i ? 0 : init_supply, BEX_SYMBOL );
+            a.balance  = asset( i ? 0 : init_supply, DPAY_SYMBOL );
          } );
 
          create< account_authority_object >( [&]( account_authority_object& auth )
@@ -2849,7 +2960,7 @@ void database::init_genesis( uint64_t init_supply )
          p.time = DPAY_GENESIS_TIME;
          p.recent_slots_filled = fc::uint128::max_value();
          p.participation_count = 128;
-         p.current_supply = asset( init_supply, BEX_SYMBOL );
+         p.current_supply = asset( init_supply, DPAY_SYMBOL );
          p.virtual_supply = p.current_supply;
          p.maximum_block_size = DPAY_MAX_BLOCK_SIZE;
          p.reverse_auction_seconds = DPAY_REVERSE_AUCTION_WINDOW_SECONDS_HF6;
@@ -2864,7 +2975,6 @@ void database::init_genesis( uint64_t init_supply )
       create< hardfork_property_object >( [&](hardfork_property_object& hpo )
       {
          hpo.processed_hardforks.push_back( DPAY_GENESIS_TIME );
-
       } );
 
       // Create witness scheduler
@@ -2949,29 +3059,6 @@ void database::apply_block( const signed_block& next_block, uint32_t skip )
 { try {
    //fc::time_point begin_time = fc::time_point::now();
 
-   auto block_num = next_block.block_num();
-   if( _checkpoints.size() && _checkpoints.rbegin()->second != block_id_type() )
-   {
-      auto itr = _checkpoints.find( block_num );
-      if( itr != _checkpoints.end() )
-         FC_ASSERT( next_block.id() == itr->second, "Block did not match checkpoint", ("checkpoint",*itr)("block_id",next_block.id()) );
-
-      if( _checkpoints.rbegin()->first >= block_num )
-         skip = skip_witness_signature
-              | skip_transaction_signatures
-              | skip_transaction_dupe_check
-              | skip_fork_db
-              | skip_block_size_check
-              | skip_tapos_check
-              | skip_authority_check
-              /* | skip_merkle_check While blockchain is being downloaded, txs need to be validated against block headers */
-              | skip_undo_history_check
-              | skip_witness_schedule_check
-              | skip_validate
-              | skip_validate_invariants
-              ;
-   }
-
    detail::with_skip_flags( *this, skip, [&]()
    {
       _apply_block( next_block );
@@ -2984,6 +3071,8 @@ void database::apply_block( const signed_block& next_block, uint32_t skip )
       validate_invariants();
    }
    FC_CAPTURE_AND_RETHROW( (next_block) );*/
+
+   auto block_num = next_block.block_num();
 
    //fc::time_point end_time = fc::time_point::now();
    //fc::microseconds dt = end_time - begin_time;
@@ -3047,6 +3136,18 @@ void database::check_free_memory( bool force_print, uint32_t current_block_num )
          uint32_t free_mb = uint32_t( free_mem / (1024*1024) );
 
    #ifdef IS_TEST_NET
+      if( !disable_low_mem_warning )
+   #endif
+   #ifdef IS_JACKSON_NET
+      if( !disable_low_mem_warning )
+   #endif
+   #ifdef IS_JEFFERSON_NET
+      if( !disable_low_mem_warning )
+   #endif
+   #ifdef IS_FRANKLIN_NET
+      if( !disable_low_mem_warning )
+   #endif
+   #ifdef IS_KENNEDY_NET
       if( !disable_low_mem_warning )
    #endif
          if( free_mb <= 100 && head_block_num() % 10 == 0 )
@@ -3215,9 +3316,13 @@ void database::_apply_block( const signed_block& next_block )
    notify_post_apply_block( note );
 
    notify_changed_objects();
-} //FC_CAPTURE_AND_RETHROW( (next_block.block_num()) )  }
-FC_CAPTURE_LOG_AND_RETHROW( (next_block.block_num()) )
-}
+
+   // This moves newly irreversible blocks from the fork db to the block log
+   // and commits irreversible state to the database. This should always be the
+   // last call of applying a block because it is the only thing that is not
+   // reversible.
+   migrate_irreversible_state();
+} FC_CAPTURE_LOG_AND_RETHROW( (next_block.block_num()) ) }
 
 struct process_header_visitor
 {
@@ -3260,10 +3365,14 @@ struct process_header_visitor
          });
    }
 
-   template<typename T>
-   void operator()( const T& unknown_obj ) const
+   void operator()( const required_automated_actions& req_actions ) const
    {
-      FC_ASSERT( false, "Unknown extension in block header" );
+      FC_ASSERT( _db.has_hardfork( DPAY_SMT_HARDFORK ), "Automated actions are not enabled until SMT hardfork." );
+   }
+
+   void operator()( const optional_automated_actions& opt_actions ) const
+   {
+      FC_ASSERT( _db.has_hardfork( DPAY_SMT_HARDFORK ), "Automated actions are not enabled until SMT hardfork." );
    }
 };
 
@@ -3329,6 +3438,22 @@ try {
             fho.current_median_history = copy[copy.size()/2];
 
 #ifdef IS_TEST_NET
+            if( skip_price_feed_limit_check )
+               return;
+#endif
+#ifdef IS_JACKSON_NET
+            if( skip_price_feed_limit_check )
+               return;
+#endif
+#ifdef IS_JEFFERSON_NET
+            if( skip_price_feed_limit_check )
+               return;
+#endif
+#ifdef IS_FRANKLIN_NET
+            if( skip_price_feed_limit_check )
+               return;
+#endif
+#ifdef IS_KENNEDY_NET
             if( skip_price_feed_limit_check )
                return;
 #endif
@@ -3533,6 +3658,30 @@ boost::signals2::connection database::any_apply_operation_handler_impl( const ap
       return _post_apply_operation_signal.connect(group, complex_func);
 }
 
+boost::signals2::connection database::add_pre_apply_required_action_handler( const apply_required_action_handler_t& func,
+   const abstract_plugin& plugin, int32_t group )
+{
+   return connect_impl(_pre_apply_required_action_signal, func, plugin, group, "->required_action");
+}
+
+boost::signals2::connection database::add_post_apply_required_action_handler( const apply_required_action_handler_t& func,
+   const abstract_plugin& plugin, int32_t group )
+{
+   return connect_impl(_post_apply_required_action_signal, func, plugin, group, "<-required_action");
+}
+
+boost::signals2::connection database::add_pre_apply_optional_action_handler( const apply_optional_action_handler_t& func,
+   const abstract_plugin& plugin, int32_t group )
+{
+   return connect_impl(_pre_apply_optional_action_signal, func, plugin, group, "->optional_action");
+}
+
+boost::signals2::connection database::add_post_apply_optional_action_handler( const apply_optional_action_handler_t& func,
+   const abstract_plugin& plugin, int32_t group )
+{
+   return connect_impl(_post_apply_optional_action_signal, func, plugin, group, "<-optional_action");
+}
+
 boost::signals2::connection database::add_pre_apply_operation_handler( const apply_operation_handler_t& func,
    const abstract_plugin& plugin, int32_t group )
 {
@@ -3649,6 +3798,46 @@ FC_TODO( "#ifndef not needed after HF 20 is live" );
                   }
                }
 #endif
+#ifndef IS_JACKSON_NET
+               if( has_hardfork( DPAY_HARDFORK_0_14__278 ) && !has_hardfork( DPAY_HARDFORK_0_20__SP190 ) )
+               {
+                  if( head_block_num() - w.last_confirmed_block_num  > DPAY_BLOCKS_PER_DAY )
+                  {
+                     w.signing_key = public_key_type();
+                     push_virtual_operation( shutdown_witness_operation( w.owner ) );
+                  }
+               }
+#endif
+#ifndef IS_JEFFERSON_NET
+               if( has_hardfork( DPAY_HARDFORK_0_14__278 ) && !has_hardfork( DPAY_HARDFORK_0_20__SP190 ) )
+               {
+                  if( head_block_num() - w.last_confirmed_block_num  > DPAY_BLOCKS_PER_DAY )
+                  {
+                     w.signing_key = public_key_type();
+                     push_virtual_operation( shutdown_witness_operation( w.owner ) );
+                  }
+               }
+#endif
+#ifndef IS_FRANKLIN_NET
+               if( has_hardfork( DPAY_HARDFORK_0_14__278 ) && !has_hardfork( DPAY_HARDFORK_0_20__SP190 ) )
+               {
+                  if( head_block_num() - w.last_confirmed_block_num  > DPAY_BLOCKS_PER_DAY )
+                  {
+                     w.signing_key = public_key_type();
+                     push_virtual_operation( shutdown_witness_operation( w.owner ) );
+                  }
+               }
+#endif
+#ifndef IS_KENNEDY_NET
+               if( has_hardfork( DPAY_HARDFORK_0_14__278 ) && !has_hardfork( DPAY_HARDFORK_0_20__SP190 ) )
+               {
+                  if( head_block_num() - w.last_confirmed_block_num  > DPAY_BLOCKS_PER_DAY )
+                  {
+                     w.signing_key = public_key_type();
+                     push_virtual_operation( shutdown_witness_operation( w.owner ) );
+                  }
+               }
+#endif
             } );
          }
       }
@@ -3688,7 +3877,7 @@ void database::update_virtual_supply()
    modify( get_dynamic_global_properties(), [&]( dynamic_global_property_object& dgp )
    {
       dgp.virtual_supply = dgp.current_supply
-         + ( get_feed_history().current_median_history.is_null() ? asset( 0, BEX_SYMBOL ) : dgp.current_bbd_supply * get_feed_history().current_median_history );
+         + ( get_feed_history().current_median_history.is_null() ? asset( 0, DPAY_SYMBOL ) : dgp.current_bbd_supply * get_feed_history().current_median_history );
 
       auto median_price = get_feed_history().current_median_history;
 
@@ -3770,38 +3959,66 @@ void database::update_last_irreversible_block()
       }
    }
 
-   commit( dpo.last_irreversible_block_num );
-
    for( uint32_t i = old_last_irreversible; i <= dpo.last_irreversible_block_num; ++i )
    {
       notify_irreversible_block( i );
    }
-
-   if( !( get_node_properties().skip_flags & skip_block_log ) )
-   {
-      // output to block log based on new last irreverisible block num
-      const auto& tmp_head = _block_log.head();
-      uint64_t log_head_num = 0;
-
-      if( tmp_head )
-         log_head_num = tmp_head->block_num();
-
-      if( log_head_num < dpo.last_irreversible_block_num )
-      {
-         while( log_head_num < dpo.last_irreversible_block_num )
-         {
-            shared_ptr< fork_item > block = _fork_db.fetch_block_on_main_branch_by_number( log_head_num+1 );
-            FC_ASSERT( block, "Current fork in the fork database does not contain the last_irreversible_block" );
-            _block_log.append( block->data );
-            log_head_num++;
-         }
-
-         _block_log.flush();
-      }
-   }
-
-   _fork_db.set_max_size( dpo.head_block_number - dpo.last_irreversible_block_num + 1 );
 } FC_CAPTURE_AND_RETHROW() }
+
+void database::migrate_irreversible_state()
+{
+   // This method should happen atomically. We cannot prevent unclean shutdown in the middle
+   // of the call, but all side effects happen at the end to minize the chance that state
+   // invariants will be violated.
+   try
+   {
+      const dynamic_global_property_object& dpo = get_dynamic_global_properties();
+
+      auto fork_head = _fork_db.head();
+      if( fork_head )
+      {
+         FC_ASSERT( fork_head->num == dpo.head_block_number, "Fork Head: ${f} Chain Head: ${c}", ("f",fork_head->num)("c", dpo.head_block_number) );
+      }
+
+      if( !( get_node_properties().skip_flags & skip_block_log ) )
+      {
+         // output to block log based on new last irreverisible block num
+         const auto& tmp_head = _block_log.head();
+         uint64_t log_head_num = 0;
+         vector< item_ptr > blocks_to_write;
+
+         if( tmp_head )
+            log_head_num = tmp_head->block_num();
+
+         if( log_head_num < dpo.last_irreversible_block_num )
+         {
+            // Check for all blocks that we want to write out to the block log but don't write any
+            // unless we are certain they all exist in the fork db
+            while( log_head_num < dpo.last_irreversible_block_num )
+            {
+               item_ptr block_ptr = _fork_db.fetch_block_on_main_branch_by_number( log_head_num+1 );
+               FC_ASSERT( block_ptr, "Current fork in the fork database does not contain the last_irreversible_block" );
+               blocks_to_write.push_back( block_ptr );
+               log_head_num++;
+            }
+
+            for( auto block_itr = blocks_to_write.begin(); block_itr != blocks_to_write.end(); ++block_itr )
+            {
+               _block_log.append( block_itr->get()->data );
+            }
+
+            _block_log.flush();
+         }
+      }
+
+      // This deletes blocks from the fork db
+      _fork_db.set_max_size( dpo.head_block_number - dpo.last_irreversible_block_num + 1 );
+
+      // This deletes undo state
+      commit( dpo.last_irreversible_block_num );
+   }
+   FC_CAPTURE_AND_RETHROW()
+}
 
 
 bool database::apply_order( const limit_order_object& new_order_object )
@@ -3887,7 +4104,7 @@ int database::match( const limit_order_object& new_order, const limit_order_obje
        ( (age >= DPAY_MIN_LIQUIDITY_REWARD_PERIOD_SEC && !has_hardfork( DPAY_HARDFORK_0_10__149)) ||
        (age >= DPAY_MIN_LIQUIDITY_REWARD_PERIOD_SEC_HF10 && has_hardfork( DPAY_HARDFORK_0_10__149) ) ) )
    {
-      if( old_order_receives.symbol == BEX_SYMBOL )
+      if( old_order_receives.symbol == DPAY_SYMBOL )
       {
          adjust_liquidity_reward( get_account( old_order.seller ), old_order_receives, false );
          adjust_liquidity_reward( get_account( new_order.seller ), -old_order_receives, false );
@@ -4063,18 +4280,18 @@ void database::clear_expired_delegations()
       itr = delegations_by_exp.begin();
    }
 }
-#ifdef DPAY_ENABLE_SDC
-template< typename sdc_balance_object_type, class balance_operator_type >
-void database::adjust_sdc_balance( const account_name_type& name, const asset& delta, bool check_account,
+#ifdef DPAY_ENABLE_SMT
+template< typename smt_balance_object_type, class balance_operator_type >
+void database::adjust_smt_balance( const account_name_type& name, const asset& delta, bool check_account,
    balance_operator_type balance_operator )
 {
    asset_symbol_type liquid_symbol = delta.symbol.is_vesting() ? delta.symbol.get_paired_symbol() : delta.symbol;
-   const sdc_balance_object_type* bo = find< sdc_balance_object_type, by_owner_liquid_symbol >( boost::make_tuple( name, liquid_symbol ) );
-   // Note that SDC related code, being post-20-hf needs no hf-guard to do balance checks.
+   const smt_balance_object_type* bo = find< smt_balance_object_type, by_owner_liquid_symbol >( boost::make_tuple( name, liquid_symbol ) );
+   // Note that SMT related code, being post-20-hf needs no hf-guard to do balance checks.
    if( bo == nullptr )
    {
-      // No balance object related to the SDC means '0' balance. Check delta to avoid creation of negative balance.
-      FC_ASSERT( delta.amount.value >= 0, "Insufficient SDC ${sdc} funds", ("sdc", delta.symbol) );
+      // No balance object related to the SMT means '0' balance. Check delta to avoid creation of negative balance.
+      FC_ASSERT( delta.amount.value >= 0, "Insufficient SMT ${smt} funds", ("smt", delta.symbol) );
       // No need to create object with '0' balance (see comment above).
       if( delta.amount.value == 0 )
          return;
@@ -4082,12 +4299,12 @@ void database::adjust_sdc_balance( const account_name_type& name, const asset& d
       if( check_account )
          get_account( name );
 
-      create< sdc_balance_object_type >( [&]( sdc_balance_object_type& sdc_balance )
+      create< smt_balance_object_type >( [&]( smt_balance_object_type& smt_balance )
       {
-         sdc_balance.clear_balance( liquid_symbol );
-         sdc_balance.owner = name;
-         balance_operator.add_to_balance( sdc_balance );
-         sdc_balance.validate();
+         smt_balance.clear_balance( liquid_symbol );
+         smt_balance.owner = name;
+         balance_operator.add_to_balance( smt_balance );
+         smt_balance.validate();
       } );
    }
    else
@@ -4095,7 +4312,7 @@ void database::adjust_sdc_balance( const account_name_type& name, const asset& d
       bool is_all_zero = false;
       int64_t result = balance_operator.get_combined_balance( bo, &is_all_zero );
       // Check result to avoid negative balance storing.
-      FC_ASSERT( result >= 0, "Insufficient SDC ${sdc} funds", ( "sdc", delta.symbol ) );
+      FC_ASSERT( result >= 0, "Insufficient SMT ${smt} funds", ( "smt", delta.symbol ) );
 
       // Exit if whole balance becomes zero.
       if( is_all_zero )
@@ -4106,9 +4323,9 @@ void database::adjust_sdc_balance( const account_name_type& name, const asset& d
       }
       else
       {
-         modify( *bo, [&]( sdc_balance_object_type& sdc_balance )
+         modify( *bo, [&]( smt_balance_object_type& smt_balance )
          {
-            balance_operator.add_to_balance( sdc_balance );
+            balance_operator.add_to_balance( smt_balance );
          } );
       }
    }
@@ -4213,17 +4430,17 @@ void database::modify_reward_balance( const account_object& a, const asset& valu
    });
 }
 
-#ifdef DPAY_ENABLE_SDC
-struct sdc_regular_balance_operator
+#ifdef DPAY_ENABLE_SMT
+struct smt_regular_balance_operator
 {
-   sdc_regular_balance_operator( const asset& delta ) : delta(delta), is_vesting(delta.symbol.is_vesting()) {}
+   smt_regular_balance_operator( const asset& delta ) : delta(delta), is_vesting(delta.symbol.is_vesting()) {}
 
-   void add_to_balance( account_regular_balance_object& sdc_balance )
+   void add_to_balance( account_regular_balance_object& smt_balance )
    {
       if( is_vesting )
-         sdc_balance.vesting += delta;
+         smt_balance.vesting += delta;
       else
-         sdc_balance.liquid += delta;
+         smt_balance.liquid += delta;
    }
    int64_t get_combined_balance( const account_regular_balance_object* bo, bool* is_all_zero )
    {
@@ -4236,23 +4453,23 @@ struct sdc_regular_balance_operator
    bool  is_vesting;
 };
 
-struct sdc_reward_balance_operator
+struct smt_reward_balance_operator
 {
-   sdc_reward_balance_operator( const asset& value_delta, const asset& share_delta )
+   smt_reward_balance_operator( const asset& value_delta, const asset& share_delta )
       : value_delta(value_delta), share_delta(share_delta), is_vesting(share_delta.amount.value != 0)
    {
        FC_ASSERT( value_delta.symbol.is_vesting() == false && share_delta.symbol.is_vesting() );
    }
 
-   void add_to_balance( account_rewards_balance_object& sdc_balance )
+   void add_to_balance( account_rewards_balance_object& smt_balance )
    {
       if( is_vesting )
       {
-         sdc_balance.pending_vesting_value += value_delta;
-         sdc_balance.pending_vesting_shares += share_delta;
+         smt_balance.pending_vesting_value += value_delta;
+         smt_balance.pending_vesting_shares += share_delta;
       }
       else
-         sdc_balance.pending_liquid += value_delta;
+         smt_balance.pending_liquid += value_delta;
    }
    int64_t get_combined_balance( const account_rewards_balance_object* bo, bool* is_all_zero )
    {
@@ -4272,13 +4489,13 @@ void database::adjust_balance( const account_object& a, const asset& delta )
 {
    bool check_balance = has_hardfork( DPAY_HARDFORK_0_20__1811 );
 
-#ifdef DPAY_ENABLE_SDC
-   // No account object modification for SDC balance, hence separate handling here.
-   // Note that SDC related code, being post-20-hf needs no hf-guard to do balance checks.
-   if( delta.symbol.space() == asset_symbol_type::sdc_nai_space )
+#ifdef DPAY_ENABLE_SMT
+   // No account object modification for SMT balance, hence separate handling here.
+   // Note that SMT related code, being post-20-hf needs no hf-guard to do balance checks.
+   if( delta.symbol.space() == asset_symbol_type::smt_nai_space )
    {
-      sdc_regular_balance_operator balance_operator( delta );
-      adjust_sdc_balance< account_regular_balance_object >( a.name, delta, false/*check_account*/, balance_operator );
+      smt_regular_balance_operator balance_operator( delta );
+      adjust_smt_balance< account_regular_balance_object >( a.name, delta, false/*check_account*/, balance_operator );
       return;
    }
 #endif
@@ -4289,13 +4506,13 @@ void database::adjust_balance( const account_name_type& name, const asset& delta
 {
    bool check_balance = has_hardfork( DPAY_HARDFORK_0_20__1811 );
 
-#ifdef DPAY_ENABLE_SDC
-   // No account object modification for SDC balance, hence separate handling here.
-   // Note that SDC related code, being post-20-hf needs no hf-guard to do balance checks.
-   if( delta.symbol.space() == asset_symbol_type::sdc_nai_space )
+#ifdef DPAY_ENABLE_SMT
+   // No account object modification for SMT balance, hence separate handling here.
+   // Note that SMT related code, being post-20-hf needs no hf-guard to do balance checks.
+   if( delta.symbol.space() == asset_symbol_type::smt_nai_space )
    {
-      sdc_regular_balance_operator balance_operator( delta );
-      adjust_sdc_balance< account_regular_balance_object >( name, delta, true/*check_account*/, balance_operator );
+      smt_regular_balance_operator balance_operator( delta );
+      adjust_smt_balance< account_regular_balance_object >( name, delta, true/*check_account*/, balance_operator );
       return;
    }
 #endif
@@ -4363,13 +4580,13 @@ void database::adjust_reward_balance( const account_object& a, const asset& valu
    bool check_balance = has_hardfork( DPAY_HARDFORK_0_20__1811 );
    FC_ASSERT( value_delta.symbol.is_vesting() == false && share_delta.symbol.is_vesting() );
 
-#ifdef DPAY_ENABLE_SDC
-   // No account object modification for SDC balance, hence separate handling here.
-   // Note that SDC related code, being post-20-hf needs no hf-guard to do balance checks.
-   if( value_delta.symbol.space() == asset_symbol_type::sdc_nai_space )
+#ifdef DPAY_ENABLE_SMT
+   // No account object modification for SMT balance, hence separate handling here.
+   // Note that SMT related code, being post-20-hf needs no hf-guard to do balance checks.
+   if( value_delta.symbol.space() == asset_symbol_type::smt_nai_space )
    {
-      sdc_reward_balance_operator balance_operator( value_delta, share_delta );
-      adjust_sdc_balance< account_rewards_balance_object >( a.name, value_delta, false/*check_account*/, balance_operator );
+      smt_reward_balance_operator balance_operator( value_delta, share_delta );
+      adjust_smt_balance< account_rewards_balance_object >( a.name, value_delta, false/*check_account*/, balance_operator );
       return;
    }
 #endif
@@ -4383,13 +4600,13 @@ void database::adjust_reward_balance( const account_name_type& name, const asset
    bool check_balance = has_hardfork( DPAY_HARDFORK_0_20__1811 );
    FC_ASSERT( value_delta.symbol.is_vesting() == false && share_delta.symbol.is_vesting() );
 
-#ifdef DPAY_ENABLE_SDC
-   // No account object modification for SDC balance, hence separate handling here.
-   // Note that SDC related code, being post-20-hf needs no hf-guard to do balance checks.
-   if( value_delta.symbol.space() == asset_symbol_type::sdc_nai_space )
+#ifdef DPAY_ENABLE_SMT
+   // No account object modification for SMT balance, hence separate handling here.
+   // Note that SMT related code, being post-20-hf needs no hf-guard to do balance checks.
+   if( value_delta.symbol.space() == asset_symbol_type::smt_nai_space )
    {
-      sdc_reward_balance_operator balance_operator( value_delta, share_delta );
-      adjust_sdc_balance< account_rewards_balance_object >( name, value_delta, true/*check_account*/, balance_operator );
+      smt_reward_balance_operator balance_operator( value_delta, share_delta );
+      adjust_smt_balance< account_rewards_balance_object >( name, value_delta, true/*check_account*/, balance_operator );
       return;
    }
 #endif
@@ -4400,15 +4617,15 @@ void database::adjust_reward_balance( const account_name_type& name, const asset
 
 void database::adjust_supply( const asset& delta, bool adjust_vesting )
 {
-#ifdef DPAY_ENABLE_SDC
-   if( delta.symbol.space() == asset_symbol_type::sdc_nai_space )
+#ifdef DPAY_ENABLE_SMT
+   if( delta.symbol.space() == asset_symbol_type::smt_nai_space )
    {
-      const auto& sdc = get< sdc_token_object, by_symbol >( delta.symbol );
-      auto sdc_new_supply = sdc.current_supply + delta.amount;
-      FC_ASSERT( sdc_new_supply >= 0 );
-      modify( sdc, [sdc_new_supply]( sdc_token_object& sdc )
+      const auto& smt = get< smt_token_object, by_symbol >( delta.symbol );
+      auto smt_new_supply = smt.current_supply + delta.amount;
+      FC_ASSERT( smt_new_supply >= 0 );
+      modify( smt, [smt_new_supply]( smt_token_object& smt )
       {
-         sdc.current_supply = sdc_new_supply;
+         smt.current_supply = smt_new_supply;
       });
       return;
    }
@@ -4426,7 +4643,7 @@ void database::adjust_supply( const asset& delta, bool adjust_vesting )
       {
          case DPAY_ASSET_NUM_DPAY:
          {
-            asset new_vesting( (adjust_vesting && delta.amount > 0) ? delta.amount * 9 : 0, BEX_SYMBOL );
+            asset new_vesting( (adjust_vesting && delta.amount > 0) ? delta.amount * 9 : 0, DPAY_SYMBOL );
             props.current_supply += delta + new_vesting;
             props.virtual_supply += delta + new_vesting;
             props.total_vesting_fund_dpay += new_vesting;
@@ -4461,8 +4678,8 @@ asset database::get_balance( const account_object& a, asset_symbol_type symbol )
          return a.bbd_balance;
       default:
       {
-#ifdef DPAY_ENABLE_SDC
-         FC_ASSERT( symbol.space() == asset_symbol_type::sdc_nai_space, "invalid symbol" );
+#ifdef DPAY_ENABLE_SMT
+         FC_ASSERT( symbol.space() == asset_symbol_type::smt_nai_space, "invalid symbol" );
          const account_regular_balance_object* arbo =
             find< account_regular_balance_object, by_owner_liquid_symbol >(
                boost::make_tuple(a.name, symbol.is_vesting() ? symbol.get_paired_symbol() : symbol ) );
@@ -4489,7 +4706,7 @@ asset database::get_savings_balance( const account_object& a, asset_symbol_type 
          return a.savings_balance;
       case DPAY_ASSET_NUM_BBD:
          return a.savings_bbd_balance;
-      default: // Note no savings balance for SDC per comments in issue 1682.
+      default: // Note no savings balance for SMT per comments in issue 1682.
          FC_ASSERT( !"invalid symbol" );
    }
 }
@@ -4559,6 +4776,26 @@ void database::init_hardforks()
    _hardfork_times[ DPAY_HARDFORK_0_20 ] = fc::time_point_sec( DPAY_HARDFORK_0_20_TIME );
    _hardfork_versions[ DPAY_HARDFORK_0_20 ] = DPAY_HARDFORK_0_20_VERSION;
 #ifdef IS_TEST_NET
+   FC_ASSERT( DPAY_HARDFORK_0_21 == 21, "Invalid hardfork configuration" );
+   _hardfork_times[ DPAY_HARDFORK_0_21 ] = fc::time_point_sec( DPAY_HARDFORK_0_21_TIME );
+   _hardfork_versions[ DPAY_HARDFORK_0_21 ] = DPAY_HARDFORK_0_21_VERSION;
+#endif
+#ifdef IS_JACKSON_NET
+   FC_ASSERT( DPAY_HARDFORK_0_21 == 21, "Invalid hardfork configuration" );
+   _hardfork_times[ DPAY_HARDFORK_0_21 ] = fc::time_point_sec( DPAY_HARDFORK_0_21_TIME );
+   _hardfork_versions[ DPAY_HARDFORK_0_21 ] = DPAY_HARDFORK_0_21_VERSION;
+#endif
+#ifdef IS_JEFFERSON_NET
+   FC_ASSERT( DPAY_HARDFORK_0_21 == 21, "Invalid hardfork configuration" );
+   _hardfork_times[ DPAY_HARDFORK_0_21 ] = fc::time_point_sec( DPAY_HARDFORK_0_21_TIME );
+   _hardfork_versions[ DPAY_HARDFORK_0_21 ] = DPAY_HARDFORK_0_21_VERSION;
+#endif
+#ifdef IS_FRANKLIN_NET
+   FC_ASSERT( DPAY_HARDFORK_0_21 == 21, "Invalid hardfork configuration" );
+   _hardfork_times[ DPAY_HARDFORK_0_21 ] = fc::time_point_sec( DPAY_HARDFORK_0_21_TIME );
+   _hardfork_versions[ DPAY_HARDFORK_0_21 ] = DPAY_HARDFORK_0_21_VERSION;
+#endif
+#ifdef IS_KENNEDY_NET
    FC_ASSERT( DPAY_HARDFORK_0_21 == 21, "Invalid hardfork configuration" );
    _hardfork_times[ DPAY_HARDFORK_0_21 ] = fc::time_point_sec( DPAY_HARDFORK_0_21_TIME );
    _hardfork_versions[ DPAY_HARDFORK_0_21 ] = DPAY_HARDFORK_0_21_VERSION;
@@ -4785,6 +5022,18 @@ void database::apply_hardfork( uint32_t hardfork )
 #ifndef IS_TEST_NET
                rfo.recent_claims = DPAY_HF_17_RECENT_CLAIMS;
 #endif
+#ifndef IS_JACKSON_NET
+               rfo.recent_claims = DPAY_HF_17_RECENT_CLAIMS;
+#endif
+#ifndef IS_JEFFERSON_NET
+               rfo.recent_claims = DPAY_HF_17_RECENT_CLAIMS;
+#endif
+#ifndef IS_FRANKLIN_NET
+               rfo.recent_claims = DPAY_HF_17_RECENT_CLAIMS;
+#endif
+#ifndef IS_KENNEDY_NET
+               rfo.recent_claims = DPAY_HF_17_RECENT_CLAIMS;
+#endif
                rfo.author_reward_curve = curve_id::quadratic;
                rfo.curation_reward_curve = curve_id::quadratic_curation;
             });
@@ -4795,7 +5044,7 @@ void database::apply_hardfork( uint32_t hardfork )
 
             modify( gpo, [&]( dynamic_global_property_object& g )
             {
-               g.total_reward_fund_dpay = asset( 0, BEX_SYMBOL );
+               g.total_reward_fund_dpay = asset( 0, DPAY_SYMBOL );
                g.total_reward_shares2 = 0;
             });
 
@@ -4859,6 +5108,18 @@ void database::apply_hardfork( uint32_t hardfork )
 #ifndef IS_TEST_NET
                rfo.recent_claims = DPAY_HF_19_RECENT_CLAIMS;
 #endif
+#ifndef IS_JACKSON_NET
+               rfo.recent_claims = DPAY_HF_19_RECENT_CLAIMS;
+#endif
+#ifndef IS_JEFFERSON_NET
+               rfo.recent_claims = DPAY_HF_19_RECENT_CLAIMS;
+#endif
+#ifndef IS_FRANKLIN_NET
+               rfo.recent_claims = DPAY_HF_19_RECENT_CLAIMS;
+#endif
+#ifndef IS_KENNEDY_NET
+               rfo.recent_claims = DPAY_HF_19_RECENT_CLAIMS;
+#endif
                rfo.author_reward_curve = curve_id::linear;
                rfo.curation_reward_curve = curve_id::square_root;
             });
@@ -4902,18 +5163,34 @@ void database::apply_hardfork( uint32_t hardfork )
                {
                   modify( get< witness_object, by_name >( witness ), [&]( witness_object& w )
                   {
-                     w.props.account_creation_fee = asset( w.props.account_creation_fee.amount * DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER, BEX_SYMBOL );
+                     w.props.account_creation_fee = asset( w.props.account_creation_fee.amount * DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER, DPAY_SYMBOL );
                   });
                }
             }
 
             modify( wso, [&]( witness_schedule_object& wso )
             {
-               wso.median_props.account_creation_fee = asset( wso.median_props.account_creation_fee.amount * DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER, BEX_SYMBOL );
+               wso.median_props.account_creation_fee = asset( wso.median_props.account_creation_fee.amount * DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER, DPAY_SYMBOL );
             });
          }
          break;
    #ifdef IS_TEST_NET
+      case DPAY_HARDFORK_0_21:
+         break;
+#endif
+   #ifdef IS_JACKSON_NET
+      case DPAY_HARDFORK_0_21:
+         break;
+#endif
+   #ifdef IS_JEFFERSON_NET
+      case DPAY_HARDFORK_0_21:
+         break;
+#endif
+   #ifdef IS_FRANKLIN_NET
+      case DPAY_HARDFORK_0_21:
+         break;
+#endif
+   #ifdef IS_KENNEDY_NET
       case DPAY_HARDFORK_0_21:
          break;
 #endif
@@ -4951,10 +5228,10 @@ void database::validate_invariants()const
    try
    {
       const auto& account_idx = get_index<account_index>().indices().get<by_name>();
-      asset total_supply = asset( 0, BEX_SYMBOL );
+      asset total_supply = asset( 0, DPAY_SYMBOL );
       asset total_bbd = asset( 0, BBD_SYMBOL );
       asset total_vesting = asset( 0, VESTS_SYMBOL );
-      asset pending_vesting_dpay = asset( 0, BEX_SYMBOL );
+      asset pending_vesting_dpay = asset( 0, DPAY_SYMBOL );
       share_type total_vsf_votes = share_type( 0 );
 
       auto gpo = get_dynamic_global_properties();
@@ -4986,7 +5263,7 @@ void database::validate_invariants()const
 
       for( auto itr = convert_request_idx.begin(); itr != convert_request_idx.end(); ++itr )
       {
-         if( itr->amount.symbol == BEX_SYMBOL )
+         if( itr->amount.symbol == DPAY_SYMBOL )
             total_supply += itr->amount;
          else if( itr->amount.symbol == BBD_SYMBOL )
             total_bbd += itr->amount;
@@ -4998,9 +5275,9 @@ void database::validate_invariants()const
 
       for( auto itr = limit_order_idx.begin(); itr != limit_order_idx.end(); ++itr )
       {
-         if( itr->sell_price.base.symbol == BEX_SYMBOL )
+         if( itr->sell_price.base.symbol == DPAY_SYMBOL )
          {
-            total_supply += asset( itr->for_sale, BEX_SYMBOL );
+            total_supply += asset( itr->for_sale, DPAY_SYMBOL );
          }
          else if ( itr->sell_price.base.symbol == BBD_SYMBOL )
          {
@@ -5015,7 +5292,7 @@ void database::validate_invariants()const
          total_supply += itr->dpay_balance;
          total_bbd += itr->bbd_balance;
 
-         if( itr->pending_fee.symbol == BEX_SYMBOL )
+         if( itr->pending_fee.symbol == DPAY_SYMBOL )
             total_supply += itr->pending_fee;
          else if( itr->pending_fee.symbol == BBD_SYMBOL )
             total_bbd += itr->pending_fee;
@@ -5027,7 +5304,7 @@ void database::validate_invariants()const
 
       for( auto itr = savings_withdraw_idx.begin(); itr != savings_withdraw_idx.end(); ++itr )
       {
-         if( itr->amount.symbol == BEX_SYMBOL )
+         if( itr->amount.symbol == DPAY_SYMBOL )
             total_supply += itr->amount;
          else if( itr->amount.symbol == BBD_SYMBOL )
             total_bbd += itr->amount;
@@ -5060,7 +5337,7 @@ void database::validate_invariants()const
    FC_CAPTURE_LOG_AND_RETHROW( (head_block_num()) );
 }
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
 
 namespace {
    template <typename index_type, typename lambda>
@@ -5077,9 +5354,9 @@ namespace {
 }
 
 /**
- * SDC version of validate_invariants.
+ * SMT version of validate_invariants.
  */
-void database::validate_sdc_invariants()const
+void database::validate_smt_invariants()const
 {
    try
    {
@@ -5094,7 +5371,7 @@ void database::validate_sdc_invariants()const
       typedef std::map< asset_symbol_type, TCombinedBalance > TCombinedSupplyMap;
       TCombinedSupplyMap theMap;
 
-      // - Process regular balances, collecting SDC counterparts of 'balance' & 'vesting_shares'.
+      // - Process regular balances, collecting SMT counterparts of 'balance' & 'vesting_shares'.
       const auto& balance_idx = get_index< account_regular_balance_index, by_id >();
       add_from_balance_index( balance_idx, [ &theMap ] ( const account_regular_balance_object& regular )
       {
@@ -5110,7 +5387,7 @@ void database::validate_sdc_invariants()const
             }
       });
 
-      // - Process reward balances, collecting SDC counterparts of 'reward_dpay_balance', 'reward_vesting_balance' & 'reward_vesting_dpay'.
+      // - Process reward balances, collecting SMT counterparts of 'reward_dpay_balance', 'reward_vesting_balance' & 'reward_vesting_dpay'.
       const auto& rewards_balance_idx = get_index< account_rewards_balance_index, by_id >();
       add_from_balance_index( rewards_balance_idx, [ &theMap ] ( const account_rewards_balance_object& rewards )
       {
@@ -5131,7 +5408,7 @@ void database::validate_sdc_invariants()const
       const auto& limit_order_idx = get_index< limit_order_index >().indices();
       for( auto itr = limit_order_idx.begin(); itr != limit_order_idx.end(); ++itr )
       {
-         if( itr->sell_price.base.symbol.space() == asset_symbol_type::sdc_nai_space )
+         if( itr->sell_price.base.symbol.space() == asset_symbol_type::smt_nai_space )
          {
             asset a( itr->for_sale, itr->sell_price.base.symbol );
             FC_ASSERT( a.symbol.is_vesting() == false );
@@ -5144,37 +5421,37 @@ void database::validate_sdc_invariants()const
       }
 
       // - Reward funds
-#pragma message( "TODO: Add reward_fund_object iteration here once they support SDCs." )
+#pragma message( "TODO: Add reward_fund_object iteration here once they support SMTs." )
 
-      // - Escrow & savings - no support of SDC is expected.
+      // - Escrow & savings - no support of SMT is expected.
 
       // Do the verification of total balances.
-      auto itr = get_index< sdc_token_index, by_id >().begin();
-      auto end = get_index< sdc_token_index, by_id >().end();
+      auto itr = get_index< smt_token_index, by_id >().begin();
+      auto end = get_index< smt_token_index, by_id >().end();
       for( ; itr != end; ++itr )
       {
-         const sdc_token_object& sdc = *itr;
-         asset_symbol_type vesting_symbol = sdc.liquid_symbol.get_paired_symbol();
-         auto totalIt = theMap.find( sdc.liquid_symbol );
-         // Check liquid SDC supply.
-         asset total_liquid_supply = totalIt == theMap.end() ? asset(0, sdc.liquid_symbol) :
+         const smt_token_object& smt = *itr;
+         asset_symbol_type vesting_symbol = smt.liquid_symbol.get_paired_symbol();
+         auto totalIt = theMap.find( smt.liquid_symbol );
+         // Check liquid SMT supply.
+         asset total_liquid_supply = totalIt == theMap.end() ? asset(0, smt.liquid_symbol) :
             ( totalIt->second.liquid + totalIt->second.pending_liquid );
-         total_liquid_supply += asset( sdc.total_vesting_fund_sdc, sdc.liquid_symbol )
+         total_liquid_supply += asset( smt.total_vesting_fund_smt, smt.liquid_symbol )
                              /*+ gpo.total_reward_fund_dpay */
-                             + asset( sdc.pending_rewarded_vesting_sdc, sdc.liquid_symbol );
-#pragma message( "TODO: Supplement ^ once SDC rewards are implemented" )
-         FC_ASSERT( asset(sdc.current_supply, sdc.liquid_symbol) == total_liquid_supply,
-                    "", ("sdc current_supply",sdc.current_supply)("total_liquid_supply",total_liquid_supply) );
-         // Check vesting SDC supply.
+                             + asset( smt.pending_rewarded_vesting_smt, smt.liquid_symbol );
+#pragma message( "TODO: Supplement ^ once SMT rewards are implemented" )
+         FC_ASSERT( asset(smt.current_supply, smt.liquid_symbol) == total_liquid_supply,
+                    "", ("smt current_supply",smt.current_supply)("total_liquid_supply",total_liquid_supply) );
+         // Check vesting SMT supply.
          asset total_vesting_supply = totalIt == theMap.end() ? asset(0, vesting_symbol) :
             ( totalIt->second.vesting + totalIt->second.pending_vesting_shares );
-         asset sdc_vesting_supply = asset(sdc.total_vesting_shares + sdc.pending_rewarded_vesting_shares, vesting_symbol);
-         FC_ASSERT( sdc_vesting_supply == total_vesting_supply,
-                    "", ("sdc vesting supply",sdc_vesting_supply)("total_vesting_supply",total_vesting_supply) );
+         asset smt_vesting_supply = asset(smt.total_vesting_shares + smt.pending_rewarded_vesting_shares, vesting_symbol);
+         FC_ASSERT( smt_vesting_supply == total_vesting_supply,
+                    "", ("smt vesting supply",smt_vesting_supply)("total_vesting_supply",total_vesting_supply) );
          // Check pending_vesting_value
-         asset pending_vesting_value = totalIt == theMap.end() ? asset(0, sdc.liquid_symbol) : totalIt->second.pending_vesting_value;
-         FC_ASSERT( asset(sdc.pending_rewarded_vesting_sdc, sdc.liquid_symbol) == pending_vesting_value, "",
-            ("sdc pending_rewarded_vesting_sdc", sdc.pending_rewarded_vesting_sdc)("pending_vesting_value", pending_vesting_value));
+         asset pending_vesting_value = totalIt == theMap.end() ? asset(0, smt.liquid_symbol) : totalIt->second.pending_vesting_value;
+         FC_ASSERT( asset(smt.pending_rewarded_vesting_smt, smt.liquid_symbol) == pending_vesting_value, "",
+            ("smt pending_rewarded_vesting_smt", smt.pending_rewarded_vesting_smt)("pending_vesting_value", pending_vesting_value));
       }
    }
    FC_CAPTURE_LOG_AND_RETHROW( (head_block_num()) );
@@ -5333,29 +5610,29 @@ void database::retally_witness_vote_counts( bool force )
    }
 }
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
 // 1. NAI number is stored in 32 bits, minus 4 for precision, minus 1 for control.
 // 2. NAI string has 8 characters (each between '0' and '9') available (11 minus '@@', minus checksum character is 8 )
 // 3. Max 27 bit decimal is 134,217,727 but only 8 characters are available to represent it as string so we are left
 //    with [0 : 99,999,999] range.
 // 4. The numbers starting with 0 decimal digit are reserved. Now we are left with 10 milions of reserved NAIs
-//    [0 : 09,999,999] and 90 millions available for SDC creators [10,000,000 : 99,999,999]
+//    [0 : 09,999,999] and 90 millions available for SMT creators [10,000,000 : 99,999,999]
 // 5. The least significant bit is used as liquid/vesting variant indicator so the 10 and 90 milions are numbers
 //    of liquid/vesting *pairs* of reserved/available NAIs.
-// 6. 45 milions of SDC await for their creators.
+// 6. 45 milions of SMT await for their creators.
 
-vector< asset_symbol_type > database::get_sdc_next_identifier()
+vector< asset_symbol_type > database::get_smt_next_identifier()
 {
    // This is temporary dummy implementation using simple counter as nai source (_next_available_nai).
    // Although a container of available nais is returned, it contains only one entry for simplicity.
-   // Note that no decimal places argument is required from SDC creator at this stage.
+   // Note that no decimal places argument is required from SMT creator at this stage.
    // This is because asset_symbol_type's to_string method omits the precision when serializing.
-   // For appropriate use of this method see e.g. sdc_database_fixture::create_sdc
+   // For appropriate use of this method see e.g. smt_database_fixture::create_smt
 
    uint8_t decimal_places = 0;
 
-   FC_ASSERT( _next_available_nai >= SDC_MIN_NON_RESERVED_NAI );
-   FC_ASSERT( _next_available_nai <= SDC_MAX_NAI, "Out of available NAI numbers." );
+   FC_ASSERT( _next_available_nai >= SMT_MIN_NON_RESERVED_NAI );
+   FC_ASSERT( _next_available_nai <= SMT_MAX_NAI, "Out of available NAI numbers." );
    // Assume that _next_available_nai value shows the liquid version of NAI.
    FC_ASSERT( (_next_available_nai & 0x1) == 0, "Can't start with vesting version of NAI." );
    uint32_t new_nai = _next_available_nai;
@@ -5365,7 +5642,7 @@ vector< asset_symbol_type > database::get_sdc_next_identifier()
    uint32_t new_asset_num = (new_nai << 5) | 0x10 | decimal_places;
    asset_symbol_type new_symbol = asset_symbol_type::from_asset_num( new_asset_num );
    new_symbol.validate();
-   FC_ASSERT( new_symbol.space() == asset_symbol_type::sdc_nai_space );
+   FC_ASSERT( new_symbol.space() == asset_symbol_type::smt_nai_space );
 
    return vector< asset_symbol_type >( 1, new_symbol );
 }

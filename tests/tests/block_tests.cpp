@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifdef IS_TEST_NET
+#if defined IS_TEST_NET && defined IS_JACKSON_NET && defined IS_JEFFERSON_NET && defined IS_FRANKLIN_NET && defined IS_KENNEDY_NET
 #include <boost/test/unit_test.hpp>
 
 #include <dpay/protocol/exceptions.hpp>
@@ -333,7 +333,7 @@ BOOST_AUTO_TEST_CASE( duplicate_transactions )
       transfer_operation t;
       t.from = DPAY_INIT_MINER_NAME;
       t.to = "alice";
-      t.amount = asset(500,BEX_SYMBOL);
+      t.amount = asset(500,DPAY_SYMBOL);
       trx.operations.push_back(t);
       trx.set_expiration( db1.head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
       trx.sign( init_account_priv_key, db1.get_chain_id(), fc::ecc::fc_canonical );
@@ -346,8 +346,8 @@ BOOST_AUTO_TEST_CASE( duplicate_transactions )
 
       DPAY_CHECK_THROW(PUSH_TX( db1, trx, skip_sigs ), fc::exception);
       DPAY_CHECK_THROW(PUSH_TX( db2, trx, skip_sigs ), fc::exception);
-      BOOST_CHECK_EQUAL(db1.get_balance( "alice", BEX_SYMBOL ).amount.value, 500);
-      BOOST_CHECK_EQUAL(db2.get_balance( "alice", BEX_SYMBOL ).amount.value, 500);
+      BOOST_CHECK_EQUAL(db1.get_balance( "alice", DPAY_SYMBOL ).amount.value, 500);
+      BOOST_CHECK_EQUAL(db2.get_balance( "alice", DPAY_SYMBOL ).amount.value, 500);
    } catch (fc::exception& e) {
       edump((e.to_detail_string()));
       throw;
@@ -392,7 +392,7 @@ BOOST_AUTO_TEST_CASE( tapos )
       transfer_operation t;
       t.from = DPAY_INIT_MINER_NAME;
       t.to = "alice";
-      t.amount = asset(50,BEX_SYMBOL);
+      t.amount = asset(50,DPAY_SYMBOL);
       trx.operations.push_back(t);
       trx.set_expiration( db1.head_block_time() + fc::seconds(2) );
       trx.sign( init_account_priv_key, db1.get_chain_id(), fc::ecc::fc_canonical );
@@ -420,11 +420,11 @@ BOOST_FIXTURE_TEST_CASE( optional_tapos, clean_database_fixture )
 
       BOOST_TEST_MESSAGE( "Create transaction" );
 
-      transfer( DPAY_INIT_MINER_NAME, "alice", asset( 1000000, BEX_SYMBOL ) );
+      transfer( DPAY_INIT_MINER_NAME, "alice", asset( 1000000, DPAY_SYMBOL ) );
       transfer_operation op;
       op.from = "alice";
       op.to = "bob";
-      op.amount = asset(1000,BEX_SYMBOL);
+      op.amount = asset(1000,DPAY_SYMBOL);
       signed_transaction tx;
       tx.operations.push_back( op );
 
@@ -487,7 +487,7 @@ BOOST_FIXTURE_TEST_CASE( double_sign_check, clean_database_fixture )
    transfer_operation t;
    t.from = DPAY_INIT_MINER_NAME;
    t.to = "bob";
-   t.amount = asset(amount,BEX_SYMBOL);
+   t.amount = asset(amount,DPAY_SYMBOL);
    trx.operations.push_back(t);
    trx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
    trx.validate();
@@ -497,7 +497,7 @@ BOOST_FIXTURE_TEST_CASE( double_sign_check, clean_database_fixture )
    trx.operations.clear();
    t.from = "bob";
    t.to = DPAY_INIT_MINER_NAME;
-   t.amount = asset(amount,BEX_SYMBOL);
+   t.amount = asset(amount,DPAY_SYMBOL);
    trx.operations.push_back(t);
    trx.validate();
 
@@ -544,7 +544,7 @@ BOOST_FIXTURE_TEST_CASE( pop_block_twice, clean_database_fixture )
 
       db->get_account( DPAY_INIT_MINER_NAME );
       // transfer from committee account to Sam account
-      transfer( DPAY_INIT_MINER_NAME, "sam", asset( 100000, BEX_SYMBOL ) );
+      transfer( DPAY_INIT_MINER_NAME, "sam", asset( 100000, DPAY_SYMBOL ) );
 
       generate_block(skip_flags);
 
@@ -828,7 +828,7 @@ BOOST_FIXTURE_TEST_CASE( generate_block_size, clean_database_fixture )
       transfer_operation op;
       op.from = DPAY_INIT_MINER_NAME;
       op.to = DPAY_TEMP_ACCOUNT;
-      op.amount = asset( 1000, BEX_SYMBOL );
+      op.amount = asset( 1000, DPAY_SYMBOL );
 
       // tx minus op is 79 bytes
       // op is 33 bytes (32 for op + 1 byte static variant tag)

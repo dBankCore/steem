@@ -25,7 +25,7 @@ namespace dpay { namespace plugins { namespace condenser_api {
 
    typedef static_variant<
             protocol::comment_payout_beneficiaries
-   #ifdef DPAY_ENABLE_SDC
+   #ifdef DPAY_ENABLE_SMT
             ,protocol::allowed_vote_assets
    #endif
          > legacy_comment_options_extensions;
@@ -102,6 +102,8 @@ namespace dpay { namespace plugins { namespace condenser_api {
       legacy_asset   account_creation_fee;
       uint32_t       maximum_block_size = DPAY_MIN_BLOCK_SIZE_LIMIT * 2;
       uint16_t       bbd_interest_rate = DPAY_DEFAULT_BBD_INTEREST_RATE;
+      int32_t        account_subsidy_budget = DPAY_DEFAULT_ACCOUNT_SUBSIDY_BUDGET;
+      uint32_t       account_subsidy_decay = DPAY_DEFAULT_ACCOUNT_SUBSIDY_DECAY;
    };
 
    struct legacy_account_create_operation
@@ -1269,7 +1271,7 @@ namespace dpay { namespace plugins { namespace condenser_api {
       }
 
 
-      // Should only be SDC ops
+      // Should only be SMT ops
       template< typename T >
       bool operator()( const T& )const { return false; }
 };
@@ -1501,7 +1503,7 @@ void old_sv_from_variant( const fc::variant& v, T& sv )
 }
 
 FC_REFLECT( dpay::plugins::condenser_api::api_chain_properties,
-            (account_creation_fee)(maximum_block_size)(bbd_interest_rate)
+            (account_creation_fee)(maximum_block_size)(bbd_interest_rate)(account_subsidy_budget)(account_subsidy_decay)
           )
 
 FC_REFLECT( dpay::plugins::condenser_api::legacy_price, (base)(quote) )

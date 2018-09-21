@@ -34,7 +34,7 @@ namespace dpay { namespace chain {
        *  ability to vote and make transactions.
        */
       asset             account_creation_fee =
-         asset( DPAY_MIN_ACCOUNT_CREATION_FEE, BEX_SYMBOL );
+         asset( DPAY_MIN_ACCOUNT_CREATION_FEE, DPAY_SYMBOL );
 
       /**
        *  This witnesses vote for the maximum_block_size which is used by the network

@@ -6,11 +6,9 @@
 #include <dpay/plugins/block_data_export/exportable_block_data.hpp>
 
 #include <dpay/chain/account_object.hpp>
-#include <dpay/chain/block_notification.hpp>
 #include <dpay/chain/database.hpp>
 #include <dpay/chain/global_property_object.hpp>
 #include <dpay/chain/index.hpp>
-#include <dpay/chain/operation_notification.hpp>
 
 #include <boost/thread/future.hpp>
 #include <boost/thread/sync_bounded_queue.hpp>

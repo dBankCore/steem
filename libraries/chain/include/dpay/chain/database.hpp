@@ -3,13 +3,11 @@
  */
 #pragma once
 #include <dpay/chain/block_log.hpp>
-#include <dpay/chain/block_notification.hpp>
 #include <dpay/chain/fork_database.hpp>
 #include <dpay/chain/global_property_object.hpp>
 #include <dpay/chain/hardfork_property_object.hpp>
 #include <dpay/chain/node_property_object.hpp>
-#include <dpay/chain/operation_notification.hpp>
-#include <dpay/chain/transaction_notification.hpp>
+#include <dpay/chain/notifications.hpp>
 
 #include <dpay/chain/util/advanced_benchmark_dumper.hpp>
 #include <dpay/chain/util/signal.hpp>
@@ -248,6 +246,14 @@ namespace dpay { namespace chain {
          void pre_push_virtual_operation( const operation& op );
          void post_push_virtual_operation( const operation& op );
 
+         void push_required_action( const required_automated_action& a );
+         void push_optional_action( const optional_automated_action& a );
+
+         void notify_pre_apply_required_action( const required_action_notification& note );
+         void notify_post_apply_required_action( const required_action_notification& note );
+
+         void notify_pre_apply_optional_action( const optional_action_notification& note );
+         void notify_post_apply_optional_action( const optional_action_notification& note );
          /**
           *  This method is used to track applied operations during the evaluation of a block, these
           *  operations should include any operation actually included in a transaction as well
@@ -262,6 +268,8 @@ namespace dpay { namespace chain {
          void notify_pre_apply_transaction( const transaction_notification& note );
          void notify_post_apply_transaction( const transaction_notification& note );
 
+         using apply_required_action_handler_t = std::function< void(const required_action_notification&) >;
+         using apply_optional_action_handler_t = std::function< void(const optional_action_notification&) >;
          using apply_operation_handler_t = std::function< void(const operation_notification&) >;
          using apply_transaction_handler_t = std::function< void(const transaction_notification&) >;
          using apply_block_handler_t = std::function< void(const block_notification&) >;
@@ -281,15 +289,19 @@ namespace dpay { namespace chain {
 
       public:
 
-         boost::signals2::connection add_pre_apply_operation_handler   ( const apply_operation_handler_t&      func, const abstract_plugin& plugin, int32_t group = -1 );
-         boost::signals2::connection add_post_apply_operation_handler  ( const apply_operation_handler_t&      func, const abstract_plugin& plugin, int32_t group = -1 );
-         boost::signals2::connection add_pre_apply_transaction_handler ( const apply_transaction_handler_t&    func, const abstract_plugin& plugin, int32_t group = -1 );
-         boost::signals2::connection add_post_apply_transaction_handler( const apply_transaction_handler_t&    func, const abstract_plugin& plugin, int32_t group = -1 );
-         boost::signals2::connection add_pre_apply_block_handler       ( const apply_block_handler_t&          func, const abstract_plugin& plugin, int32_t group = -1 );
-         boost::signals2::connection add_post_apply_block_handler      ( const apply_block_handler_t&          func, const abstract_plugin& plugin, int32_t group = -1 );
-         boost::signals2::connection add_irreversible_block_handler    ( const irreversible_block_handler_t&   func, const abstract_plugin& plugin, int32_t group = -1 );
-         boost::signals2::connection add_pre_reindex_handler           ( const reindex_handler_t&              func, const abstract_plugin& plugin, int32_t group = -1 );
-         boost::signals2::connection add_post_reindex_handler          ( const reindex_handler_t&              func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_pre_apply_required_action_handler ( const apply_required_action_handler_t&  func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_post_apply_required_action_handler( const apply_required_action_handler_t&  func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_pre_apply_optional_action_handler ( const apply_optional_action_handler_t&  func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_post_apply_optional_action_handler( const apply_optional_action_handler_t&  func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_pre_apply_operation_handler       ( const apply_operation_handler_t&        func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_post_apply_operation_handler      ( const apply_operation_handler_t&        func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_pre_apply_transaction_handler     ( const apply_transaction_handler_t&      func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_post_apply_transaction_handler    ( const apply_transaction_handler_t&      func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_pre_apply_block_handler           ( const apply_block_handler_t&            func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_post_apply_block_handler          ( const apply_block_handler_t&            func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_irreversible_block_handler        ( const irreversible_block_handler_t&     func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_pre_reindex_handler               ( const reindex_handler_t&                func, const abstract_plugin& plugin, int32_t group = -1 );
+         boost::signals2::connection add_post_reindex_handler              ( const reindex_handler_t&                func, const abstract_plugin& plugin, int32_t group = -1 );
 
          //////////////////// db_witness_schedule.cpp ////////////////////
 
@@ -377,8 +389,8 @@ namespace dpay { namespace chain {
          void process_conversions();
          void process_savings_withdraws();
          void process_subsidized_accounts();
-#ifdef DPAY_ENABLE_SDC
-         void process_sdc_objects();
+#ifdef DPAY_ENABLE_SMT
+         void process_smt_objects();
 #endif
          void account_recovery_processing();
          void expire_escrow_ratification();
@@ -469,15 +481,39 @@ namespace dpay { namespace chain {
          bool skip_transaction_delta_check = true;
          bool disable_low_mem_warning = true;
 #endif
+#ifdef IS_JACKSON_NET
+         bool liquidity_rewards_enabled = true;
+         bool skip_price_feed_limit_check = true;
+         bool skip_transaction_delta_check = true;
+         bool disable_low_mem_warning = true;
+#endif
+#ifdef IS_JEFFERSON_NET
+         bool liquidity_rewards_enabled = true;
+         bool skip_price_feed_limit_check = true;
+         bool skip_transaction_delta_check = true;
+         bool disable_low_mem_warning = true;
+#endif
+#ifdef IS_FRANKLIN_NET
+         bool liquidity_rewards_enabled = true;
+         bool skip_price_feed_limit_check = true;
+         bool skip_transaction_delta_check = true;
+         bool disable_low_mem_warning = true;
+#endif
+#ifdef IS_KENNEDY_NET
+         bool liquidity_rewards_enabled = true;
+         bool skip_price_feed_limit_check = true;
+         bool skip_transaction_delta_check = true;
+         bool disable_low_mem_warning = true;
+#endif
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
          ///Smart Media Tokens related methods
          ///@{
-         void validate_sdc_invariants()const;
+         void validate_smt_invariants()const;
          /**
           * @return a list of available NAIs.
          */
-         vector< asset_symbol_type > get_sdc_next_identifier();
+         vector< asset_symbol_type > get_smt_next_identifier();
 
          ///@}
 #endif
@@ -508,6 +544,7 @@ namespace dpay { namespace chain {
          void update_global_dynamic_data( const signed_block& b );
          void update_signing_witness(const witness_object& signing_witness, const signed_block& new_block);
          void update_last_irreversible_block();
+         void migrate_irreversible_state();
          void clear_expired_transactions();
          void clear_expired_orders();
          void clear_expired_delegations();
@@ -518,9 +555,9 @@ namespace dpay { namespace chain {
          void apply_hardfork( uint32_t hardfork );
 
          ///@}
-#ifdef DPAY_ENABLE_SDC
-         template< typename sdc_balance_object_type, class balance_operator_type >
-         void adjust_sdc_balance( const account_name_type& name, const asset& delta, bool check_account,
+#ifdef DPAY_ENABLE_SMT
+         template< typename smt_balance_object_type, class balance_operator_type >
+         void adjust_smt_balance( const account_name_type& name, const asset& delta, bool check_account,
                                   balance_operator_type balance_operator );
 #endif
          void modify_balance( const account_object& a, const asset& delta, bool check_balance );
@@ -554,8 +591,8 @@ namespace dpay { namespace chain {
          uint32_t                      _next_flush_block = 0;
 
          uint32_t                      _last_free_gb_printed = 0;
-         /// For Initial value see appropriate comment where get_sdc_next_identifier is implemented.
-         uint32_t                      _next_available_nai = SDC_MIN_NON_RESERVED_NAI;
+         /// For Initial value see appropriate comment where get_smt_next_identifier is implemented.
+         uint32_t                      _next_available_nai = SMT_MIN_NON_RESERVED_NAI;
 
          uint16_t                      _shared_file_full_threshold = 0;
          uint16_t                      _shared_file_scale_rate = 0;
@@ -564,6 +601,12 @@ namespace dpay { namespace chain {
          std::string                   _json_schema;
 
          util::advanced_benchmark_dumper  _benchmark_dumper;
+
+         fc::signal<void(const required_action_notification&)> _pre_apply_required_action_signal;
+         fc::signal<void(const required_action_notification&)> _post_apply_required_action_signal;
+
+         fc::signal<void(const optional_action_notification&)> _pre_apply_optional_action_signal;
+         fc::signal<void(const optional_action_notification&)> _post_apply_optional_action_signal;
 
          fc::signal<void(const operation_notification&)>       _pre_apply_operation_signal;
          /**

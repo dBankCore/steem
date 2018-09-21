@@ -47,20 +47,53 @@ void info()
 {
 #ifdef IS_TEST_NET
       std::cerr << "------------------------------------------------------\n\n";
-      std::cerr << "            STARTING TEST NETWORK\n\n";
+      std::cerr << "            STARTING SIDECHAIN NETWORK\n\n";
       std::cerr << "------------------------------------------------------\n";
       auto initminer_private_key = dpay::utilities::key_to_wif( DPAY_INIT_PRIVATE_KEY );
       std::cerr << "initminer public key: " << DPAY_INIT_PUBLIC_KEY_STR << "\n";
       std::cerr << "initminer private key: " << initminer_private_key << "\n";
       std::cerr << "blockchain version: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
       std::cerr << "------------------------------------------------------\n";
+#elif IS_JACKSON_NET
+      std::cerr << "------------------------------------------------------\n\n";
+      std::cerr << "          STARTING JACKSON TEST NETWORK\n\n";
+      std::cerr << "------------------------------------------------------\n";
+      std::cerr << "Genesis Public Key: " << DPAY_INIT_PUBLIC_KEY_STR << "\n";
+      std::cerr << "Jackson ChainID: " << std::string( DPAY_CHAIN_ID ) << "\n";
+      std::cerr << "dPay Release: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
+      std::cerr << "------------------------------------------------------\n";
+#elif IS_JEFFERSON_NET
+      std::cerr << "------------------------------------------------------\n\n";
+      std::cerr << "           STARTING JEFFERSON DEV NETWORK\n\n";
+      std::cerr << "------------------------------------------------------\n";
+      std::cerr << "Genesis Public Key: " << DPAY_INIT_PUBLIC_KEY_STR << "\n";
+      std::cerr << "Jefferson ChainID: " << std::string( DPAY_CHAIN_ID ) << "\n";
+      std::cerr << "dPay Release: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
+      std::cerr << "------------------------------------------------------\n";
+#elif IS_FRANKLIN_NET
+      std::cerr << "------------------------------------------------------\n\n";
+      std::cerr << "           STARTING FRANKLIN TEST NETWORK\n\n";
+      std::cerr << "------------------------------------------------------\n";
+      std::cerr << "Genesis Public Key: " << DPAY_INIT_PUBLIC_KEY_STR << "\n";
+      std::cerr << "Franklin ChainID: " << std::string( DPAY_CHAIN_ID ) << "\n";
+      std::cerr << "dPay Release: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
+      std::cerr << "------------------------------------------------------\n";
+#elif IS_KENNEDY_NET
+      std::cerr << "------------------------------------------------------\n\n";
+      std::cerr << "           STARTING KENNEDY TEST NETWORK\n\n";
+      std::cerr << "------------------------------------------------------\n";
+      std::cerr << "Genesis Public Key: " << DPAY_INIT_PUBLIC_KEY_STR << "\n";
+      std::cerr << "Kennedy ChainID: " << std::string( DPAY_CHAIN_ID ) << "\n";
+      std::cerr << "dPay Release: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
+      std::cerr << "------------------------------------------------------\n";
+
 #else
       std::cerr << "------------------------------------------------------\n\n";
-      std::cerr << "            STARTING DPAY NETWORK\n\n";
+      std::cerr << "           STARTING DPAY PUBLIC NETWORK\n\n";
       std::cerr << "------------------------------------------------------\n";
-      std::cerr << "initminer public key: " << DPAY_INIT_PUBLIC_KEY_STR << "\n";
-      std::cerr << "chain id: " << std::string( DPAY_CHAIN_ID ) << "\n";
-      std::cerr << "blockchain version: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
+      std::cerr << "Genesis Public Key: " << DPAY_INIT_PUBLIC_KEY_STR << "\n";
+      std::cerr << "dPay ChainID: " << std::string( DPAY_CHAIN_ID ) << "\n";
+      std::cerr << "dPay Release: " << fc::string( DPAY_BLOCKCHAIN_VERSION ) << "\n";
       std::cerr << "------------------------------------------------------\n";
 #endif
 }

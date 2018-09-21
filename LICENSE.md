@@ -1,7 +1,8 @@
 Copyright (c) 2017 Steemit, Inc., and contributors.
+Copyright (c) 2018 dPay, DAO., and contributors.
 
 The following license applies to code contained within this repository that
-is created by Steemit, Inc. Other copy right holders have licensed dependencies such
+is created by Steemit, Inc., dPay, DAO. Other copyright holders have licensed dependencies such
 as Graphene, FC, and Boost under their own individual licenses.
 
 The MIT License

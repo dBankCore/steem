@@ -52,3 +52,4 @@ protected:
 };
 
 } } //dpay::account_history
+

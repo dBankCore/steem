@@ -5,7 +5,6 @@
 #include <dpay/chain/database.hpp>
 #include <dpay/chain/global_property_object.hpp>
 #include <dpay/chain/index.hpp>
-#include <dpay/chain/operation_notification.hpp>
 
 #include <fstream>
 #include <iostream>

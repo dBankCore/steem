@@ -2,7 +2,6 @@
 
 #include <dpay/chain/database.hpp>
 #include <dpay/chain/index.hpp>
-#include <dpay/chain/operation_notification.hpp>
 
 #include <fc/io/json.hpp>
 
@@ -63,21 +62,21 @@ void market_history_plugin_impl::on_post_apply_operation( const operation_notifi
                b.open = open;
                b.seconds = bucket;
 
-               b.dpay.fill( ( op.open_pays.symbol == BEX_SYMBOL ) ? op.open_pays.amount : op.current_pays.amount );
-#ifdef DPAY_ENABLE_SDC
-                  b.symbol = ( op.open_pays.symbol == BEX_SYMBOL ) ? op.current_pays.symbol : op.open_pays.symbol;
+               b.dpay.fill( ( op.open_pays.symbol == DPAY_SYMBOL ) ? op.open_pays.amount : op.current_pays.amount );
+#ifdef DPAY_ENABLE_SMT
+                  b.symbol = ( op.open_pays.symbol == DPAY_SYMBOL ) ? op.current_pays.symbol : op.open_pays.symbol;
 #endif
-                  b.non_dpay.fill( ( op.open_pays.symbol == BEX_SYMBOL ) ? op.current_pays.amount : op.open_pays.amount );
+                  b.non_dpay.fill( ( op.open_pays.symbol == DPAY_SYMBOL ) ? op.current_pays.amount : op.open_pays.amount );
             });
          }
          else
          {
             _db.modify( *itr, [&]( bucket_object& b )
             {
-#ifdef DPAY_ENABLE_SDC
-               b.symbol = ( op.open_pays.symbol == BEX_SYMBOL ) ? op.current_pays.symbol : op.open_pays.symbol;
+#ifdef DPAY_ENABLE_SMT
+               b.symbol = ( op.open_pays.symbol == DPAY_SYMBOL ) ? op.current_pays.symbol : op.open_pays.symbol;
 #endif
-               if( op.open_pays.symbol == BEX_SYMBOL )
+               if( op.open_pays.symbol == DPAY_SYMBOL )
                {
                   b.dpay.volume += op.open_pays.amount;
                   b.dpay.close = op.open_pays.amount;

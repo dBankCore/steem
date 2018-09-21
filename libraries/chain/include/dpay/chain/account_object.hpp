@@ -50,8 +50,8 @@ namespace dpay { namespace chain {
          bool              can_vote = true;
          util::manabar     voting_manabar;
 
-         asset             balance = asset( 0, BEX_SYMBOL );  ///< total liquid shares held by this account
-         asset             savings_balance = asset( 0, BEX_SYMBOL );  ///< total liquid shares held by this account
+         asset             balance = asset( 0, DPAY_SYMBOL );  ///< total liquid shares held by this account
+         asset             savings_balance = asset( 0, DPAY_SYMBOL );  ///< total liquid shares held by this account
 
          /**
           *  BBD Deposits pay interest based upon the interest rate set by witnesses. The purpose of these
@@ -82,9 +82,9 @@ namespace dpay { namespace chain {
          ///@}
 
          asset             reward_bbd_balance = asset( 0, BBD_SYMBOL );
-         asset             reward_dpay_balance = asset( 0, BEX_SYMBOL );
+         asset             reward_dpay_balance = asset( 0, DPAY_SYMBOL );
          asset             reward_vesting_balance = asset( 0, VESTS_SYMBOL );
-         asset             reward_vesting_dpay = asset( 0, BEX_SYMBOL );
+         asset             reward_vesting_dpay = asset( 0, DPAY_SYMBOL );
 
          share_type        curation_rewards = 0;
          share_type        posting_rewards = 0;

@@ -6,8 +6,8 @@ add_library( dpay_chain
              # As database takes the longest to compile, start it first
              database.cpp
 
-             sdc_evaluator.cpp
-             sdc_objects/sdc_market_maker.cpp
+             smt_evaluator.cpp
+             smt_objects/smt_market_maker.cpp
              dpay_evaluator.cpp
              dpay_objects.cpp
 

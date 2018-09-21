@@ -137,11 +137,11 @@ class database_api
           */
          (verify_signatures)
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
          /**
-         * @return array of Numeric Asset Identifier (NAI) available to be used for new SDC to be created.
+         * @return array of Numeric Asset Identifier (NAI) available to be used for new SMT to be created.
          */
-         (get_sdc_next_identifier)
+         (get_smt_next_identifier)
 #endif
       )
 

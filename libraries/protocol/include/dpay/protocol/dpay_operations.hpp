@@ -100,7 +100,7 @@ namespace dpay { namespace protocol {
       void validate()const;
    };
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
    struct votable_asset_info_v1
    {
       votable_asset_info_v1() = default;
@@ -113,9 +113,8 @@ namespace dpay { namespace protocol {
 
    typedef static_variant< votable_asset_info_v1 > votable_asset_info;
 
-   /** Allows to store all SDC tokens being allowed to use during voting process.
-    *  Maps asset symbol (SDC) to the vote info.
-    *  @see SDC spec for details: https://github.com/dpayit/sdc-whitepaper/blob/master/sdc-manual/manual.md
+   /** Allows to store all SMT tokens being allowed to use during voting process.
+    *  Maps asset symbol (SMT) to the vote info.
     */
    struct allowed_vote_assets
    {
@@ -162,20 +161,20 @@ namespace dpay { namespace protocol {
        */
       void validate() const
       {
-         FC_ASSERT(votable_assets.size() <= SDC_MAX_VOTABLE_ASSETS, "Too much votable assets specified");
-         FC_ASSERT(is_allowed(BEX_SYMBOL) == false,
+         FC_ASSERT(votable_assets.size() <= SMT_MAX_VOTABLE_ASSETS, "Too much votable assets specified");
+         FC_ASSERT(is_allowed(DPAY_SYMBOL) == false,
             "BEX can not be explicitly specified as one of allowed_vote_assets");
       }
 
       flat_map< asset_symbol_type, votable_asset_info > votable_assets;
    };
-#endif /// DPAY_ENABLE_SDC
+#endif /// DPAY_ENABLE_SMT
 
    typedef static_variant<
             comment_payout_beneficiaries
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
             ,allowed_vote_assets
-#endif /// DPAY_ENABLE_SDC
+#endif /// DPAY_ENABLE_SMT
            > comment_options_extension;
 
    typedef flat_set< comment_options_extension > comment_options_extensions_type;
@@ -194,7 +193,7 @@ namespace dpay { namespace protocol {
       string            permlink;
 
       asset             max_accepted_payout    = asset( 1000000000, BBD_SYMBOL );       /// BBD value of the maximum payout this post will receive
-      uint16_t          percent_dpay_dollars  = DPAY_100_PERCENT; /// the percent of dPay Dollars to key, unkept amounts will be received as dPay Power
+      uint16_t          percent_dpay_dollars  = DPAY_100_PERCENT; /// the percent of BEX Dollars to key, unkept amounts will be received as BEX Power
       bool              allow_votes            = true;      /// allows a post to receive votes;
       bool              allow_curation_rewards = true; /// allows voters to recieve curation rewards. Rewards return to reward fund.
       comment_options_extensions_type extensions;
@@ -302,7 +301,7 @@ namespace dpay { namespace protocol {
       uint32_t          escrow_id = 30;
 
       asset             bbd_amount = asset( 0, BBD_SYMBOL );
-      asset             dpay_amount = asset( 0, BEX_SYMBOL );
+      asset             dpay_amount = asset( 0, DPAY_SYMBOL );
       asset             fee;
 
       time_point_sec    ratification_deadline;
@@ -374,7 +373,7 @@ namespace dpay { namespace protocol {
 
       uint32_t          escrow_id = 30;
       asset             bbd_amount = asset( 0, BBD_SYMBOL ); ///< the amount of bbd to release
-      asset             dpay_amount = asset( 0, BEX_SYMBOL ); ///< the amount of dpay to release
+      asset             dpay_amount = asset( 0, DPAY_SYMBOL ); ///< the amount of BEX to release
 
       void validate()const;
       void get_required_active_authorities( flat_set<account_name_type>& a )const{ a.insert(who); }
@@ -382,15 +381,15 @@ namespace dpay { namespace protocol {
 
 
    /**
-    *  This operation converts liquid token (BEX or liquid SDC) into VFS (Vesting Fund Shares,
-    *  VESTS or vesting SDC) at the current exchange rate. With this operation it is possible to
+    *  This operation converts liquid token (BEX or liquid SMT) into VFS (Vesting Fund Shares,
+    *  VESTS or vesting SMT) at the current exchange rate. With this operation it is possible to
     *  give another account vesting shares so that faucets can pre-fund new accounts with vesting shares.
     */
    struct transfer_to_vesting_operation : public base_operation
    {
       account_name_type from;
       account_name_type to;      ///< if null, then same as from
-      asset             amount;  ///< must be BEX or liquid variant of SDC
+      asset             amount;  ///< must be BEX or liquid variant of SMT
 
       void validate()const;
       void get_required_active_authorities( flat_set<account_name_type>& a )const{ a.insert(from); }
@@ -423,7 +422,7 @@ namespace dpay { namespace protocol {
     * request for the funds to be transferred directly to another account's
     * balance rather than the withdrawing account. In addition, those funds
     * can be immediately vested again, circumventing the conversion from
-    * vests to dpay and back, guaranteeing they maintain their value.
+    * vests to BEX and back, guaranteeing they maintain their value.
     */
    struct set_withdraw_vesting_route_operation : public base_operation
    {
@@ -601,7 +600,7 @@ namespace dpay { namespace protocol {
 
    /**
     *  Feeds can only be published by the top N witnesses which are included in every round and are
-    *  used to define the exchange rate between dpay and the dollar.
+    *  used to define the exchange rate between BEX and the dollar.
     */
    struct feed_publish_operation : public base_operation
    {
@@ -782,7 +781,7 @@ namespace dpay { namespace protocol {
     *
     * Users not in the ACTIVE witness set should not have to worry about their
     * key getting compromised and being used to produced multiple blocks so
-    * the attacker can report it and steel their vesting dpay.
+    * the attacker can report it and steel their vesting BEX.
     *
     * The result of the operation is to transfer the full VESTING BEX balance
     * of the block producer to the reporter.
@@ -1015,7 +1014,7 @@ namespace dpay { namespace protocol {
       void validate() const;
    };
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
    /** Differs with original operation with extensions field and a container of tokens that will
     *  be rewarded to an account. See discussion in issue #1859
     */
@@ -1132,7 +1131,7 @@ FC_REFLECT( dpay::protocol::delete_comment_operation, (author)(permlink) );
 FC_REFLECT( dpay::protocol::beneficiary_route_type, (account)(weight) )
 FC_REFLECT( dpay::protocol::comment_payout_beneficiaries, (beneficiaries) )
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
 FC_REFLECT( dpay::protocol::votable_asset_info_v1, (max_accepted_payout)(allow_curation_rewards) )
 FC_REFLECT( dpay::protocol::allowed_vote_assets, (votable_assets) )
 #endif
@@ -1151,7 +1150,7 @@ FC_REFLECT( dpay::protocol::recover_account_operation, (account_to_recover)(new_
 FC_REFLECT( dpay::protocol::change_recovery_account_operation, (account_to_recover)(new_recovery_account)(extensions) );
 FC_REFLECT( dpay::protocol::decline_voting_rights_operation, (account)(decline) );
 FC_REFLECT( dpay::protocol::claim_reward_balance_operation, (account)(reward_dpay)(reward_bbd)(reward_vests) )
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
 FC_REFLECT( dpay::protocol::claim_reward_balance2_operation, (account)(extensions)(reward_tokens) )
 #endif
 FC_REFLECT( dpay::protocol::delegate_vesting_shares_operation, (delegator)(delegatee)(vesting_shares) );

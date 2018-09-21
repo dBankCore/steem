@@ -324,7 +324,7 @@ void account_create_evaluator::do_apply( const account_create_operation& o )
    if( _db.has_hardfork( DPAY_HARDFORK_0_20__2651 ) || _db.is_producing() )
    {
       FC_TODO( "Move to validate() after HF20" );
-      FC_ASSERT( o.fee <= asset( DPAY_MAX_ACCOUNT_CREATION_FEE, BEX_SYMBOL ), "Account creation fee cannot be too large" );
+      FC_ASSERT( o.fee <= asset( DPAY_MAX_ACCOUNT_CREATION_FEE, DPAY_SYMBOL ), "Account creation fee cannot be too large" );
    }
 
    if( _db.has_hardfork( DPAY_HARDFORK_0_20__1771 ) )
@@ -335,8 +335,8 @@ void account_create_evaluator::do_apply( const account_create_operation& o )
    }
    else if( !_db.has_hardfork( DPAY_HARDFORK_0_20__1761 ) && _db.has_hardfork( DPAY_HARDFORK_0_19__987 ) )
    {
-      FC_ASSERT( o.fee >= asset( wso.median_props.account_creation_fee.amount * DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER, BEX_SYMBOL ), "Insufficient Fee: ${f} required, ${p} provided.",
-                 ("f", wso.median_props.account_creation_fee * asset( DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER, BEX_SYMBOL ) )
+      FC_ASSERT( o.fee >= asset( wso.median_props.account_creation_fee.amount * DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER, DPAY_SYMBOL ), "Insufficient Fee: ${f} required, ${p} provided.",
+                 ("f", wso.median_props.account_creation_fee * asset( DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER, DPAY_SYMBOL ) )
                  ("p", o.fee) );
    }
    else if( _db.has_hardfork( DPAY_HARDFORK_0_1 ) )
@@ -398,7 +398,7 @@ void account_create_with_delegation_evaluator::do_apply( const account_create_wi
    if( _db.has_hardfork( DPAY_HARDFORK_0_20__2651 ) || _db.is_producing() )
    {
       FC_TODO( "Move to validate() after HF20" );
-      FC_ASSERT( o.fee <= asset( DPAY_MAX_ACCOUNT_CREATION_FEE, BEX_SYMBOL ), "Account creation fee cannot be too large" );
+      FC_ASSERT( o.fee <= asset( DPAY_MAX_ACCOUNT_CREATION_FEE, DPAY_SYMBOL ), "Account creation fee cannot be too large" );
    }
 
    const auto& creator = _db.get_account( o.creator );
@@ -413,9 +413,9 @@ void account_create_with_delegation_evaluator::do_apply( const account_create_wi
                ( "creator.vesting_shares", creator.vesting_shares )
                ( "creator.delegated_vesting_shares", creator.delegated_vesting_shares )( "required", o.delegation ) );
 
-   auto target_delegation = asset( wso.median_props.account_creation_fee.amount * DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER * DPAY_CREATE_ACCOUNT_DELEGATION_RATIO, BEX_SYMBOL ) * props.get_vesting_share_price();
+   auto target_delegation = asset( wso.median_props.account_creation_fee.amount * DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER * DPAY_CREATE_ACCOUNT_DELEGATION_RATIO, DPAY_SYMBOL ) * props.get_vesting_share_price();
 
-   auto current_delegation = asset( o.fee.amount * DPAY_CREATE_ACCOUNT_DELEGATION_RATIO, BEX_SYMBOL ) * props.get_vesting_share_price() + o.delegation;
+   auto current_delegation = asset( o.fee.amount * DPAY_CREATE_ACCOUNT_DELEGATION_RATIO, DPAY_SYMBOL ) * props.get_vesting_share_price() + o.delegation;
 
    FC_ASSERT( current_delegation >= target_delegation, "Inssufficient Delegation ${f} required, ${p} provided.",
                ("f", target_delegation )
@@ -525,6 +525,22 @@ void account_update_evaluator::do_apply( const account_update_operation& o )
       if( _db.has_hardfork( DPAY_HARDFORK_0_11 ) )
          FC_ASSERT( _db.head_block_time() - account_auth.last_owner_update > DPAY_OWNER_UPDATE_LIMIT, "Owner authority can only be updated once an hour." );
 #endif
+#ifndef IS_JACKSON_NET
+      if( _db.has_hardfork( DPAY_HARDFORK_0_11 ) )
+         FC_ASSERT( _db.head_block_time() - account_auth.last_owner_update > DPAY_OWNER_UPDATE_LIMIT, "Owner authority can only be updated once an hour." );
+#endif
+#ifndef IS_JEFFERSON_NET
+      if( _db.has_hardfork( DPAY_HARDFORK_0_11 ) )
+         FC_ASSERT( _db.head_block_time() - account_auth.last_owner_update > DPAY_OWNER_UPDATE_LIMIT, "Owner authority can only be updated once an hour." );
+#endif
+#ifndef IS_FRANKLIN_NET
+      if( _db.has_hardfork( DPAY_HARDFORK_0_11 ) )
+         FC_ASSERT( _db.head_block_time() - account_auth.last_owner_update > DPAY_OWNER_UPDATE_LIMIT, "Owner authority can only be updated once an hour." );
+#endif
+#ifndef IS_KENNEDY_NET
+      if( _db.has_hardfork( DPAY_HARDFORK_0_11 ) )
+         FC_ASSERT( _db.head_block_time() - account_auth.last_owner_update > DPAY_OWNER_UPDATE_LIMIT, "Owner authority can only be updated once an hour." );
+#endif
 
       if( ( _db.has_hardfork( DPAY_HARDFORK_0_15__465 ) ) )
          verify_authority_accounts_exist( _db, *o.owner, o.account, authority::owner );
@@ -618,20 +634,20 @@ struct comment_options_extension_visitor
    const comment_object& _c;
    database& _db;
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
    void operator()( const allowed_vote_assets& va) const
    {
       FC_ASSERT( _c.abs_rshares == 0, "Comment must not have been voted on before specifying allowed vote assets." );
-      auto remaining_asset_number = SDC_MAX_VOTABLE_ASSETS;
+      auto remaining_asset_number = SMT_MAX_VOTABLE_ASSETS;
       FC_ASSERT( remaining_asset_number > 0 );
       _db.modify( _c, [&]( comment_object& c )
       {
          for( const auto& a : va.votable_assets )
          {
-            if( a.first != BEX_SYMBOL )
+            if( a.first != DPAY_SYMBOL )
             {
                FC_ASSERT( remaining_asset_number > 0, "Comment votable assets number exceeds allowed limit ${ava}.",
-                        ("ava", SDC_MAX_VOTABLE_ASSETS) );
+                        ("ava", SMT_MAX_VOTABLE_ASSETS) );
                --remaining_asset_number;
                c.allowed_vote_assets.emplace_back( a.first, a.second );
             }
@@ -916,11 +932,12 @@ void escrow_transfer_evaluator::do_apply( const escrow_transfer_operation& o )
 
       asset dpay_spent = o.dpay_amount;
       asset bbd_spent = o.bbd_amount;
-      if( o.fee.symbol == BEX_SYMBOL )
+      if( o.fee.symbol == DPAY_SYMBOL )
          dpay_spent += o.fee;
       else
          bbd_spent += o.fee;
 
+      FC_ASSERT( from_account.balance >= dpay_spent, "Account cannot cover BEX costs of escrow. Required: ${r} Available: ${a}", ("r",dpay_spent)("a",from_account.balance) );
       FC_ASSERT( from_account.balance >= dpay_spent, "Account cannot cover BEX costs of escrow. Required: ${r} Available: ${a}", ("r",dpay_spent)("a",from_account.balance) );
       FC_ASSERT( from_account.bbd_balance >= bbd_spent, "Account cannot cover BBD costs of escrow. Required: ${r} Available: ${a}", ("r",bbd_spent)("a",from_account.bbd_balance) );
 
@@ -1107,19 +1124,46 @@ void withdraw_vesting_evaluator::do_apply( const withdraw_vesting_operation& o )
       if( _db.head_block_num() > 23847548 )
       {
 #endif
+#ifndef IS_JACKSON_NET
+      if( _db.head_block_num() > 23847548 )
+      {
+#endif
+#ifndef IS_JEFFERSON_NET
+      if( _db.head_block_num() > 23847548 )
+      {
+#endif
+#ifndef IS_FRANKLIN_NET
+      if( _db.head_block_num() > 23847548 )
+      {
+#endif
+#ifndef IS_KENNEDY_NET
+      if( _db.head_block_num() > 23847548 )
+      {
+#endif
          FC_ASSERT( false, "Cannot withdraw negative VESTS. account: ${account}, vests:${vests}",
             ("account", o.account)("vests", o.vesting_shares) );
 #ifndef IS_TEST_NET
       }
 #endif
-
+#ifndef IS_JACKSON_NET
+      }
+#endif
+#ifndef IS_JEFFERSON_NET
+      }
+#endif
+#ifndef IS_FRANKLIN_NET
+      }
+#endif
+#ifndef IS_KENNEDY_NET
+      }
+#endif
       // else, no-op
       return;
    }
 
 
-   FC_ASSERT( account.vesting_shares >= asset( 0, VESTS_SYMBOL ), "Account does not have sufficient dPay Power for withdraw." );
-   FC_ASSERT( account.vesting_shares - account.delegated_vesting_shares >= o.vesting_shares, "Account does not have sufficient dPay Power for withdraw." );
+   FC_ASSERT( account.vesting_shares >= asset( 0, VESTS_SYMBOL ), "Account does not have sufficient BEX Power for withdraw." );
+   FC_ASSERT( account.vesting_shares - account.delegated_vesting_shares >= o.vesting_shares, "Account does not have sufficient BEX Power for withdraw." );
 
    FC_TODO( "Remove this entire block after HF 20" )
    if( !_db.has_hardfork( DPAY_HARDFORK_0_20__1860 ) && !account.mined && _db.has_hardfork( DPAY_HARDFORK_0_1 ) )
@@ -1131,7 +1175,7 @@ void withdraw_vesting_evaluator::do_apply( const withdraw_vesting_operation& o )
       min_vests.amount.value *= 10;
 
       FC_ASSERT( account.vesting_shares > min_vests || ( _db.has_hardfork( DPAY_HARDFORK_0_16__562 ) && o.vesting_shares.amount == 0 ),
-                 "Account registered by another account requires 10x account creation fee worth of dPay Power before it can be powered down." );
+                 "Account registered by another account requires 10x account creation fee worth of BEX Power before it can be powered down." );
    }
 
    if( o.vesting_shares.amount == 0 )
@@ -1421,11 +1465,11 @@ void pre_hf20_vote_evaluator( const vote_operation& o, database& _db )
    }
    else if( _db.has_hardfork( DPAY_HARDFORK_0_14__259 ) )
    {
-      FC_ASSERT( abs_rshares > DPAY_VOTE_DUST_THRESHOLD || o.weight == 0, "Voting weight is too small, please accumulate more voting power or dpay power." );
+      FC_ASSERT( abs_rshares > DPAY_VOTE_DUST_THRESHOLD || o.weight == 0, "Voting weight is too small, please accumulate more voting power or BEX power." );
    }
    else if( _db.has_hardfork( DPAY_HARDFORK_0_13__248 ) )
    {
-      FC_ASSERT( abs_rshares > DPAY_VOTE_DUST_THRESHOLD || abs_rshares == 1, "Voting weight is too small, please accumulate more voting power or dpay power." );
+      FC_ASSERT( abs_rshares > DPAY_VOTE_DUST_THRESHOLD || abs_rshares == 1, "Voting weight is too small, please accumulate more voting power or BEX power." );
    }
 
 
@@ -2271,7 +2315,7 @@ void pow2_evaluator::do_apply( const pow2_operation& o )
 void feed_publish_evaluator::do_apply( const feed_publish_operation& o )
 {
    if( _db.has_hardfork( DPAY_HARDFORK_0_20__409 ) )
-      FC_ASSERT( is_asset_type( o.exchange_rate.base, BBD_SYMBOL ) && is_asset_type( o.exchange_rate.quote, BEX_SYMBOL ),
+      FC_ASSERT( is_asset_type( o.exchange_rate.base, BBD_SYMBOL ) && is_asset_type( o.exchange_rate.quote, DPAY_SYMBOL ),
             "Price feed must be a BBD/BEX price" );
 
    const auto& witness = _db.get_witness( o.publisher );
@@ -2725,18 +2769,19 @@ void claim_reward_balance_evaluator::do_apply( const claim_reward_balance_operat
    const auto& acnt = _db.get_account( op.account );
 
    FC_ASSERT( op.reward_dpay <= acnt.reward_dpay_balance, "Cannot claim that much BEX. Claim: ${c} Actual: ${a}",
+   FC_ASSERT( op.reward_dpay <= acnt.reward_dpay_balance, "Cannot claim that much BEX. Claim: ${c} Actual: ${a}",
       ("c", op.reward_dpay)("a", acnt.reward_dpay_balance) );
    FC_ASSERT( op.reward_bbd <= acnt.reward_bbd_balance, "Cannot claim that much BBD. Claim: ${c} Actual: ${a}",
       ("c", op.reward_bbd)("a", acnt.reward_bbd_balance) );
    FC_ASSERT( op.reward_vests <= acnt.reward_vesting_balance, "Cannot claim that much VESTS. Claim: ${c} Actual: ${a}",
       ("c", op.reward_vests)("a", acnt.reward_vesting_balance) );
 
-   asset reward_vesting_dpay_to_move = asset( 0, BEX_SYMBOL );
+   asset reward_vesting_dpay_to_move = asset( 0, DPAY_SYMBOL );
    if( op.reward_vests == acnt.reward_vesting_balance )
       reward_vesting_dpay_to_move = acnt.reward_vesting_dpay;
    else
       reward_vesting_dpay_to_move = asset( ( ( uint128_t( op.reward_vests.amount.value ) * uint128_t( acnt.reward_vesting_dpay.amount.value ) )
-         / uint128_t( acnt.reward_vesting_balance.amount.value ) ).to_uint64(), BEX_SYMBOL );
+         / uint128_t( acnt.reward_vesting_balance.amount.value ) ).to_uint64(), DPAY_SYMBOL );
 
    _db.adjust_reward_balance( acnt, -op.reward_dpay );
    _db.adjust_reward_balance( acnt, -op.reward_bbd );
@@ -2769,7 +2814,7 @@ void claim_reward_balance_evaluator::do_apply( const claim_reward_balance_operat
    _db.adjust_proxied_witness_votes( acnt, op.reward_vests.amount );
 }
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
 void claim_reward_balance2_evaluator::do_apply( const claim_reward_balance2_operation& op )
 {
    const account_object* a = nullptr; // Lazily initialized below because it may turn out unnecessary.
@@ -2779,7 +2824,7 @@ void claim_reward_balance2_evaluator::do_apply( const claim_reward_balance2_oper
       if( token.amount == 0 )
          continue;
 
-      if( token.symbol.space() == asset_symbol_type::sdc_nai_space )
+      if( token.symbol.space() == asset_symbol_type::smt_nai_space )
       {
          _db.adjust_reward_balance( op.account, -token );
          _db.adjust_balance( op.account, token );
@@ -2798,12 +2843,12 @@ void claim_reward_balance2_evaluator::do_apply( const claim_reward_balance2_oper
             FC_ASSERT( token <= a->reward_vesting_balance, "Cannot claim that much VESTS. Claim: ${c} Actual: ${a}",
                ("c", token)("a", a->reward_vesting_balance) );
 
-            asset reward_vesting_dpay_to_move = asset( 0, BEX_SYMBOL );
+            asset reward_vesting_dpay_to_move = asset( 0, DPAY_SYMBOL );
             if( token == a->reward_vesting_balance )
                reward_vesting_dpay_to_move = a->reward_vesting_dpay;
             else
                reward_vesting_dpay_to_move = asset( ( ( uint128_t( token.amount.value ) * uint128_t( a->reward_vesting_dpay.amount.value ) )
-                  / uint128_t( a->reward_vesting_balance.amount.value ) ).to_uint64(), BEX_SYMBOL );
+                  / uint128_t( a->reward_vesting_balance.amount.value ) ).to_uint64(), DPAY_SYMBOL );
 
             _db.modify( *a, [&]( account_object& a )
             {
@@ -2823,9 +2868,10 @@ void claim_reward_balance2_evaluator::do_apply( const claim_reward_balance2_oper
 
             _db.adjust_proxied_witness_votes( *a, token.amount );
          }
-         else if( token.symbol == BEX_SYMBOL || token.symbol == BBD_SYMBOL )
+         else if( token.symbol == DPAY_SYMBOL || token.symbol == BBD_SYMBOL )
          {
-            FC_ASSERT( is_asset_type( token, BEX_SYMBOL ) == false || token <= a->reward_dpay_balance,
+            FC_ASSERT( is_asset_type( token, DPAY_SYMBOL ) == false || token <= a->reward_dpay_balance,
+                       "Cannot claim that much BEX. Claim: ${c} Actual: ${a}", ("c", token)("a", a->reward_dpay_balance) );
                        "Cannot claim that much BEX. Claim: ${c} Actual: ${a}", ("c", token)("a", a->reward_dpay_balance) );
             FC_ASSERT( is_asset_type( token, BBD_SYMBOL ) == false || token <= a->reward_bbd_balance,
                        "Cannot claim that much BBD. Claim: ${c} Actual: ${a}", ("c", token)("a", a->reward_bbd_balance) );
@@ -2834,14 +2880,14 @@ void claim_reward_balance2_evaluator::do_apply( const claim_reward_balance2_oper
          }
          else
             FC_ASSERT( false, "Unknown asset symbol" );
-      } // non-SDC token
+      } // non-SMT token
    } // for( const auto& token : op.reward_tokens )
 }
 #endif
 
 void delegate_vesting_shares_evaluator::do_apply( const delegate_vesting_shares_operation& op )
 {
-#pragma message( "TODO: Update get_effective_vesting_shares when modifying this operation to support SDCs." )
+#pragma message( "TODO: Update get_effective_vesting_shares when modifying this operation to support SMTs." )
 
    const auto& delegator = _db.get_account( op.delegator );
    const auto& delegatee = _db.get_account( op.delegatee );
@@ -2897,10 +2943,10 @@ void delegate_vesting_shares_evaluator::do_apply( const delegate_vesting_shares_
 
    // HF 20 increase fee meaning by 30x, reduce these thresholds to compensate.
    auto min_delegation = _db.has_hardfork( DPAY_HARDFORK_0_20__1761 ) ?
-      asset( wso.median_props.account_creation_fee.amount / 3, BEX_SYMBOL ) * gpo.get_vesting_share_price() :
-      asset( wso.median_props.account_creation_fee.amount * 10, BEX_SYMBOL ) * gpo.get_vesting_share_price();
+      asset( wso.median_props.account_creation_fee.amount / 3, DPAY_SYMBOL ) * gpo.get_vesting_share_price() :
+      asset( wso.median_props.account_creation_fee.amount * 10, DPAY_SYMBOL ) * gpo.get_vesting_share_price();
    auto min_update = _db.has_hardfork( DPAY_HARDFORK_0_20__1761 ) ?
-      asset( wso.median_props.account_creation_fee.amount / 30, BEX_SYMBOL ) * gpo.get_vesting_share_price() :
+      asset( wso.median_props.account_creation_fee.amount / 30, DPAY_SYMBOL ) * gpo.get_vesting_share_price() :
       wso.median_props.account_creation_fee * gpo.get_vesting_share_price();
 
    // If delegation doesn't exist, create it
@@ -2945,7 +2991,7 @@ void delegate_vesting_shares_evaluator::do_apply( const delegate_vesting_shares_
    {
       auto delta = op.vesting_shares - delegation->vesting_shares;
 
-      FC_ASSERT( delta >= min_update, "dPay Power increase is not enough of a difference. min_update: ${min}", ("min", min_update) );
+      FC_ASSERT( delta >= min_update, "BEX Power increase is not enough of a difference. min_update: ${min}", ("min", min_update) );
       FC_ASSERT( available_shares >= delta, "Account ${acc} does not have enough mana to delegate. required: ${r} available: ${a}",
          ("acc", op.delegator)("r", delta)("a", available_shares) );
 
@@ -2983,7 +3029,7 @@ void delegate_vesting_shares_evaluator::do_apply( const delegate_vesting_shares_
 
       if( op.vesting_shares.amount > 0 )
       {
-         FC_ASSERT( delta >= min_update, "dPay Power decrease is not enough of a difference. min_update: ${min}", ("min", min_update) );
+         FC_ASSERT( delta >= min_update, "BEX Power decrease is not enough of a difference. min_update: ${min}", ("min", min_update) );
          FC_ASSERT( op.vesting_shares >= min_delegation, "Delegation must be removed or leave minimum delegation amount of ${v}", ("v", min_delegation) );
       }
       else

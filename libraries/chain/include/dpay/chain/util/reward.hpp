@@ -43,7 +43,7 @@ uint128_t evaluate_reward_curve( const uint128_t& rshares, const protocol::curve
 
 inline bool is_comment_payout_dust( const price& p, uint64_t dpay_payout )
 {
-   return to_bbd( p, asset( dpay_payout, BEX_SYMBOL ) ) < DPAY_MIN_PAYOUT_BBD;
+   return to_bbd( p, asset( dpay_payout, DPAY_SYMBOL ) ) < DPAY_MIN_PAYOUT_BBD;
 }
 
 } } } // dpay::chain::util

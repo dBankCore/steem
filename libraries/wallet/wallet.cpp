@@ -550,6 +550,7 @@ public:
       signed_transaction tx,
       bool broadcast = false )
    {
+      static const authority null_auth( 1, public_key_type(), 0 );
       flat_set< account_name_type >   req_active_approvals;
       flat_set< account_name_type >   req_owner_approvals;
       flat_set< account_name_type >   req_posting_approvals;
@@ -594,11 +595,21 @@ public:
          approving_account_lut[ approving_acct->name ] =  *approving_acct;
          i++;
       }
-      auto get_account_from_lut = [&]( const std::string& name ) -> const condenser_api::api_account_object&
+      auto get_account_from_lut = [&]( const std::string& name ) -> fc::optional< const condenser_api::api_account_object* >
       {
+         fc::optional< const condenser_api::api_account_object* > result;
          auto it = approving_account_lut.find( name );
-         FC_ASSERT( it != approving_account_lut.end() );
-         return it->second;
+         if( it != approving_account_lut.end() )
+         {
+            result = &(it->second);
+         }
+         else
+         {
+            elog( "Tried to access authority for account ${a}.", ("a", name) );
+            elog( "Is it possible you are using an account authority? Signing with an account authority is currently not supported." );
+         }
+
+         return result;
       };
 
       flat_set<public_key_type> approving_key_set;
@@ -678,11 +689,29 @@ public:
          dpay_chain_id,
          available_keys,
          [&]( const string& account_name ) -> const authority&
-         { return (get_account_from_lut( account_name ).active); },
+         {
+            auto maybe_account = get_account_from_lut( account_name );
+            if( maybe_account.valid() )
+               return (*maybe_account)->active;
+
+            return null_auth;
+         },
          [&]( const string& account_name ) -> const authority&
-         { return (get_account_from_lut( account_name ).owner); },
+         {
+            auto maybe_account = get_account_from_lut( account_name );
+            if( maybe_account.valid() )
+               return (*maybe_account)->owner;
+
+            return null_auth;
+         },
          [&]( const string& account_name ) -> const authority&
-         { return (get_account_from_lut( account_name ).posting); },
+         {
+            auto maybe_account = get_account_from_lut( account_name );
+            if( maybe_account.valid() )
+               return (*maybe_account)->posting;
+
+            return null_auth;
+         },
          DPAY_MAX_SIG_CHECK_DEPTH,
          DPAY_MAX_AUTHORITY_MEMBERSHIP,
          DPAY_MAX_SIG_CHECK_ACCOUNTS,
@@ -786,7 +815,7 @@ public:
              ss << ' ' << setw( 10 ) << o.orderid;
              ss << ' ' << setw( 10 ) << o.real_price;
              ss << ' ' << setw( 10 ) << fc::variant( asset( o.for_sale, o.sell_price.base.symbol ) ).as_string();
-             ss << ' ' << setw( 10 ) << (o.sell_price.base.symbol == BEX_SYMBOL ? "SELL" : "BUY");
+             ss << ' ' << setw( 10 ) << (o.sell_price.base.symbol == DPAY_SYMBOL ? "SELL" : "BUY");
              ss << "\n";
           }
           return ss.str();
@@ -820,7 +849,7 @@ public:
                ss
                   << ' ' << setw( spacing ) << legacy_asset::from_asset( bid_sum ).to_string()
                   << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.bids[i].bbd, BBD_SYMBOL ) ).to_string()
-                  << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.bids[i].dpay, BEX_SYMBOL ) ).to_string()
+                  << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.bids[i].dpay, DPAY_SYMBOL ) ).to_string()
                   << ' ' << setw( spacing ) << orders.bids[i].real_price;
             }
             else
@@ -834,7 +863,7 @@ public:
             {
                ask_sum += asset( orders.asks[i].bbd, BBD_SYMBOL );
                ss << ' ' << setw( spacing ) << orders.asks[i].real_price
-                  << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.asks[i].dpay, BEX_SYMBOL ) ).to_string()
+                  << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.asks[i].dpay, DPAY_SYMBOL ) ).to_string()
                   << ' ' << setw( spacing ) << legacy_asset::from_asset( asset( orders.asks[i].bbd, BBD_SYMBOL ) ).to_string()
                   << ' ' << setw( spacing ) << legacy_asset::from_asset( ask_sum ).to_string();
             }
@@ -1214,7 +1243,7 @@ condenser_api::legacy_signed_transaction wallet_api::create_account_with_keys(
    op.posting = authority( 1, posting, 1 );
    op.memo_key = memo;
    op.json_metadata = json_meta;
-   op.fee = my->_remote_api->get_chain_properties().account_creation_fee * asset( DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER, BEX_SYMBOL );
+   op.fee = my->_remote_api->get_chain_properties().account_creation_fee * asset( DPAY_CREATE_ACCOUNT_WITH_DPAY_MODIFIER, DPAY_SYMBOL );
 
    signed_transaction tx;
    tx.operations.push_back(op);

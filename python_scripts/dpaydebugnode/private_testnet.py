@@ -12,7 +12,7 @@ from time import time
 
 # local imports
 from dpaydebugnode import DebugNode
-from dpayapi.dpaynoderpc import DPayNodeRPC
+from dpaypyapi.dpaynoderpc import DPayNodeRPC
 
 WAITING = True
 

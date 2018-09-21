@@ -5,7 +5,7 @@
 From the root of the repository:
 
     docker build --rm=false \
-        -t dpays/ci-test-environment:latest \
+        -t dpay/ci-test-environment:latest \
         -f tests/scripts/Dockerfile.testenv .
 
 ## To Run The Tests
@@ -13,13 +13,13 @@ From the root of the repository:
 (Also in the root of the repository.)
 
     docker build --rm=false \
-        -t dpays/dpay-test \
+        -t dpay/dpay-test \
         -f Dockerfile.test .
 
 ## To Troubleshoot Failing Tests
 
     docker run -ti \
-        dpays/ci-test-environment:latest \
+        dpay/ci-test-environment:latest \
         /bin/bash
 
 Then, inside the container:
@@ -27,7 +27,7 @@ Then, inside the container:
 (These steps are taken from `/Dockerfile.test` in the
 repository root.)
 
-    git clone https://github.com/dpays/dpays.git \
+    git clone https://github.com/dpays/dpay.git \
         /usr/local/src/dpay
     cd /usr/local/src/dpay
     git checkout <branch> # e.g. 123-feature

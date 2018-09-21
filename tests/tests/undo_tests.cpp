@@ -1,4 +1,4 @@
-#ifdef IS_TEST_NET
+#if defined IS_TEST_NET && defined IS_JACKSON_NET && defined IS_JEFFERSON_NET && defined IS_FRANKLIN_NET && defined IS_KENNEDY_NET
 #include <boost/test/unit_test.hpp>
 
 #include <dpay/protocol/exceptions.hpp>

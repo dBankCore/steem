@@ -26,7 +26,7 @@ struct get_ticker_return
    double      lowest_ask = 0;
    double      highest_bid = 0;
    double      percent_change = 0;
-   asset       dpay_volume = asset( 0 , BEX_SYMBOL );
+   asset       dpay_volume = asset( 0 , DPAY_SYMBOL );
    asset       bbd_volume = asset( 0, BBD_SYMBOL );
 };
 
@@ -34,7 +34,7 @@ typedef void_type get_volume_args;
 
 struct get_volume_return
 {
-   asset       dpay_volume = asset( 0, BEX_SYMBOL );
+   asset       dpay_volume = asset( 0, DPAY_SYMBOL );
    asset       bbd_volume = asset( 0, BBD_SYMBOL );
 };
 

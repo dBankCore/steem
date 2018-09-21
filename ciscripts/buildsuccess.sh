@@ -1,9 +1,9 @@
 #/bin/bash
-curl --silent -XPOST -H "Authorization: token $GITHUB_SECRET" https://api.github.com/repos/dpays/dpays/statuses/$(git rev-parse HEAD) -d "{
+curl --silent -XPOST -H "Authorization: token $GITHUB_SECRET" https://api.github.com/repos/dpays/dpay/statuses/$(git rev-parse HEAD) -d "{
   \"state\": \"success\",
   \"target_url\": \"${BUILD_URL}\",
   \"description\": \"Jenkins-CI reports build succeeded!!\",
-  \"context\": \"jenkins-ci-dsite\"
+  \"context\": \"jenkins-ci-dpay\"
 }"
 rm -rf $WORKSPACE/*
 # make docker cleanup after itself and delete all exited containers

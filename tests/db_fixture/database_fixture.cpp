@@ -229,12 +229,12 @@ fc::ecc::private_key database_fixture::generate_private_key(string seed)
    return fc::ecc::private_key::regenerate( fc::sha256::hash( seed ) );
 }
 
-#ifdef DPAY_ENABLE_SDC
-asset_symbol_type database_fixture::get_new_sdc_symbol( uint8_t token_decimal_places, chain::database* db )
+#ifdef DPAY_ENABLE_SMT
+asset_symbol_type database_fixture::get_new_smt_symbol( uint8_t token_decimal_places, chain::database* db )
 {
-   // The list of available nais is not dependent on SDC desired precision (token_decimal_places).
-   auto available_nais =  db->get_sdc_next_identifier();
-   FC_ASSERT( available_nais.size() > 0, "No available nai returned by get_sdc_next_identifier." );
+   // The list of available nais is not dependent on SMT desired precision (token_decimal_places).
+   auto available_nais =  db->get_smt_next_identifier();
+   FC_ASSERT( available_nais.size() > 0, "No available nai returned by get_smt_next_identifier." );
    const asset_symbol_type& new_nai = available_nais[0];
    // Note that token's precision is needed now, when creating actual symbol.
    return asset_symbol_type::from_nai( new_nai.to_nai(), token_decimal_places );
@@ -300,7 +300,7 @@ const account_object& database_fixture::account_create(
       account_create_operation op;
       op.new_account_name = name;
       op.creator = creator;
-      op.fee = asset( actual_fee, BEX_SYMBOL );
+      op.fee = asset( actual_fee, DPAY_SYMBOL );
       op.owner = authority( 1, key, 1 );
       op.active = authority( 1, key, 1 );
       op.posting = authority( 1, post_key, 1 );
@@ -317,7 +317,7 @@ const account_object& database_fixture::account_create(
 
       if( fee_remainder > 0 )
       {
-         vest( DPAY_INIT_MINER_NAME, name, asset( fee_remainder, BEX_SYMBOL ) );
+         vest( DPAY_INIT_MINER_NAME, name, asset( fee_remainder, DPAY_SYMBOL ) );
       }
 
       const account_object& acct = db->get_account( name );
@@ -368,7 +368,7 @@ const witness_object& database_fixture::witness_create(
       op.owner = owner;
       op.url = url;
       op.block_signing_key = signing_key;
-      op.fee = asset( fee, BEX_SYMBOL );
+      op.fee = asset( fee, DPAY_SYMBOL );
 
       trx.operations.push_back( op );
       trx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
@@ -389,7 +389,7 @@ void database_fixture::fund(
 {
    try
    {
-      transfer( DPAY_INIT_MINER_NAME, account_name, asset( amount, BEX_SYMBOL ) );
+      transfer( DPAY_INIT_MINER_NAME, account_name, asset( amount, DPAY_SYMBOL ) );
 
    } FC_CAPTURE_AND_RETHROW( (account_name)(amount) )
 }
@@ -403,17 +403,17 @@ void database_fixture::fund(
    {
       db_plugin->debug_update( [=]( database& db)
       {
-         if( amount.symbol.space() == asset_symbol_type::sdc_nai_space )
+         if( amount.symbol.space() == asset_symbol_type::smt_nai_space )
          {
             db.adjust_balance(account_name, amount);
             db.adjust_supply(amount);
-            // Note that SDC have no equivalent of BBD, hence no virtual supply, hence no need to update it.
+            // Note that SMT have no equivalent of BBD, hence no virtual supply, hence no need to update it.
             return;
          }
 
          db.modify( db.get_account( account_name ), [&]( account_object& a )
          {
-            if( amount.symbol == BEX_SYMBOL )
+            if( amount.symbol == DPAY_SYMBOL )
                a.balance += amount;
             else if( amount.symbol == BBD_SYMBOL )
             {
@@ -424,7 +424,7 @@ void database_fixture::fund(
 
          db.modify( db.get_dynamic_global_properties(), [&]( dynamic_global_property_object& gpo )
          {
-            if( amount.symbol == BEX_SYMBOL )
+            if( amount.symbol == DPAY_SYMBOL )
                gpo.current_supply += amount;
             else if( amount.symbol == BBD_SYMBOL )
                gpo.current_bbd_supply += amount;
@@ -436,7 +436,7 @@ void database_fixture::fund(
             if( median_feed.current_median_history.is_null() )
                db.modify( median_feed, [&]( feed_history_object& f )
                {
-                  f.current_median_history = price( asset( 1, BBD_SYMBOL ), asset( 1, BEX_SYMBOL ) );
+                  f.current_median_history = price( asset( 1, BBD_SYMBOL ), asset( 1, DPAY_SYMBOL ) );
                });
          }
 
@@ -452,7 +452,7 @@ void database_fixture::convert(
 {
    try
    {
-      if ( amount.symbol == BEX_SYMBOL )
+      if ( amount.symbol == DPAY_SYMBOL )
       {
          db->adjust_balance( account_name, -amount );
          db->adjust_balance( account_name, db->to_bbd( amount ) );
@@ -499,7 +499,7 @@ void database_fixture::vest( const string& from, const string& to, const asset& 
 {
    try
    {
-      FC_ASSERT( amount.symbol == BEX_SYMBOL, "Can only vest TESTS" );
+      FC_ASSERT( amount.symbol == DPAY_SYMBOL, "Can only vest TESTS" );
 
       transfer_to_vesting_operation op;
       op.from = from;
@@ -529,7 +529,7 @@ void database_fixture::vest( const string& from, const share_type& amount )
       transfer_to_vesting_operation op;
       op.from = from;
       op.to = "";
-      op.amount = asset( amount, BEX_SYMBOL );
+      op.amount = asset( amount, DPAY_SYMBOL );
 
       trx.operations.push_back( op );
       trx.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION );
@@ -577,6 +577,18 @@ void database_fixture::set_price_feed( const price& new_price )
 
    BOOST_REQUIRE(
 #ifdef IS_TEST_NET
+      !db->skip_price_feed_limit_check ||
+#endif
+#ifdef IS_JACKSON_NET
+      !db->skip_price_feed_limit_check ||
+#endif
+#ifdef IS_JEFFERSON_NET
+      !db->skip_price_feed_limit_check ||
+#endif
+#ifdef IS_FRANKLIN_NET
+      !db->skip_price_feed_limit_check ||
+#endif
+#ifdef IS_KENNEDY_NET
       !db->skip_price_feed_limit_check ||
 #endif
       db->get(feed_history_id_type()).current_median_history == new_price
@@ -647,20 +659,20 @@ void database_fixture::validate_database()
    try
    {
       db->validate_invariants();
-#ifdef DPAY_ENABLE_SDC
-      db->validate_sdc_invariants();
+#ifdef DPAY_ENABLE_SMT
+      db->validate_smt_invariants();
 #endif
    }
    FC_LOG_AND_RETHROW();
 }
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
 
 template< typename T >
-asset_symbol_type t_sdc_database_fixture< T >::create_sdc( const string& account_name, const fc::ecc::private_key& key,
+asset_symbol_type t_smt_database_fixture< T >::create_smt( const string& account_name, const fc::ecc::private_key& key,
    uint8_t token_decimal_places )
 {
-   sdc_create_operation op;
+   smt_create_operation op;
    signed_transaction tx;
    try
    {
@@ -670,9 +682,9 @@ asset_symbol_type t_sdc_database_fixture< T >::create_sdc( const string& account
       set_price_feed( price( ASSET( "1.000 TBD" ), ASSET( "1.000 TESTS" ) ) );
       convert( account_name, ASSET( "5000.000 TESTS" ) );
 
-      op.symbol = this->get_new_sdc_symbol( token_decimal_places, this->db );
+      op.symbol = this->get_new_smt_symbol( token_decimal_places, this->db );
       op.precision = op.symbol.decimals();
-      op.sdc_creation_fee = ASSET( "1000.000 TBD" );
+      op.smt_creation_fee = ASSET( "1000.000 TBD" );
       op.control_account = account_name;
 
       tx.operations.push_back( op );
@@ -688,31 +700,31 @@ asset_symbol_type t_sdc_database_fixture< T >::create_sdc( const string& account
    return op.symbol;
 }
 
-void sub_set_create_op(sdc_create_operation* op, account_name_type control_acount)
+void sub_set_create_op(smt_create_operation* op, account_name_type control_acount)
 {
    op->precision = op->symbol.decimals();
-   op->sdc_creation_fee = ASSET( "1000.000 TBD" );
+   op->smt_creation_fee = ASSET( "1000.000 TBD" );
    op->control_account = control_acount;
 }
 
-void set_create_op(chain::database* db, sdc_create_operation* op, account_name_type control_account, uint8_t token_decimal_places)
+void set_create_op(chain::database* db, smt_create_operation* op, account_name_type control_account, uint8_t token_decimal_places)
 {
-   op->symbol = database_fixture::get_new_sdc_symbol( token_decimal_places, db );
+   op->symbol = database_fixture::get_new_smt_symbol( token_decimal_places, db );
    sub_set_create_op(op, control_account);
 }
 
-void set_create_op(sdc_create_operation* op, account_name_type control_account, uint32_t token_nai, uint8_t token_decimal_places)
+void set_create_op(smt_create_operation* op, account_name_type control_account, uint32_t token_nai, uint8_t token_decimal_places)
 {
    op->symbol.from_nai(token_nai, token_decimal_places);
    sub_set_create_op(op, control_account);
 }
 
 template< typename T >
-std::array<asset_symbol_type, 3> t_sdc_database_fixture< T >::create_sdc_3(const char* control_account_name, const fc::ecc::private_key& key)
+std::array<asset_symbol_type, 3> t_smt_database_fixture< T >::create_smt_3(const char* control_account_name, const fc::ecc::private_key& key)
 {
-   sdc_create_operation op0;
-   sdc_create_operation op1;
-   sdc_create_operation op2;
+   smt_create_operation op0;
+   smt_create_operation op1;
+   smt_create_operation op2;
 
    try
    {
@@ -755,31 +767,31 @@ void push_invalid_operation(const operation& invalid_op, const fc::ecc::private_
 }
 
 template< typename T >
-void t_sdc_database_fixture< T >::create_invalid_sdc( const char* control_account_name, const fc::ecc::private_key& key )
+void t_smt_database_fixture< T >::create_invalid_smt( const char* control_account_name, const fc::ecc::private_key& key )
 {
    // Fail due to precision too big.
-   sdc_create_operation op_precision;
+   smt_create_operation op_precision;
    DPAY_REQUIRE_THROW( set_create_op(this->db, &op_precision, control_account_name, DPAY_ASSET_MAX_DECIMALS + 1), fc::assert_exception );
 }
 
 template< typename T >
-void t_sdc_database_fixture< T >::create_conflicting_sdc( const asset_symbol_type existing_sdc, const char* control_account_name,
+void t_smt_database_fixture< T >::create_conflicting_smt( const asset_symbol_type existing_smt, const char* control_account_name,
    const fc::ecc::private_key& key )
 {
    // Fail due to the same nai & precision.
-   sdc_create_operation op_same;
-   set_create_op( &op_same, control_account_name, existing_sdc.to_nai(), existing_sdc.decimals() );
+   smt_create_operation op_same;
+   set_create_op( &op_same, control_account_name, existing_smt.to_nai(), existing_smt.decimals() );
    push_invalid_operation( op_same, key, this->db );
    // Fail due to the same nai (though different precision).
-   sdc_create_operation op_same_nai;
-   set_create_op( &op_same_nai, control_account_name, existing_sdc.to_nai(), existing_sdc.decimals() == 0 ? 1 : 0 );
+   smt_create_operation op_same_nai;
+   set_create_op( &op_same_nai, control_account_name, existing_smt.to_nai(), existing_smt.decimals() == 0 ? 1 : 0 );
    push_invalid_operation (op_same_nai, key, this->db );
 }
 
 template< typename T >
-sdc_generation_unit t_sdc_database_fixture< T >::get_generation_unit( const units& dpay_unit, const units& token_unit )
+smt_generation_unit t_smt_database_fixture< T >::get_generation_unit( const units& dpay_unit, const units& token_unit )
 {
-   sdc_generation_unit ret;
+   smt_generation_unit ret;
 
    ret.dpay_unit = dpay_unit;
    ret.token_unit = token_unit;
@@ -788,38 +800,38 @@ sdc_generation_unit t_sdc_database_fixture< T >::get_generation_unit( const unit
 }
 
 template< typename T >
-sdc_cap_commitment t_sdc_database_fixture< T >::get_cap_commitment( share_type amount, uint128_t nonce )
+smt_cap_commitment t_smt_database_fixture< T >::get_cap_commitment( share_type amount, uint128_t nonce )
 {
-   sdc_cap_commitment ret;
+   smt_cap_commitment ret;
    if( nonce == 0)
       ret.fillin_nonhidden_value( amount );
    else
    {
-      sdc_revealed_cap reveal;
+      smt_revealed_cap reveal;
       reveal.amount = amount;
       reveal.nonce = nonce;
 
       ret.hash = fc::sha256::hash( reveal );
-      ret.lower_bound = SDC_MIN_HARD_CAP_DPAY_UNITS; // See sdc_capped_generation_policy::validate
-      ret.upper_bound = DPAY_MAX_SHARE_SUPPLY/10;    // See sdc_capped_generation_policy::validate
+      ret.lower_bound = SMT_MIN_HARD_CAP_DPAY_UNITS; // See smt_capped_generation_policy::validate
+      ret.upper_bound = DPAY_MAX_SHARE_SUPPLY/10;    // See smt_capped_generation_policy::validate
    }
 
    return ret;
 }
 
 template< typename T >
-sdc_capped_generation_policy t_sdc_database_fixture< T >::get_capped_generation_policy
+smt_capped_generation_policy t_smt_database_fixture< T >::get_capped_generation_policy
 (
-   const sdc_generation_unit& pre_soft_cap_unit,
-   const sdc_generation_unit& post_soft_cap_unit,
-   const sdc_cap_commitment& min_dpay_units_commitment,
-   const sdc_cap_commitment& hard_cap_dpay_units_commitment,
+   const smt_generation_unit& pre_soft_cap_unit,
+   const smt_generation_unit& post_soft_cap_unit,
+   const smt_cap_commitment& min_dpay_units_commitment,
+   const smt_cap_commitment& hard_cap_dpay_units_commitment,
    uint16_t soft_cap_percent,
    uint32_t min_unit_ratio,
    uint32_t max_unit_ratio
 )
 {
-   sdc_capped_generation_policy ret;
+   smt_capped_generation_policy ret;
 
    ret.pre_soft_cap_unit = pre_soft_cap_unit;
    ret.post_soft_cap_unit = post_soft_cap_unit;
@@ -835,22 +847,22 @@ sdc_capped_generation_policy t_sdc_database_fixture< T >::get_capped_generation_
    return ret;
 }
 
-template asset_symbol_type t_sdc_database_fixture< clean_database_fixture >::create_sdc( const string& account_name, const fc::ecc::private_key& key, uint8_t token_decimal_places );
+template asset_symbol_type t_smt_database_fixture< clean_database_fixture >::create_smt( const string& account_name, const fc::ecc::private_key& key, uint8_t token_decimal_places );
 
-template asset_symbol_type t_sdc_database_fixture< database_fixture >::create_sdc( const string& account_name, const fc::ecc::private_key& key, uint8_t token_decimal_places );
+template asset_symbol_type t_smt_database_fixture< database_fixture >::create_smt( const string& account_name, const fc::ecc::private_key& key, uint8_t token_decimal_places );
 
-template void t_sdc_database_fixture< clean_database_fixture >::create_invalid_sdc( const char* control_account_name, const fc::ecc::private_key& key );
-template void t_sdc_database_fixture< clean_database_fixture >::create_conflicting_sdc( const asset_symbol_type existing_sdc, const char* control_account_name, const fc::ecc::private_key& key );
-template std::array<asset_symbol_type, 3> t_sdc_database_fixture< clean_database_fixture >::create_sdc_3( const char* control_account_name, const fc::ecc::private_key& key );
+template void t_smt_database_fixture< clean_database_fixture >::create_invalid_smt( const char* control_account_name, const fc::ecc::private_key& key );
+template void t_smt_database_fixture< clean_database_fixture >::create_conflicting_smt( const asset_symbol_type existing_smt, const char* control_account_name, const fc::ecc::private_key& key );
+template std::array<asset_symbol_type, 3> t_smt_database_fixture< clean_database_fixture >::create_smt_3( const char* control_account_name, const fc::ecc::private_key& key );
 
-template sdc_generation_unit t_sdc_database_fixture< clean_database_fixture >::get_generation_unit( const units& dpay_unit, const units& token_unit );
-template sdc_cap_commitment t_sdc_database_fixture< clean_database_fixture >::get_cap_commitment( share_type amount, uint128_t nonce );
-template sdc_capped_generation_policy t_sdc_database_fixture< clean_database_fixture >::get_capped_generation_policy
+template smt_generation_unit t_smt_database_fixture< clean_database_fixture >::get_generation_unit( const units& dpay_unit, const units& token_unit );
+template smt_cap_commitment t_smt_database_fixture< clean_database_fixture >::get_cap_commitment( share_type amount, uint128_t nonce );
+template smt_capped_generation_policy t_smt_database_fixture< clean_database_fixture >::get_capped_generation_policy
 (
-   const sdc_generation_unit& pre_soft_cap_unit,
-   const sdc_generation_unit& post_soft_cap_unit,
-   const sdc_cap_commitment& min_dpay_units_commitment,
-   const sdc_cap_commitment& hard_cap_dpay_units_commitment,
+   const smt_generation_unit& pre_soft_cap_unit,
+   const smt_generation_unit& post_soft_cap_unit,
+   const smt_cap_commitment& min_dpay_units_commitment,
+   const smt_cap_commitment& hard_cap_dpay_units_commitment,
    uint16_t soft_cap_percent,
    uint32_t min_unit_ratio,
    uint32_t max_unit_ratio

@@ -16,7 +16,7 @@ using namespace dpay;
 using namespace dpay::chain;
 using namespace dpay::protocol;
 
-#ifndef IS_TEST_NET
+#if defined IS_TEST_NET && defined IS_JACKSON_NET && defined IS_JEFFERSON_NET && defined IS_FRANKLIN_NET && defined IS_KENNEDY_NET
 
 BOOST_FIXTURE_TEST_SUITE( live_tests, live_database_fixture )
 

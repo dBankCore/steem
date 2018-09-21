@@ -6,7 +6,7 @@ popd () { command popd "$@" > /dev/null; }
 
 function print_help_and_quit {
    echo Usage: jobs test_dpayd_path ref_dpayd_path test_work_path ref_work_path block_limit [--dont-copy-config]
-   echo Example: 16 ~/dpayit/1/dpayd ~/dpayit/2/dpayd ~/dpayit/1/wdir ~/dpayit/2/wdir 5000000
+   echo Example: 16 ~/dpay/1/dpayd ~/dpay/2/dpayd ~/dpay/1/wdir ~/dpay/2/wdir 5000000
    exit -1
 }
 

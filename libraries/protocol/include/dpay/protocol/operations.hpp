@@ -5,7 +5,7 @@
 #include <dpay/protocol/operation_util.hpp>
 #include <dpay/protocol/dpay_operations.hpp>
 #include <dpay/protocol/dpay_virtual_operations.hpp>
-#include <dpay/protocol/sdc_operations.hpp>
+#include <dpay/protocol/smt_operations.hpp>
 
 namespace dpay { namespace protocol {
 
@@ -66,17 +66,17 @@ namespace dpay { namespace protocol {
             account_create_with_delegation_operation,
             witness_set_properties_operation,
 
-#ifdef DPAY_ENABLE_SDC
-            /// SDC operations
+#ifdef DPAY_ENABLE_SMT
+            /// SMT operations
             claim_reward_balance2_operation,
 
-            sdc_setup_operation,
-            sdc_cap_reveal_operation,
-            sdc_refund_operation,
-            sdc_setup_emissions_operation,
-            sdc_set_setup_parameters_operation,
-            sdc_set_runtime_parameters_operation,
-            sdc_create_operation,
+            smt_setup_operation,
+            smt_cap_reveal_operation,
+            smt_refund_operation,
+            smt_setup_emissions_operation,
+            smt_set_setup_parameters_operation,
+            smt_set_runtime_parameters_operation,
+            smt_create_operation,
 #endif
             /// virtual operations below this point
             fill_convert_request_operation,

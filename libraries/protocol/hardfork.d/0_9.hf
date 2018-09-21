@@ -2,7 +2,7 @@
 #define DPAY_HARDFORK_0_9 9
 #define DPAY_HARDFORK_0_9__141 DPAY_HARDFORK_0_9
 
-#define DPAY_HARDFORK_0_9_TIME 1559606400 // Tuesday, June 4, 2019 12:00:00 AM
+#define DPAY_HARDFORK_0_9_TIME 1468454400 // 2016-07-14T00:00:00 UTC
 #define DPAY_HARDFORK_0_9_VERSION hardfork_version( 0, 9 )
 
 namespace hardfork9

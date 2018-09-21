@@ -81,7 +81,7 @@ asset_symbol_type asset_symbol_type::from_nai_string( const char* p, uint8_t dec
                {
                   uint64_t new_nai = nai*10 + ((*p) - '0');
                   FC_ASSERT( new_nai >= nai, "Cannot parse asset amount" ); // This is failing for system assets
-                  FC_ASSERT( new_nai <= SDC_MAX_NAI, "Cannot parse asset amount" );
+                  FC_ASSERT( new_nai <= SMT_MAX_NAI, "Cannot parse asset amount" );
                   nai = new_nai;
                   ++p;
                   ++digit_count;
@@ -172,7 +172,7 @@ uint32_t asset_symbol_type::asset_num_from_nai( uint32_t nai, uint8_t decimal_pl
    uint32_t nai_check_digit = nai % 10;
    uint32_t nai_data_digits = nai / 10;
 
-   FC_ASSERT( (nai_data_digits >= SDC_MIN_NAI) & (nai_data_digits <= SDC_MAX_NAI), "NAI out of range" );
+   FC_ASSERT( (nai_data_digits >= SMT_MIN_NAI) & (nai_data_digits <= SMT_MAX_NAI), "NAI out of range" );
    FC_ASSERT( nai_check_digit == damm_checksum_8digit(nai_data_digits), "Invalid check digit" );
 
    switch( nai_data_digits )
@@ -209,7 +209,7 @@ uint32_t asset_symbol_type::to_nai()const
          nai_data_digits = DPAY_NAI_VESTS;
          break;
       default:
-         FC_ASSERT( space() == sdc_nai_space );
+         FC_ASSERT( space() == smt_nai_space );
          nai_data_digits = (asset_num >> 5);
    }
 
@@ -236,9 +236,9 @@ bool asset_symbol_type::is_vesting() const
                FC_ASSERT( false, "Unknown asset symbol" );
          }
       }
-      case sdc_nai_space:
+      case smt_nai_space:
          // 6th bit of asset_num is used as vesting/liquid variant indicator.
-         return asset_num & SDC_ASSET_NUM_VESTING_MASK;
+         return asset_num & SMT_ASSET_NUM_VESTING_MASK;
       default:
          FC_ASSERT( false, "Unknown asset symbol" );
    }
@@ -262,10 +262,10 @@ asset_symbol_type asset_symbol_type::get_paired_symbol() const
                FC_ASSERT( false, "Unknown asset symbol" );
          }
       }
-      case sdc_nai_space:
+      case smt_nai_space:
          {
          // Toggle 6th bit of this asset_num.
-         auto paired_asset_num = asset_num ^ ( SDC_ASSET_NUM_VESTING_MASK );
+         auto paired_asset_num = asset_num ^ ( SMT_ASSET_NUM_VESTING_MASK );
          return from_asset_num( paired_asset_num );
          }
       default:
@@ -284,7 +284,7 @@ asset_symbol_type::asset_symbol_space asset_symbol_type::space()const
          s = legacy_space;
          break;
       default:
-         s = sdc_nai_space;
+         s = smt_nai_space;
    }
    return s;
 }
@@ -302,8 +302,8 @@ void asset_symbol_type::validate()const
          uint32_t nai_data_digits = (asset_num >> 5);
          uint32_t nai_1bit = (asset_num & 0x10);
          uint32_t nai_decimal_places = (asset_num & 0x0F);
-         FC_ASSERT( (nai_data_digits >= SDC_MIN_NAI) &
-                    (nai_data_digits <= SDC_MAX_NAI) &
+         FC_ASSERT( (nai_data_digits >= SMT_MIN_NAI) &
+                    (nai_data_digits <= SMT_MAX_NAI) &
                     (nai_1bit == 0x10) &
                     (nai_decimal_places <= DPAY_ASSET_MAX_DECIMALS),
                     "Cannot determine space for asset ${n}", ("n", asset_num) );

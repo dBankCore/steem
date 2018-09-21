@@ -68,8 +68,8 @@ class database_api_impl
          (verify_authority)
          (verify_account_authority)
          (verify_signatures)
-#ifdef DPAY_ENABLE_SDC
-         (get_sdc_next_identifier)
+#ifdef DPAY_ENABLE_SMT
+         (get_smt_next_identifier)
 #endif
       )
 
@@ -1282,8 +1282,8 @@ DEFINE_API_IMPL( database_api_impl, get_order_book )
    FC_ASSERT( args.limit <= DATABASE_API_SINGLE_QUERY_LIMIT );
    get_order_book_return result;
 
-   auto max_sell = price::max( BBD_SYMBOL, BEX_SYMBOL );
-   auto max_buy = price::max( BEX_SYMBOL, BBD_SYMBOL );
+   auto max_sell = price::max( BBD_SYMBOL, DPAY_SYMBOL );
+   auto max_buy = price::max( DPAY_SYMBOL, BBD_SYMBOL );
 
    const auto& limit_price_idx = _db.get_index< chain::limit_order_index >().indices().get< chain::by_price >();
    auto sell_itr = limit_price_idx.lower_bound( max_sell );
@@ -1303,7 +1303,7 @@ DEFINE_API_IMPL( database_api_impl, get_order_book )
       result.bids.push_back( cur );
       ++sell_itr;
    }
-   while( buy_itr != end && buy_itr->sell_price.base.symbol == BEX_SYMBOL && result.asks.size() < args.limit )
+   while( buy_itr != end && buy_itr->sell_price.base.symbol == DPAY_SYMBOL && result.asks.size() < args.limit )
    {
       auto itr = buy_itr;
       order cur;
@@ -1311,7 +1311,7 @@ DEFINE_API_IMPL( database_api_impl, get_order_book )
       cur.real_price = 0.0;
       // cur.real_price  = (~cur.order_price).to_real();
       cur.dpay   = itr->for_sale;
-      cur.bbd     = ( asset( itr->for_sale, BEX_SYMBOL ) * cur.order_price ).amount;
+      cur.bbd     = ( asset( itr->for_sale, DPAY_SYMBOL ) * cur.order_price ).amount;
       cur.created = itr->created;
       result.asks.push_back( cur );
       ++buy_itr;
@@ -1440,17 +1440,17 @@ DEFINE_API_IMPL( database_api_impl, verify_signatures )
    return result;
 }
 
-#ifdef DPAY_ENABLE_SDC
+#ifdef DPAY_ENABLE_SMT
 //////////////////////////////////////////////////////////////////////
 //                                                                  //
-// SDC                                                              //
+// SMT                                                              //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 
-DEFINE_API_IMPL( database_api_impl, get_sdc_next_identifier )
+DEFINE_API_IMPL( database_api_impl, get_smt_next_identifier )
 {
-   get_sdc_next_identifier_return result;
-   result.nais = _db.get_sdc_next_identifier();
+   get_smt_next_identifier_return result;
+   result.nais = _db.get_smt_next_identifier();
    return result;
 }
 #endif
@@ -1503,8 +1503,8 @@ DEFINE_READ_APIS( database_api,
    (verify_authority)
    (verify_account_authority)
    (verify_signatures)
-#ifdef DPAY_ENABLE_SDC
-   (get_sdc_next_identifier)
+#ifdef DPAY_ENABLE_SMT
+   (get_smt_next_identifier)
 #endif
 )
 

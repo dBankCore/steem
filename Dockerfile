@@ -1,5 +1,7 @@
 FROM phusion/baseimage:0.9.19
 
+#ARG DPAYD_BLOCKCHAIN=https://example.com/dpayd-blockchain.tbz2
+
 ARG DPAY_STATIC_BUILD=ON
 ENV DPAY_STATIC_BUILD ${DPAY_STATIC_BUILD}
 ARG BUILD_STEP
@@ -89,7 +91,7 @@ RUN \
         -DLOW_MEMORY_NODE=OFF \
         -DCLEAR_VOTES=ON \
         -DSKIP_BY_TX_ID=ON \
-        -DENABLE_SDC_SUPPORT=ON \
+        -DENABLE_SMT_SUPPORT=ON \
         -DDPAY_STATIC_BUILD=${DPAY_STATIC_BUILD} \
         .. && \
     make -j$(nproc) chain_test test_fixed_string plugin_test && \

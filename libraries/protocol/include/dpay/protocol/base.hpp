@@ -26,20 +26,12 @@ namespace dpay { namespace protocol {
    };
 
    typedef static_variant<
-      void_t,
-      version,              // Normal witness version reporting, for diagnostics and voting
-      hardfork_version_vote // Voting for the next hardfork to trigger
-      >                                block_header_extensions;
-
-   typedef static_variant<
       void_t
       >                                future_extensions;
 
-   typedef flat_set<block_header_extensions > block_header_extensions_type;
    typedef flat_set<future_extensions> extensions_type;
 
 
 } } // dpay::protocol
 
-FC_REFLECT_TYPENAME( dpay::protocol::block_header_extensions )
 FC_REFLECT_TYPENAME( dpay::protocol::future_extensions )

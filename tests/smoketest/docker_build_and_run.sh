@@ -11,14 +11,14 @@
 #
 # WARNING: use absolute paths instead of relative!
 #
-# sudo ./docker_build_and_run.sh ~/dpays/dpay/build/Release/programs/dpayd ~/dpays/dpay/build/Release/programs/dpayd ~/dpayit/dpayd_data/dpaynet ~/dpayit/dpayd_data/dpaynet ~/dpayit/logs 5000000 12
+# sudo ./docker_build_and_run.sh ~/dpay/dpay/build/Release/programs/dpayd ~/dpay/dpay/build/Release/programs/dpayd ~/dpay/dpayd_data/dpaynet ~/dpay/dpayd_data/dpaynet ~/dpay/logs 5000000 12
 
 if [ $# -lt 6 -o $# -gt 8 ]
 then
    echo "Usage: reference_dpayd_location tested_dpayd_location ref_blockchain_folder_location tested_blockchain_folder_location"
    echo "       logs_dir stop_replay_at_block [jobs [--dont-copy-config]"
-   echo "Example: ~/dpayit/ref_dpayd ~/dpays/dpay/build/Release/programs/dpayd ~/dpays/dpaynet ~/dpayit/testnet"
-   echo "         ~/dpayit/logs 5000000 12"
+   echo "Example: ~/dpay/ref_dpayd ~/dpay/dpay/build/Release/programs/dpayd ~/dpay/dpaynet ~/dpay/testnet"
+   echo "         ~/dpay/logs 5000000 12"
    echo "         if <jobs> not passed, <nproc> will be used."
    exit -1
 fi

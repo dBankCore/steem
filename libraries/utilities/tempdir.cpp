@@ -30,9 +30,9 @@ namespace dpay { namespace utilities {
 
 fc::path temp_directory_path()
 {
-   const char* dsite_tempdir = getenv("DPAY_TEMPDIR");
-   if( dsite_tempdir != nullptr )
-      return fc::path( dsite_tempdir );
+   const char* dpay_tempdir = getenv("DPAY_TEMPDIR");
+   if( dpay_tempdir != nullptr )
+      return fc::path( dpay_tempdir );
    return fc::temp_directory_path() / "dpay-tmp";
 }
 
