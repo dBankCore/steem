@@ -4,7 +4,7 @@
 
 |  # |         Node Hosting        | Node Maintainer  | Node Version  | IPV4 Address  |  Peer Port  |
 |----|-----------------------------|------------------|---------------|---------------|-------------|
-| 1  | d.dpayfranklin.com          |     @dpay        | 0.19.6-stable | 51.15.127.30    |    6620   |
+| 1  | d.dpayfranklin.com          |     @dpay        | 0.0.1-stable  | 51.15.127.30  |    6620   |
 
 ## DPAY FRANKLIN TEST NETWORK PUBLIC API NODES
 
