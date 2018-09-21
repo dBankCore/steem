@@ -4,7 +4,7 @@
   <br>
 </p>
 
-# dPay (0.0.1-stable)
+# dPay (0.1.0-stable)
 
 **Decentralized MultiChain Smart Network (DMSN) (Stable Release)**
 
@@ -68,7 +68,7 @@ dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" socia
 
 
 ## dPay LiveNet Details
-- Stable Version is 0.0.1
+- Stable Version is 0.1.0
 - Newest Version is 0.0.5
 - Chain was officially started by 21 community members who formed a governance on Sep, 11 2018 07:31:16
 - Currency symbol BEX, short for BenchMark, a private issued currency using the name of an old and out-of-circulation legal [Germany currency]()
