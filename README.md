@@ -65,8 +65,8 @@ dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" socia
 
 
 ## dPay LiveNet Details
-- Stable Version is 0.1.0
-- Newest Version is 0.1.5
+- Stable Version is 0.19.6
+- Newest Version is 0.20.0
 - Chain was officially started by 21 community members who formed a governance on Sep, 11 2018 07:31:16
 - Currency symbol BEX, short for BenchMark, a private issued currency using the name of an old and out-of-circulation legal [Germany currency]()
 - Produces 10,512,000 blocks per year.
@@ -77,7 +77,7 @@ dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" socia
 - 10% of inflation to block producers.
 - Dollar-backed currency (BBD) that can be VESTED on-chain.
 - Built-in decentralized exchange for BEX and BBD.
-- **POW mining is disabled.** and chain is now 100% DPOS. 
+- **POW mining is disabled.** and chain is now 100% DPOS.
 
 
 ##  Quick Installation
