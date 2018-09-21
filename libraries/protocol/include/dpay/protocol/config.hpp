@@ -4,8 +4,8 @@
  */
 #pragma once
 
-#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 1, 0) )
-#define DPAY_BLOCKCHAIN_HARDFORK_VERSION     ( hardfork_version(0, 1, 0) )
+#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 19, 6) )
+#define DPAY_BLOCKCHAIN_HARDFORK_VERSION     ( hardfork_version( DPAY_BLOCKCHAIN_VERSION ) )
 
 #ifdef IS_TEST_NET
 /*

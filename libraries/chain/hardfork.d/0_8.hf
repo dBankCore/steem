@@ -2,7 +2,7 @@
 #define DPAY_HARDFORK_0_8 8
 #define DPAY_HARDFORK_0_8__116 DPAY_HARDFORK_0_8
 
-// Saturday, May 4, 2019 12:00:00 AM
-#define DPAY_HARDFORK_0_8_TIME 1556928000
+// Monday, September 11, 2018 12:30:00 PM
+#define DPAY_HARDFORK_0_8_TIME 1536669076
 #define DPAY_HARDFORK_0_8_VERSION hardfork_version( 0, 8 )
 #endif

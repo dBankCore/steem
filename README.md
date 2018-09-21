@@ -77,6 +77,7 @@ dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" socia
 - 10% of inflation to block producers.
 - Dollar-backed currency (BBD) that can be VESTED on-chain.
 - Built-in decentralized exchange for BEX and BBD.
+- **POW mining is disabled.** and chain is now 100% DPOS. 
 
 
 ##  Quick Installation
