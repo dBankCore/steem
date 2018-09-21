@@ -1416,21 +1416,14 @@ void vote_evaluator::do_apply( const vote_operation& o )
 
          if( curation_reward_eligible )
          {
-            if( comment.created < fc::time_point_sec(DPAY_HARDFORK_0_6_REVERSE_AUCTION_TIME) ) {
-               u512 rshares3(rshares);
-               u256 total2( comment.abs_rshares.value );
+           u512 rshares3(rshares);
+           u256 total2( comment.abs_rshares.value );
+           rshares3 *= 1000000;
+           total2 *= 1000000;
+           cv.weight = static_cast<uint64_t>( rshares3 / total2 );
+          }
 
-               if( !_db.has_hardfork( DPAY_HARDFORK_0_1 ) )
-               {
-                  rshares3 *= 1000000;
-                  total2 *= 1000000;
-               }
-
-               rshares3 = rshares3 * rshares3 * rshares3;
-
-               total2 *= total2;
-               cv.weight = static_cast<uint64_t>( rshares3 / total2 );
-            } else {// cv.weight = W(R_1) - W(R_0)
+            else {// cv.weight = W(R_1) - W(R_0)
                const uint128_t two_s = 2 * util::get_content_constant_s();
                if( _db.has_hardfork( DPAY_HARDFORK_0_17__774 ) )
                {
