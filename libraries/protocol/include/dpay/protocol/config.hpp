@@ -198,7 +198,7 @@
 #define DPAY_OWNER_UPDATE_LIMIT                          fc::minutes(60)
 #define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 3186477
 
-#define DPAY_INIT_SUPPLY                     (int64_t( 1000 ) * int64_t( 1000000 ) * int64_t( 1000 ))
+#define DPAY_INIT_SUPPLY                     (int64_t( 2500 ) * int64_t( 1000000 ) * int64_t( 1000 ))
 
 #endif
 
