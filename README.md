@@ -4,7 +4,7 @@
   <br>
 </p>
 
-# dPay (0.1.0-stable)
+# dPay (0.19.6-stable)
 
 **Decentralized MultiChain Smart Network (DMSN) (Stable Release)**
 
