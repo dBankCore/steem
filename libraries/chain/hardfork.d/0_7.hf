@@ -4,6 +4,6 @@
 #define DPAY_FIRST_CASHOUT_TIME DPAY_HARDFORK_0_7
 
 // Monday, September 11, 2018 12:30:00 PM
-#define DPAY_HARDFORK_0_7_TIME 1536669076  //July 4th
+#define DPAY_HARDFORK_0_7_TIME 1537522996 
 #define DPAY_HARDFORK_0_7_VERSION hardfork_version( 0, 7 )
 #endif

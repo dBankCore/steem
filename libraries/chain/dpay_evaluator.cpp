@@ -1456,21 +1456,11 @@ void vote_evaluator::do_apply( const vote_operation& o )
             }
 
             max_vote_weight = cv.weight;
-
-            if( _db.head_block_time() > fc::time_point_sec(DPAY_HARDFORK_0_6_REVERSE_AUCTION_TIME) )  /// start enforcing this prior to the hardfork
-            {
-               /// discount weight by time
-               uint128_t w(max_vote_weight);
-               uint64_t delta_t = std::min( uint64_t((cv.last_update - comment.created).to_seconds()), uint64_t(DPAY_REVERSE_AUCTION_WINDOW_SECONDS) );
-
-               w *= delta_t;
-               w /= DPAY_REVERSE_AUCTION_WINDOW_SECONDS;
-               cv.weight = w.to_uint64();
-            }
-         }
-         else
-         {
-            cv.weight = 0;
+            uint128_t w(max_vote_weight);
+            uint64_t delta_t = std::min( uint64_t((cv.last_update - comment.created).to_seconds()), uint64_t(DPAY_REVERSE_AUCTION_WINDOW_SECONDS) );
+            w *= delta_t;
+            w /= DPAY_REVERSE_AUCTION_WINDOW_SECONDS;
+            cv.weight = w.to_uint64();
          }
       });
 
