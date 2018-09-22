@@ -19,7 +19,7 @@ bcd-trigger = [[0,10],[85,300]]
 
 rpc-endpoint = 127.0.0.1:1776
 
-p2p-endpoint = 0.0.0.0:80
+p2p-endpoint = 0.0.0.0:6620
 
 # history-whitelist-ops = transfer_operation transfer_to_vesting_operation withdraw_vesting_operation interest_operation transfer_to_savings_operation transfer_from_savings_operation cancel_transfer_from_savings_operation escrow_transfer_operation escrow_approve_operation escrow_dispute_operation escrow_release_operation convert_operation fill_convert_request_operation fill_order_operation claim_reward_balance_operation author_reward_operation curation_reward_operation fill_vesting_withdraw_operation fill_transfer_from_savings_operation delegate_vesting_shares_operation return_vesting_delegation_operation comment_benefactor_reward_operation
 
