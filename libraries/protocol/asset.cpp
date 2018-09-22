@@ -1,4 +1,4 @@
-#include <steem/protocol/asset.hpp>
+#include <dpay/protocol/asset.hpp>
 
 #include <fc/io/json.hpp>
 
@@ -15,7 +15,7 @@ index : field
    7  : \0
 */
 
-namespace steem { namespace protocol {
+namespace dpay { namespace protocol {
 
 std::string asset_symbol_type::to_string()const
 {
@@ -29,7 +29,7 @@ asset_symbol_type asset_symbol_type::from_string( const std::string& str )
 
 void asset_symbol_type::to_nai_string( char* buf )const
 {
-   static_assert( STEEM_ASSET_SYMBOL_NAI_STRING_LENGTH >= 12, "This code will overflow a short buffer" );
+   static_assert( DPAY_ASSET_SYMBOL_NAI_STRING_LENGTH >= 12, "This code will overflow a short buffer" );
    uint32_t x = to_nai();
    buf[11] = '\0';
    buf[10] = ((x%10)+'0');  x /= 10;
@@ -177,17 +177,17 @@ uint32_t asset_symbol_type::asset_num_from_nai( uint32_t nai, uint8_t decimal_pl
 
    switch( nai_data_digits )
    {
-      case STEEM_NAI_STEEM:
-         FC_ASSERT( decimal_places == STEEM_PRECISION_STEEM );
-         return STEEM_ASSET_NUM_STEEM;
-      case STEEM_NAI_SBD:
-         FC_ASSERT( decimal_places == STEEM_PRECISION_SBD );
-         return STEEM_ASSET_NUM_SBD;
-      case STEEM_NAI_VESTS:
-         FC_ASSERT( decimal_places == STEEM_PRECISION_VESTS );
-         return STEEM_ASSET_NUM_VESTS;
+      case DPAY_NAI_DPAY:
+         FC_ASSERT( decimal_places == DPAY_PRECISION_DPAY );
+         return DPAY_ASSET_NUM_DPAY;
+      case DPAY_NAI_BBD:
+         FC_ASSERT( decimal_places == DPAY_PRECISION_BBD );
+         return DPAY_ASSET_NUM_BBD;
+      case DPAY_NAI_VESTS:
+         FC_ASSERT( decimal_places == DPAY_PRECISION_VESTS );
+         return DPAY_ASSET_NUM_VESTS;
       default:
-         FC_ASSERT( decimal_places <= STEEM_ASSET_MAX_DECIMALS, "Invalid decimal_places" );
+         FC_ASSERT( decimal_places <= DPAY_ASSET_MAX_DECIMALS, "Invalid decimal_places" );
          return (nai_data_digits << 5) | 0x10 | decimal_places;
    }
 }
@@ -199,14 +199,14 @@ uint32_t asset_symbol_type::to_nai()const
    // Can be replaced with some clever bitshifting
    switch( asset_num )
    {
-      case STEEM_ASSET_NUM_STEEM:
-         nai_data_digits = STEEM_NAI_STEEM;
+      case DPAY_ASSET_NUM_DPAY:
+         nai_data_digits = DPAY_NAI_DPAY;
          break;
-      case STEEM_ASSET_NUM_SBD:
-         nai_data_digits = STEEM_NAI_SBD;
+      case DPAY_ASSET_NUM_BBD:
+         nai_data_digits = DPAY_NAI_BBD;
          break;
-      case STEEM_ASSET_NUM_VESTS:
-         nai_data_digits = STEEM_NAI_VESTS;
+      case DPAY_ASSET_NUM_VESTS:
+         nai_data_digits = DPAY_NAI_VESTS;
          break;
       default:
          FC_ASSERT( space() == smt_nai_space );
@@ -225,12 +225,12 @@ bool asset_symbol_type::is_vesting() const
       {
          switch( asset_num )
          {
-            case STEEM_ASSET_NUM_STEEM:
+            case DPAY_ASSET_NUM_DPAY:
                return false;
-            case STEEM_ASSET_NUM_SBD:
-               // SBD is certainly liquid.
+            case DPAY_ASSET_NUM_BBD:
+               // BBD is certainly liquid.
                return false;
-            case STEEM_ASSET_NUM_VESTS:
+            case DPAY_ASSET_NUM_VESTS:
                return true;
             default:
                FC_ASSERT( false, "Unknown asset symbol" );
@@ -252,12 +252,12 @@ asset_symbol_type asset_symbol_type::get_paired_symbol() const
       {
          switch( asset_num )
          {
-            case STEEM_ASSET_NUM_STEEM:
-               return from_asset_num( STEEM_ASSET_NUM_VESTS );
-            case STEEM_ASSET_NUM_SBD:
+            case DPAY_ASSET_NUM_DPAY:
+               return from_asset_num( DPAY_ASSET_NUM_VESTS );
+            case DPAY_ASSET_NUM_BBD:
                return *this;
-            case STEEM_ASSET_NUM_VESTS:
-               return from_asset_num( STEEM_ASSET_NUM_STEEM );
+            case DPAY_ASSET_NUM_VESTS:
+               return from_asset_num( DPAY_ASSET_NUM_DPAY );
             default:
                FC_ASSERT( false, "Unknown asset symbol" );
          }
@@ -278,9 +278,9 @@ asset_symbol_type::asset_symbol_space asset_symbol_type::space()const
    asset_symbol_type::asset_symbol_space s = legacy_space;
    switch( asset_num )
    {
-      case STEEM_ASSET_NUM_STEEM:
-      case STEEM_ASSET_NUM_SBD:
-      case STEEM_ASSET_NUM_VESTS:
+      case DPAY_ASSET_NUM_DPAY:
+      case DPAY_ASSET_NUM_BBD:
+      case DPAY_ASSET_NUM_VESTS:
          s = legacy_space;
          break;
       default:
@@ -293,9 +293,9 @@ void asset_symbol_type::validate()const
 {
    switch( asset_num )
    {
-      case STEEM_ASSET_NUM_STEEM:
-      case STEEM_ASSET_NUM_SBD:
-      case STEEM_ASSET_NUM_VESTS:
+      case DPAY_ASSET_NUM_DPAY:
+      case DPAY_ASSET_NUM_BBD:
+      case DPAY_ASSET_NUM_VESTS:
          break;
       default:
       {
@@ -305,19 +305,19 @@ void asset_symbol_type::validate()const
          FC_ASSERT( (nai_data_digits >= SMT_MIN_NAI) &
                     (nai_data_digits <= SMT_MAX_NAI) &
                     (nai_1bit == 0x10) &
-                    (nai_decimal_places <= STEEM_ASSET_MAX_DECIMALS),
+                    (nai_decimal_places <= DPAY_ASSET_MAX_DECIMALS),
                     "Cannot determine space for asset ${n}", ("n", asset_num) );
       }
    }
    // this assert is duplicated by above code in all cases
-   // FC_ASSERT( decimals() <= STEEM_ASSET_MAX_DECIMALS );
+   // FC_ASSERT( decimals() <= DPAY_ASSET_MAX_DECIMALS );
 }
 
 void asset::validate()const
 {
    symbol.validate();
    FC_ASSERT( amount.value >= 0 );
-   FC_ASSERT( amount.value <= STEEM_MAX_SATOSHIS );
+   FC_ASSERT( amount.value <= DPAY_MAX_SATOSHIS );
 }
 
 #define BQ(a) \
@@ -367,8 +367,8 @@ DEFINE_PRICE_COMPARISON_OPERATOR( >= )
          return price{ base, quote };
       } FC_CAPTURE_AND_RETHROW( (base)(quote) ) }
 
-      price price::max( asset_symbol_type base, asset_symbol_type quote ) { return asset( share_type(STEEM_MAX_SATOSHIS), base ) / asset( share_type(1), quote); }
-      price price::min( asset_symbol_type base, asset_symbol_type quote ) { return asset( 1, base ) / asset( STEEM_MAX_SATOSHIS, quote); }
+      price price::max( asset_symbol_type base, asset_symbol_type quote ) { return asset( share_type(DPAY_MAX_SATOSHIS), base ) / asset( share_type(1), quote); }
+      price price::min( asset_symbol_type base, asset_symbol_type quote ) { return asset( 1, base ) / asset( DPAY_MAX_SATOSHIS, quote); }
 
       bool price::is_null() const { return *this == price(); }
 
@@ -380,10 +380,10 @@ DEFINE_PRICE_COMPARISON_OPERATOR( >= )
       } FC_CAPTURE_AND_RETHROW( (base)(quote) ) }
 
 
-} } // steem::protocol
+} } // dpay::protocol
 
 namespace fc {
-   void to_variant( const steem::protocol::asset& var, fc::variant& vo )
+   void to_variant( const dpay::protocol::asset& var, fc::variant& vo )
    {
       try
       {
@@ -394,7 +394,7 @@ namespace fc {
       } FC_CAPTURE_AND_RETHROW()
    }
 
-   void from_variant( const fc::variant& var, steem::protocol::asset& vo )
+   void from_variant( const fc::variant& var, dpay::protocol::asset& vo )
    {
       try
       {
@@ -408,7 +408,7 @@ namespace fc {
 
          FC_ASSERT( v_object.contains( "precision" ), "Precision field doesn't exist." );
          FC_ASSERT( v_object.contains( "nai" ), "NAI field doesn't exist." );
-         vo.symbol = steem::protocol::asset_symbol_type::from_nai_string( v_object[ "nai" ].as< std::string >().c_str(), v_object[ "precision" ].as< uint8_t >() );
+         vo.symbol = dpay::protocol::asset_symbol_type::from_nai_string( v_object[ "nai" ].as< std::string >().c_str(), v_object[ "precision" ].as< uint8_t >() );
       } FC_CAPTURE_AND_RETHROW()
    }
 }

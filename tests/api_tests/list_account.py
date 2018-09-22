@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Create list of all steem accounts in file.
+Create list of all dPay accounts in file.
 Usage: create_account_list.py <server_address> [<output_filename>]
 """
 import sys
 import json
 from jsonsocket import JSONSocket
-from jsonsocket import steemd_call
+from jsonsocket import dpayd_call
 
 def list_accounts(url):
   """
@@ -16,7 +16,7 @@ def list_accounts(url):
   end = False
   accounts_count = 0
   accounts = []
-  
+
   while True:
     request = bytes( json.dumps( {
       "jsonrpc": "2.0",
@@ -25,14 +25,14 @@ def list_accounts(url):
       "params": { "start": last_account, "limit": 1000, "order": "by_name" }
       } ), "utf-8" ) + b"\r\n"
 
-    status, response = steemd_call(url, data=request)
-    
+    status, response = dpayd_call(url, data=request)
+
     if status == False:
       print( "rpc failed for last_account: " + last_account )
       return []
 
     account_list = response["result"]["accounts"]
-        
+
     if last_account != "":
       assert account_list[0]["name"] == last_account
       del account_list[0]
@@ -47,7 +47,7 @@ def list_accounts(url):
 
   # while True
   return accounts
-  
+
 
 def main():
   if len( sys.argv ) < 2 or len( sys.argv ) > 3:
@@ -57,21 +57,21 @@ def main():
   print( url )
 
   accounts = list_accounts( url )
-  
+
   if len(accounts) == 0:
     exit(-1)
-   
+
   if len( sys.argv ) == 3:
     filename = sys.argv[2]
 
     try:     file = open( filename, "w" )
     except:  exit( "Cannot open file " + filename )
-    
+
     for account in accounts:
       file.write(account + "\n")
-   
+
     file.close()
-    
+
 
 if __name__ == "__main__":
   main()

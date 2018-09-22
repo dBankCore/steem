@@ -1,15 +1,15 @@
-file(GLOB HEADERS "include/steem/private_message/*.hpp")
+file(GLOB HEADERS "include/dpay/private_message/*.hpp")
 
-add_library( steem_private_message
+add_library( dpay_private_message
              private_message_plugin.cpp
            )
 
-target_link_libraries( steem_private_message steem_chain steem_protocol steem_app )
-target_include_directories( steem_private_message
+target_link_libraries( dpay_private_message dpay_chain dpay_protocol dpay_app )
+target_include_directories( dpay_private_message
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" )
 
 install( TARGETS
-   steem_private_message
+   dpay_private_message
 
    RUNTIME DESTINATION bin
    LIBRARY DESTINATION lib

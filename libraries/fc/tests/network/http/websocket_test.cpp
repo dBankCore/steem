@@ -7,7 +7,7 @@
 BOOST_AUTO_TEST_SUITE(fc_network)
 
 BOOST_AUTO_TEST_CASE(websocket_test)
-{ 
+{
     fc::http::websocket_client client;
     fc::http::websocket_connection_ptr s_conn, c_conn;
     {
@@ -19,11 +19,11 @@ BOOST_AUTO_TEST_CASE(websocket_test)
                 });
             });
 
-        server.listen( 8090 );
+        server.listen( 1776 );
         server.start_accept();
 
         std::string echo;
-        c_conn = client.connect( "ws://localhost:8090" );
+        c_conn = client.connect( "ws://localhost:1776" );
         c_conn->on_message_handler([&](const std::string& s){
                     echo = s;
                 });
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(websocket_test)
             //std::cerr << e.to_string() << "\n";
         }
 
-        c_conn = client.connect( "ws://localhost:8090" );
+        c_conn = client.connect( "ws://localhost:1776" );
         c_conn->on_message_handler([&](const std::string& s){
                     echo = s;
                 });
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE(websocket_test)
     }
 
     try {
-        c_conn = client.connect( "ws://localhost:8090" );
+        c_conn = client.connect( "ws://localhost:1776" );
         BOOST_FAIL("expected assertion failure");
     } catch (const fc::assert_exception& e) {
         std::cerr << e.to_string() << "\n";

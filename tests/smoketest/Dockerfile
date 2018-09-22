@@ -1,7 +1,7 @@
 FROM phusion/baseimage:0.9.19
 
 ENV LANG=en_US.UTF-8
-ENV WDIR=/usr/local/steem
+ENV WDIR=/usr/local/dpay
 ENV SMOKETEST=$WDIR/smoketest
 
 RUN apt-get update
@@ -19,19 +19,19 @@ COPY . $WDIR/
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-#reference: volume points to reference steemd
-#tested: volume points to tested steemd
+#reference: volume points to reference dpayd
+#tested: volume points to tested dpayd
 #ref_blockchain: volume points to reference folder, where blockchain folder exists
 #tested_blockchain: volume points to tested folder, where blockchain folder exists
 #logs_dir: location where non-empty logs will be copied
 VOLUME ["reference", "tested", "ref_blockchain", "tested_blockchain", "logs_dir", "run"]
 
-EXPOSE 8090
-EXPOSE 8091
+EXPOSE 1776
+EXPOSE 1777
 
 #CMD pyresttest
 CMD cd $SMOKETEST && \
-   ./smoketest.sh /reference/steemd /tested/steemd /ref_blockchain /tested_blockchain $STOP_REPLAY_AT_BLOCK $JOBS $COPY_CONFIG 2>&1 | tee log.txt || \
+   ./smoketest.sh /reference/dpayd /tested/dpayd /ref_blockchain /tested_blockchain $STOP_REPLAY_AT_BLOCK $JOBS $COPY_CONFIG 2>&1 | tee log.txt || \
    find ./ -type f -path */logs/* -not -name logs | cpio -pd /logs_dir && \
    cp log.txt /logs_dir && \
    chmod -R a+rw /logs_dir

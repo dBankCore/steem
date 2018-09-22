@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
   Usage: __name__ jobs url1 url2 [nr_cycles [working_dir [comments_file]]]
-    Example: script_name 4 http://127.0.0.1:8090 http://127.0.0.1:8091 [20 my_comments_data_dir [comments]]
+    Example: script_name 4 http://127.0.0.1:1776 http://127.0.0.1:1777 [20 my_comments_data_dir [comments]]
     by default: nr_cycles = 3; set nr_cycles to 0 if you want to use all comments
     set jobs to 0 if you want use all processors
     url1 is reference url for list_comments
@@ -16,7 +16,7 @@ from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures import Future
 from concurrent.futures import wait
 from jsonsocket import JSONSocket
-from jsonsocket import steemd_call
+from jsonsocket import dpayd_call
 from list_comment import list_comments
 from pathlib import Path
 
@@ -35,7 +35,7 @@ def future_end_cb(future):
 def main():
   if len( sys.argv ) < 4 or len( sys.argv ) > 7:
     print( "Usage: __name__ jobs url1 url2 [nr_cycles [working_dir [comments_file]]]" )
-    print( "  Example: __name__ 4 http://127.0.0.1:8090 http://127.0.0.1:8091 [ 20 my_comments_data_dir [comments]]" )
+    print( "  Example: __name__ 4 http://127.0.0.1:1776 http://127.0.0.1:1777 [ 20 my_comments_data_dir [comments]]" )
     print( "  by default: nr_cycles = 3; set nr_cycles to 0 if you want to use all comments )" )
     print( "  set jobs to 0 if you want use all processors" )
     print( "  url1 is reference url for list_comments" )
@@ -49,7 +49,7 @@ def main():
   if jobs <= 0:
     import multiprocessing
     jobs = multiprocessing.cpu_count()
-    
+
   url1 = sys.argv[2]
   url2 = sys.argv[3]
 
@@ -58,7 +58,7 @@ def main():
 
   if len( sys.argv ) > 5:
     wdir = Path(sys.argv[5])
-    
+
   comments_file = sys.argv[6] if len( sys.argv ) > 6 else ""
 
   if comments_file != "":
@@ -71,10 +71,10 @@ def main():
     comments = list_comments(url1)
 
   length = len(comments)
-  
+
   if length == 0:
     exit("There are no any comment!")
-    
+
   create_wdir()
 
   print( str(length) + " comments" )
@@ -88,7 +88,7 @@ def main():
   print( "  url2: {}".format(url2) )
   print( "  wdir: {}".format(wdir) )
   print( "  comments_file: {}".format(comments_file) )
-  
+
   if jobs > 1:
     first = 0
     last = length
@@ -103,17 +103,17 @@ def main():
       future.add_done_callback(future_end_cb)
   else:
     errors = (compare_results(url1, url2, comments) == False)
-    
+
   exit( errors )
 
-  
+
 def create_wdir():
   global wdir
-  
+
   if wdir.exists():
     if wdir.is_file():
       os.remove(wdir)
-      
+
   if wdir.exists() == False:
     wdir.mkdir(parents=True)
 
@@ -156,21 +156,21 @@ def list_votes(url1, url2, comment_line, max_tries=10, timeout=0.1):
       } ), "utf-8" ) + b"\r\n"
 
     with ThreadPoolExecutor(max_workers=2) as executor:
-      future1 = executor.submit(steemd_call, url1, data=request, max_tries=max_tries, timeout=timeout)
-      future2 = executor.submit(steemd_call, url2, data=request, max_tries=max_tries, timeout=timeout)
+      future1 = executor.submit(dpayd_call, url1, data=request, max_tries=max_tries, timeout=timeout)
+      future2 = executor.submit(dpayd_call, url2, data=request, max_tries=max_tries, timeout=timeout)
 
     status1, json1 = future1.result()
     status2, json2 = future2.result()
-    #status1, json1 = steemd_call(url1, data=request, max_tries=max_tries, timeout=timeout)
-    #status2, json2 = steemd_call(url2, data=request, max_tries=max_tries, timeout=timeout)
-    
+    #status1, json1 = dpayd_call(url1, data=request, max_tries=max_tries, timeout=timeout)
+    #status2, json2 = dpayd_call(url2, data=request, max_tries=max_tries, timeout=timeout)
+
     if status1 == False or status2 == False or json1 != json2:
       print("Comparison failed for permlink: {}; author: {}; limit: {}".format(permlink, author, LIMIT))
 
       filename = wdir / permlink
       try:    file = filename.open("w")
       except: print("Cannot open file:", filename); return False
-      
+
       file.write("Comparison failed:\n")
       file.write("{} response:\n".format(url1))
       json.dump(json1, file, indent=2, sort_keys=True)

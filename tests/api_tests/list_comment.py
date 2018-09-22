@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Create list of all steem comments in file.
+Create list of all dPay comments in file.
 Usage: list_comment.py <server_address> [<output_filename>]
 """
 import sys
 import json
 from jsonsocket import JSONSocket
-from jsonsocket import steemd_call
+from jsonsocket import dpayd_call
 
 def list_comments(url):
   """
@@ -15,7 +15,7 @@ def list_comments(url):
   last_cashout_time = "2016-01-01T00-00-00"
   end = False
   comments = []
-  
+
   while True:
     request = bytes( json.dumps( {
       "jsonrpc": "2.0",
@@ -24,8 +24,8 @@ def list_comments(url):
       "params": { "start":[ last_cashout_time, "", "" ], "limit": 5, "order": "by_cashout_time" }
       } ), "utf-8" ) + b"\r\n"
 
-    status, response = steemd_call(url, data=request)
-    
+    status, response = dpayd_call(url, data=request)
+
     if status == False:
       print( "rpc failed for last_cashout_time: " + last_cashout_time )
       return []
@@ -47,7 +47,7 @@ def list_comments(url):
 
   # while True
   return comments
-  
+
 
 def main():
   if len( sys.argv ) < 2 or len( sys.argv ) > 3:
@@ -57,21 +57,21 @@ def main():
   print( url )
 
   comments = list_comments( url )
-  
+
   if len(comments) == 0:
     exit(-1)
-   
+
   if len( sys.argv ) == 3:
     filename = sys.argv[2]
 
     try:     file = open( filename, "w" )
     except:  exit( "Cannot open file " + filename )
-    
+
     for comment in comments:
       file.write(comment + "\n")
-   
+
     file.close()
-    
+
 
 if __name__ == "__main__":
   main()
