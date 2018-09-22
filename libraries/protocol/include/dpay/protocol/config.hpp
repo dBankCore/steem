@@ -16,8 +16,7 @@
 #define BBD_SYMBOL    (uint64_t(3) | (uint64_t('B') << 8) | (uint64_t('B') << 16) | (uint64_t('D') << 24) ) ///< BET Backed Dollars with 3 digits of precision
 #define STMD_SYMBOL   (uint64_t(3) | (uint64_t('T') << 8) | (uint64_t('S') << 16) | (uint64_t('T') << 24) | (uint64_t('D') << 32) ) ///< Test Dollars with 3 digits of precision
 
-#define DPAY_SYMBOL                          "BET"
-#define DPAY_ADDRESS_PREFIX                  "DWB"
+#define DPAY_ADDRESS_PREFIX                  "DWT"
 
 #define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
 #define DPAY_MINING_TIME                     (fc::time_point_sec(1451606400))
@@ -46,7 +45,6 @@
 #define DPAY_SYMBOL  (uint64_t(3) | (uint64_t('B') << 8) | (uint64_t('E') << 16) | (uint64_t('X') << 24)) ///< BEX with 3 digits of precision
 #define BBD_SYMBOL    (uint64_t(3) | (uint64_t('B') << 8) | (uint64_t('B') << 16) | (uint64_t('D') << 24) ) ///< BEX Backed Dollars with 3 digits of precision
 #define STMD_SYMBOL   (uint64_t(3) | (uint64_t('B') << 8) | (uint64_t('E') << 16) | (uint64_t('X') << 24) | (uint64_t('D') << 32) ) ///< BEX Dollars with 3 digits of precision
-#define DPAY_SYMBOL                          "BEX"
 #define DPAY_ADDRESS_PREFIX                  "DWB"
 
 #define DPAY_GENESIS_TIME                    (fc::time_point_sec(1458835200))
@@ -215,7 +213,7 @@
 #define DPAY_MAX_PERMLINK_LENGTH             256
 #define DPAY_MAX_WITNESS_URL_LENGTH          2048
 
-#define DPAY_INIT_SUPPLY                     (int64_t( 250 ) * int64_t( 1000000 ) * int64_t( 1000 ))
+#define DPAY_INIT_SUPPLY                     250000000000
 #define DPAY_MAX_SHARE_SUPPLY                int64_t(1000000000000000ll)
 #define DPAY_MAX_SIG_CHECK_DEPTH             2
 
