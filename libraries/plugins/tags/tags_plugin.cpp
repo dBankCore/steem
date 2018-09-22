@@ -1,15 +1,15 @@
-#include <steemit/tags/tags_plugin.hpp>
+#include <dpay/tags/tags_plugin.hpp>
 
-#include <steemit/app/impacted.hpp>
+#include <dpay/app/impacted.hpp>
 
-#include <steemit/protocol/config.hpp>
+#include <dpay/protocol/config.hpp>
 
-#include <steemit/chain/database.hpp>
-#include <steemit/chain/hardfork.hpp>
-#include <steemit/chain/index.hpp>
-#include <steemit/chain/operation_notification.hpp>
-#include <steemit/chain/account_object.hpp>
-#include <steemit/chain/comment_object.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/hardfork.hpp>
+#include <dpay/chain/index.hpp>
+#include <dpay/chain/operation_notification.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/comment_object.hpp>
 
 #include <fc/smart_ref_impl.hpp>
 #include <fc/thread/thread.hpp>
@@ -19,11 +19,11 @@
 #include <boost/range/iterator_range.hpp>
 #include <boost/algorithm/string.hpp>
 
-namespace steemit { namespace tags {
+namespace dpay { namespace tags {
 
 namespace detail {
 
-using namespace steemit::protocol;
+using namespace dpay::protocol;
 
 class tags_plugin_impl
 {
@@ -33,7 +33,7 @@ class tags_plugin_impl
       { }
       virtual ~tags_plugin_impl();
 
-      steemit::chain::database& database()
+      dpay::chain::database& database()
       {
          return _self.database();
       }
@@ -391,7 +391,7 @@ struct operation_visitor
 
    void operator()( const transfer_operation& op )const
    {
-      if( op.to == STEEMIT_NULL_ACCOUNT && op.amount.symbol == SBD_SYMBOL )
+      if( op.to == DPAY_NULL_ACCOUNT && op.amount.symbol == BBD_SYMBOL )
       {
          vector<string> part; part.reserve(4);
          auto path = op.memo;
@@ -533,6 +533,6 @@ void tags_plugin::plugin_startup()
 {
 }
 
-} } /// steemit::tags
+} } /// dpay::tags
 
-STEEMIT_DEFINE_PLUGIN( tags, steemit::tags::tags_plugin )
+DPAY_DEFINE_PLUGIN( tags, dpay::tags::tags_plugin )

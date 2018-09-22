@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include <steemit/app/api.hpp>
-#include <steemit/app/api_access.hpp>
-#include <steemit/app/application.hpp>
-#include <steemit/app/plugin.hpp>
+#include <dpay/app/api.hpp>
+#include <dpay/app/api_access.hpp>
+#include <dpay/app/application.hpp>
+#include <dpay/app/plugin.hpp>
 
-#include <steemit/chain/steem_objects.hpp>
-#include <steemit/chain/steem_object_types.hpp>
-#include <steemit/chain/database_exceptions.hpp>
+#include <dpay/chain/dpay_objects.hpp>
+#include <dpay/chain/dpay_object_types.hpp>
+#include <dpay/chain/database_exceptions.hpp>
 
 #include <fc/time.hpp>
 
@@ -59,7 +59,7 @@
 
 #include <boost/range/adaptor/reversed.hpp>
 
-namespace steemit { namespace app {
+namespace dpay { namespace app {
 using graphene::net::item_hash_t;
 using graphene::net::item_id;
 using graphene::net::message;
@@ -278,7 +278,7 @@ namespace detail {
          if( !read_only )
          {
             _self->_read_only = false;
-            ilog( "Starting Steem node in write mode." );
+            ilog( "Starting dPay node in write mode." );
             _max_block_age =_options->at("max-block-age").as<int32_t>();
 
             if( _options->count("resync-blockchain") )
@@ -308,7 +308,7 @@ namespace detail {
             {
                try
                {
-                  _chain_db->open(_data_dir / "blockchain", _shared_dir, STEEMIT_INIT_SUPPLY, _shared_file_size, chainbase::database::read_write );\
+                  _chain_db->open(_data_dir / "blockchain", _shared_dir, DPAY_INIT_SUPPLY, _shared_file_size, chainbase::database::read_write );\
                }
                catch( fc::assert_exception& )
                {
@@ -321,7 +321,7 @@ namespace detail {
                   catch( chain::block_log_exception& )
                   {
                      wlog( "Error opening block log. Having to resync from network..." );
-                     _chain_db->open( _data_dir / "blockchain", _shared_dir, STEEMIT_INIT_SUPPLY, _shared_file_size, chainbase::database::read_write );
+                     _chain_db->open( _data_dir / "blockchain", _shared_dir, DPAY_INIT_SUPPLY, _shared_file_size, chainbase::database::read_write );
                   }
                }
             }
@@ -334,8 +334,8 @@ namespace detail {
          }
          else
          {
-            ilog( "Starting Steem node in read mode." );
-            _chain_db->open( _data_dir / "blockchain", _shared_dir, STEEMIT_INIT_SUPPLY, _shared_file_size, chainbase::database::read_only );
+            ilog( "Starting dPay node in read mode." );
+            _chain_db->open( _data_dir / "blockchain", _shared_dir, DPAY_INIT_SUPPLY, _shared_file_size, chainbase::database::read_only );
 
             if( _options->count( "read-forward-rpc" ) )
             {
@@ -515,7 +515,7 @@ namespace detail {
                }
 
                return result;
-            } catch ( const steemit::chain::unlinkable_block_exception& e ) {
+            } catch ( const dpay::chain::unlinkable_block_exception& e ) {
                // translate to a graphene::net exception
                fc_elog(fc::logger::get("sync"),
                      "Error when pushing block, current head block is ${head}:\n${e}",
@@ -919,7 +919,7 @@ namespace detail {
       api_access _apiaccess;
 
       //std::shared_ptr<graphene::db::object_database>   _pending_trx_db;
-      std::shared_ptr<steemit::chain::database>        _chain_db;
+      std::shared_ptr<dpay::chain::database>        _chain_db;
       std::shared_ptr<graphene::net::node>             _p2p_network;
       std::shared_ptr<fc::http::websocket_server>      _websocket_server;
       std::shared_ptr<fc::http::websocket_tls_server>  _websocket_tls_server;

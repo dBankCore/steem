@@ -1,8 +1,8 @@
-#include <steemit/follow/follow_operations.hpp>
+#include <dpay/follow/follow_operations.hpp>
 
-#include <steemit/protocol/operation_util_impl.hpp>
+#include <dpay/protocol/operation_util_impl.hpp>
 
-namespace steemit { namespace follow {
+namespace dpay { namespace follow {
 
 void follow_operation::validate()const
 {
@@ -14,6 +14,6 @@ void reblog_operation::validate()const
    FC_ASSERT( account != author, "You cannot reblog your own content" );
 }
 
-} } //steemit::follow
+} } //dpay::follow
 
-DEFINE_OPERATION_TYPE( steemit::follow::follow_plugin_operation )
+DEFINE_OPERATION_TYPE( dpay::follow::follow_plugin_operation )
