@@ -396,7 +396,7 @@
 #define DPAY_MAX_PERMLINK_LENGTH             256
 #define DPAY_MAX_WITNESS_URL_LENGTH          2048
 
-#define DPAY_INIT_SUPPLY                     250000000000
+#define DPAY_INIT_SUPPLY                     (int64_t( 2500 ) * int64_t( 1000000 ) * int64_t( 1000 ))
 #define DPAY_MAX_SHARE_SUPPLY                int64_t(1000000000000000ll)
 #define DPAY_MAX_SIG_CHECK_DEPTH             2
 

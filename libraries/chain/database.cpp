@@ -2472,6 +2472,7 @@ void database::init_genesis( uint64_t init_supply )
       create< feed_history_object >( [&]( feed_history_object& o ) {});
       for( int i = 0; i < 0x10000; i++ )
          create< block_summary_object >( [&]( block_summary_object& ) {});
+
       create< hardfork_property_object >( [&](hardfork_property_object& hpo )
       {
          hpo.processed_hardforks.push_back( DPAY_GENESIS_TIME );
@@ -2482,6 +2483,7 @@ void database::init_genesis( uint64_t init_supply )
       {
          wso.current_shuffled_witnesses[0] = DPAY_INIT_MINER_NAME;
       } );
+      set_hardfork( 19, true );
    }
    FC_CAPTURE_AND_RETHROW()
 }
