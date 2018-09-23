@@ -1,23 +1,23 @@
 #include <fc/macros.hpp>
 
-#if defined IS_TEST_NET && defined STEEM_ENABLE_SMT
+#if defined IS_TEST_NET && defined DPAY_ENABLE_SMT
 
 FC_TODO(Extend testing scenarios to support multiple NAIs per account)
 
 #include <boost/test/unit_test.hpp>
 
-#include <steem/protocol/exceptions.hpp>
-#include <steem/protocol/hardfork.hpp>
+#include <dpay/protocol/exceptions.hpp>
+#include <dpay/protocol/hardfork.hpp>
 
-#include <steem/chain/database.hpp>
-#include <steem/chain/database_exceptions.hpp>
-#include <steem/chain/steem_objects.hpp>
-#include <steem/chain/smt_objects.hpp>
+#include <dpay/chain/database.hpp>
+#include <dpay/chain/database_exceptions.hpp>
+#include <dpay/chain/dpay_objects.hpp>
+#include <dpay/chain/smt_objects.hpp>
 
 #include "../db_fixture/database_fixture.hpp"
 
-using namespace steem::chain;
-using namespace steem::protocol;
+using namespace dpay::chain;
+using namespace dpay::protocol;
 using fc::string;
 using boost::container::flat_set;
 
@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE( asset_symbol_validate )
          sym.validate();
       };
 
-      // specific cases in https://github.com/steemit/steem/issues/1738
+      // specific cases in https://github.com/dpays/dpay/issues/1738
       check_validate( "0", 0 );
       check_validate( "d2", 1 );
       check_validate( "da1", 1 );
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE( smt_create_validate )
 
       smt_create_operation op;
       op.smt_creation_fee = ASSET( "1.000 TESTS" );
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.control_account = "alice";
       op.symbol = alice_symbol;
@@ -57,23 +57,23 @@ BOOST_AUTO_TEST_CASE( smt_create_validate )
       op.validate();
 
       op.smt_creation_fee.amount = -op.smt_creation_fee.amount;
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       // passes with MAX_SHARE_SUPPLY
-      op.smt_creation_fee.amount = STEEM_MAX_SHARE_SUPPLY;
+      op.smt_creation_fee.amount = DPAY_MAX_SHARE_SUPPLY;
       op.validate();
 
       // fails with MAX_SHARE_SUPPLY+1
       ++op.smt_creation_fee.amount;
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.smt_creation_fee = ASSET( "1.000000 VESTS" );
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.smt_creation_fee = ASSET( "1.000 TESTS" );
       // Valid, but doesn't match decimals stored in symbol.
       op.precision = 0;
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
    }
    FC_LOG_AND_RETHROW()
 }
@@ -129,22 +129,22 @@ BOOST_AUTO_TEST_CASE( smt_create_apply )
       op.symbol = alice_symbol;
       op.precision = op.symbol.decimals();
 
-      // Fund with STEEM, and set fee with SBD.
+      // Fund with BEX, and set fee with BBD.
       FUND( "alice", test_amount );
-      // Declare fee in SBD/TBD though alice has none.
-      op.smt_creation_fee = asset( test_amount, SBD_SYMBOL );
-      // Throw due to insufficient balance of SBD/TBD.
+      // Declare fee in BBD/TBD though alice has none.
+      op.smt_creation_fee = asset( test_amount, BBD_SYMBOL );
+      // Throw due to insufficient balance of BBD/TBD.
       FAIL_WITH_OP(op, alice_private_key, fc::assert_exception);
 
-      // Now fund with SBD, and set fee with STEEM.
-      convert( "alice", asset( test_amount, STEEM_SYMBOL ) );
-      // Declare fee in STEEM though alice has none.
-      op.smt_creation_fee = asset( test_amount, STEEM_SYMBOL );
-      // Throw due to insufficient balance of STEEM.
+      // Now fund with BBD, and set fee with BEX.
+      convert( "alice", asset( test_amount, DPAY_SYMBOL ) );
+      // Declare fee in BEX though alice has none.
+      op.smt_creation_fee = asset( test_amount, DPAY_SYMBOL );
+      // Throw due to insufficient balance of BEX.
       FAIL_WITH_OP(op, alice_private_key, fc::assert_exception);
 
       // Push valid operation.
-      op.smt_creation_fee = asset( test_amount, SBD_SYMBOL );
+      op.smt_creation_fee = asset( test_amount, BBD_SYMBOL );
       PUSH_OP( op, alice_private_key );
 
       // Check the SMT cannot be created twice even with different precision.
@@ -166,14 +166,14 @@ BOOST_AUTO_TEST_CASE( smt_create_apply )
       op.symbol = bob_symbol;
       op.precision = op.symbol.decimals();
 
-      // Check too low fee in STEEM.
+      // Check too low fee in BEX.
       FUND( "bob", too_low_fee_amount );
-      op.smt_creation_fee = asset( too_low_fee_amount, STEEM_SYMBOL );
+      op.smt_creation_fee = asset( too_low_fee_amount, DPAY_SYMBOL );
       FAIL_WITH_OP(op, bob_private_key, fc::assert_exception);
 
-      // Check too low fee in SBD.
-      convert( "bob", asset( too_low_fee_amount, STEEM_SYMBOL ) );
-      op.smt_creation_fee = asset( too_low_fee_amount, SBD_SYMBOL );
+      // Check too low fee in BBD.
+      convert( "bob", asset( too_low_fee_amount, DPAY_SYMBOL ) );
+      op.smt_creation_fee = asset( too_low_fee_amount, BBD_SYMBOL );
       FAIL_WITH_OP(op, bob_private_key, fc::assert_exception);
 
       validate_database();
@@ -195,36 +195,36 @@ BOOST_AUTO_TEST_CASE( setup_emissions_validate )
 
       smt_setup_emissions_operation op;
       // Invalid account name.
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.control_account = "alice";
-      // schedule_time <= STEEM_GENESIS_TIME;
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      // schedule_time <= DPAY_GENESIS_TIME;
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       fc::time_point now = fc::time_point::now();
       op.schedule_time = now;
       // Empty emissions_unit.token_unit
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.emissions_unit.token_unit["alice"] = 10;
       // Both absolute amount fields are zero.
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.lep_abs_amount = ASSET( "0.000 TESTS" );
       // Amount symbol does NOT match control account name.
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.lep_abs_amount = asset( 0, alice_symbol );
       // Mismatch of absolute amount symbols.
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.rep_abs_amount = asset( -1, alice_symbol );
       // Negative absolute amount.
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.rep_abs_amount = asset( 0, alice_symbol );
       // Both amounts are equal zero.
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.rep_abs_amount = asset( 1000, alice_symbol );
       op.validate();
@@ -238,7 +238,7 @@ BOOST_AUTO_TEST_CASE( set_setup_parameters_validate )
    {
       smt_set_setup_parameters_operation op;
       op.control_account = "####";
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception ); // invalid account name
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception ); // invalid account name
 
       op.control_account = "dany";
       op.validate();
@@ -320,7 +320,7 @@ BOOST_AUTO_TEST_CASE( setup_emissions_apply )
       fail_op.emissions_unit.token_unit["bob"] = 10;
 
       // Do invalid attempt at SMT creation.
-      create_invalid_smt("alice", alice_private_key);      
+      create_invalid_smt("alice", alice_private_key);
 
       // Fail due to non-existing SMT (too early).
       FAIL_WITH_OP(fail_op, alice_private_key, fc::assert_exception)
@@ -341,12 +341,12 @@ BOOST_AUTO_TEST_CASE( setup_emissions_apply )
          fail_op.symbol = smt2;
          fail_op.lep_abs_amount = fail_op.rep_abs_amount = asset( 1000, fail_op.symbol );
          // TODO: Replace the code below with account setup operation execution once its implemented.
-         const steem::chain::smt_token_object* smt = db->find< steem::chain::smt_token_object, by_symbol >( fail_op.symbol );
+         const dpay::chain::smt_token_object* smt = db->find< dpay::chain::smt_token_object, by_symbol >( fail_op.symbol );
          FC_ASSERT( smt != nullptr, "The SMT has just been created!" );
-         FC_ASSERT( smt->phase < steem::chain::smt_token_object::smt_phase::setup_completed, "Who closed setup phase?!" );
-         db->modify( *smt, [&]( steem::chain::smt_token_object& token )
+         FC_ASSERT( smt->phase < dpay::chain::smt_token_object::smt_phase::setup_completed, "Who closed setup phase?!" );
+         db->modify( *smt, [&]( dpay::chain::smt_token_object& token )
          {
-            token.phase = steem::chain::smt_token_object::smt_phase::setup_completed;
+            token.phase = dpay::chain::smt_token_object::smt_phase::setup_completed;
          });
          // Fail due to closed setup phase (too late).
          FAIL_WITH_OP(fail_op, alice_private_key, fc::assert_exception)
@@ -362,23 +362,23 @@ BOOST_AUTO_TEST_CASE( set_setup_parameters_apply )
    try
    {
       ACTORS( (dany)(eddy) )
-      
+
       generate_block();
 
       FUND( "dany", 5000000 );
 
       set_price_feed( price( ASSET( "1.000 TBD" ), ASSET( "1.000 TESTS" ) ) );
       convert( "dany", ASSET( "5000.000 TESTS" ) );
-      
+
       smt_set_setup_parameters_operation fail_op;
       fail_op.control_account = "dany";
 
       // Do invalid attempt at SMT creation.
       create_invalid_smt("dany", dany_private_key);
-      
+
       // Fail due to non-existing SMT (too early).
       FAIL_WITH_OP(fail_op, dany_private_key, fc::assert_exception)
-      
+
       // Create SMT(s) and continue.
       auto smts = create_smt_3("dany", dany_private_key);
       {
@@ -426,40 +426,40 @@ BOOST_AUTO_TEST_CASE( runtime_parameters_windows_validate )
       smt_set_runtime_parameters_operation op;
 
       op.control_account = "{}{}{}{}";
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.control_account = "alice";
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       smt_param_windows_v1 windows;
       windows.reverse_auction_window_seconds = 2;
       windows.cashout_window_seconds = windows.reverse_auction_window_seconds;
       op.runtime_parameters.insert( windows );
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.runtime_parameters.clear();
       windows.reverse_auction_window_seconds = 2;
       windows.cashout_window_seconds = windows.reverse_auction_window_seconds - 1;
       op.runtime_parameters.insert( windows );
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.runtime_parameters.clear();
       windows.reverse_auction_window_seconds = SMT_VESTING_WITHDRAW_INTERVAL_SECONDS;
       windows.cashout_window_seconds = windows.reverse_auction_window_seconds + 1;
       op.runtime_parameters.insert( windows );
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.runtime_parameters.clear();
       windows.reverse_auction_window_seconds = 1;
       windows.cashout_window_seconds = SMT_VESTING_WITHDRAW_INTERVAL_SECONDS;
       op.runtime_parameters.insert( windows );
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.runtime_parameters.clear();
       windows.reverse_auction_window_seconds = 0;
       windows.cashout_window_seconds = SMT_UPVOTE_LOCKOUT;
       op.runtime_parameters.insert( windows );
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.runtime_parameters.clear();
       windows.reverse_auction_window_seconds = 0;
@@ -487,12 +487,12 @@ BOOST_AUTO_TEST_CASE( runtime_parameters_regeneration_period_validate )
 
       regeneration.vote_regeneration_period_seconds = SMT_VESTING_WITHDRAW_INTERVAL_SECONDS;
       op.runtime_parameters.insert( regeneration );
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.runtime_parameters.clear();
       regeneration.vote_regeneration_period_seconds = 0;
       op.runtime_parameters.insert( regeneration );
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
 
       op.runtime_parameters.clear();
       regeneration.vote_regeneration_period_seconds = SMT_VESTING_WITHDRAW_INTERVAL_SECONDS - 1;
@@ -582,15 +582,15 @@ BOOST_AUTO_TEST_CASE( smt_setup_validate )
       // Do minimal operation setup that allows successful validatation.
       {
          smt_capped_generation_policy gpolicy;
-         uint64_t max_supply = STEEM_MAX_SHARE_SUPPLY / 6000;
-         // set steem unit, total is 100 STEEM-satoshis = 0.1 STEEM
-         gpolicy.pre_soft_cap_unit.steem_unit.emplace( "founder", 100 );
+         uint64_t max_supply = DPAY_MAX_SHARE_SUPPLY / 6000;
+         // set BEX unit, total is 100 BEX-satoshis = 0.1 BEX
+         gpolicy.pre_soft_cap_unit.dpay_unit.emplace( "founder", 100 );
          // set token unit, total is 5 token-satoshis = 0.0005 SMT
          gpolicy.pre_soft_cap_unit.token_unit.emplace( "$from", 5 );
          // Note - no soft cap -> no soft cap unit
-         gpolicy.min_steem_units_commitment.fillin_nonhidden_value( 1 );
-         gpolicy.hard_cap_steem_units_commitment.fillin_nonhidden_value( max_supply );
-         gpolicy.soft_cap_percent = STEEM_100_PERCENT;
+         gpolicy.min_dpay_units_commitment.fillin_nonhidden_value( 1 );
+         gpolicy.hard_cap_dpay_units_commitment.fillin_nonhidden_value( max_supply );
+         gpolicy.soft_cap_percent = DPAY_100_PERCENT;
 
          // Note that neither tested SMT nor even its creator is necessary to validate this operation.
          op.control_account = "alice";
@@ -598,7 +598,7 @@ BOOST_AUTO_TEST_CASE( smt_setup_validate )
          op.initial_generation_policy = gpolicy;
          op.generation_begin_time = start_time;
          op.generation_end_time = op.announced_launch_time = op.launch_expiration_time = start_time_plus_1;
-         op.smt_creation_fee = asset( 1000000, SBD_SYMBOL );
+         op.smt_creation_fee = asset( 1000000, BBD_SYMBOL );
       }
 
       op.validate();
@@ -606,7 +606,7 @@ BOOST_AUTO_TEST_CASE( smt_setup_validate )
 
       // Launch expiration time can't be earlier than announced launch time.
       op.launch_expiration_time = start_time;
-      STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       op.launch_expiration_time = start_time_plus_1; // Restored valid value.
    }
    FC_LOG_AND_RETHROW()
@@ -629,19 +629,19 @@ BOOST_AUTO_TEST_CASE( smt_refund_validate )
       op.validate();
 
       op.executor = "@@@@@";
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
       op.executor = "executor";
 
       op.contributor = "@@@@@";
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
       op.contributor = "contributor";
 
       op.smt = op.amount.symbol;
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
       op.smt = creator_symbol;
 
       op.amount = asset( 1, creator_symbol );
-      STEEM_REQUIRE_THROW( op.validate(), fc::exception );
+      DPAY_REQUIRE_THROW( op.validate(), fc::exception );
       op.amount = ASSET( "1.000 TESTS" );
    }
    FC_LOG_AND_RETHROW()
@@ -727,7 +727,7 @@ BOOST_AUTO_TEST_CASE( smt_transfer_apply )
 
       validate_database();
    }
-   FC_LOG_AND_RETHROW()   
+   FC_LOG_AND_RETHROW()
 }
 
 BOOST_AUTO_TEST_CASE( comment_votable_assers_validate )
@@ -752,7 +752,7 @@ BOOST_AUTO_TEST_CASE( comment_votable_assers_validate )
 
          op.author = "alice";
          op.permlink = "test";
-            
+
          BOOST_TEST_MESSAGE( "--- Testing valid configuration: no votable_assets" );
          allowed_vote_assets ava;
          op.extensions.insert( ava );
@@ -764,7 +764,7 @@ BOOST_AUTO_TEST_CASE( comment_votable_assers_validate )
 
          op.author = "alice";
          op.permlink = "test";
-            
+
          BOOST_TEST_MESSAGE( "--- Testing valid configuration of votable_assets" );
          allowed_vote_assets ava;
          for(size_t i = 0; i < SMT_MAX_VOTABLE_ASSETS; ++i)
@@ -772,7 +772,7 @@ BOOST_AUTO_TEST_CASE( comment_votable_assers_validate )
             const auto& smt = smts[i];
             ava.add_votable_asset(smt, share_type(10 + i), (i & 2) != 0);
          }
-         
+
          op.extensions.insert( ava );
          op.validate();
       }
@@ -782,7 +782,7 @@ BOOST_AUTO_TEST_CASE( comment_votable_assers_validate )
 
          op.author = "alice";
          op.permlink = "test";
-            
+
          BOOST_TEST_MESSAGE( "--- Testing invalid configuration of votable_assets - too much assets specified" );
          allowed_vote_assets ava;
          for(size_t i = 0; i < smts.size(); ++i)
@@ -790,9 +790,9 @@ BOOST_AUTO_TEST_CASE( comment_votable_assers_validate )
             const auto& smt = smts[i];
             ava.add_votable_asset(smt, share_type(20 + i), (i & 2) != 0);
          }
-         
+
          op.extensions.insert( ava );
-         STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+         DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       }
 
       {
@@ -800,14 +800,14 @@ BOOST_AUTO_TEST_CASE( comment_votable_assers_validate )
 
          op.author = "alice";
          op.permlink = "test";
-            
-         BOOST_TEST_MESSAGE( "--- Testing invalid configuration of votable_assets - STEEM added to container" );
+
+         BOOST_TEST_MESSAGE( "--- Testing invalid configuration of votable_assets - BEX added to container" );
          allowed_vote_assets ava;
          const auto& smt = smts.front();
          ava.add_votable_asset(smt, share_type(20), false);
-         ava.add_votable_asset(STEEM_SYMBOL, share_type(20), true);
+         ava.add_votable_asset(DPAY_SYMBOL, share_type(20), true);
          op.extensions.insert( ava );
-         STEEM_REQUIRE_THROW( op.validate(), fc::assert_exception );
+         DPAY_REQUIRE_THROW( op.validate(), fc::assert_exception );
       }
    }
    FC_LOG_AND_RETHROW()
@@ -819,17 +819,17 @@ BOOST_AUTO_TEST_CASE( asset_symbol_vesting_methods )
    {
       BOOST_TEST_MESSAGE( "Test Comment Votable Assets Validate" );
 
-      asset_symbol_type Steem = STEEM_SYMBOL;
-      FC_ASSERT( Steem.is_vesting() == false );
-      FC_ASSERT( Steem.get_paired_symbol() == VESTS_SYMBOL );
+      asset_symbol_type DPay = DPAY_SYMBOL;
+      FC_ASSERT( DPay.is_vesting() == false );
+      FC_ASSERT( DPay.get_paired_symbol() == VESTS_SYMBOL );
 
       asset_symbol_type Vests = VESTS_SYMBOL;
       FC_ASSERT( Vests.is_vesting() );
-      FC_ASSERT( Vests.get_paired_symbol() == STEEM_SYMBOL );
+      FC_ASSERT( Vests.get_paired_symbol() == DPAY_SYMBOL );
 
-      asset_symbol_type Sbd = SBD_SYMBOL;
-      FC_ASSERT( Sbd.is_vesting() == false );
-      FC_ASSERT( Sbd.get_paired_symbol() == SBD_SYMBOL );
+      asset_symbol_type Bbd = BBD_SYMBOL;
+      FC_ASSERT( Bbd.is_vesting() == false );
+      FC_ASSERT( Bbd.get_paired_symbol() == BBD_SYMBOL );
 
       ACTORS( (alice) )
       generate_block();

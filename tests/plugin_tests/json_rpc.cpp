@@ -1,15 +1,15 @@
 #ifdef IS_TEST_NET
 #include <boost/test/unit_test.hpp>
 
-#include <steem/chain/account_object.hpp>
-#include <steem/chain/comment_object.hpp>
-#include <steem/protocol/steem_operations.hpp>
-#include <steem/plugins/json_rpc/json_rpc_plugin.hpp>
+#include <dpay/chain/account_object.hpp>
+#include <dpay/chain/comment_object.hpp>
+#include <dpay/protocol/dpay_operations.hpp>
+#include <dpay/plugins/json_rpc/json_rpc_plugin.hpp>
 
 #include "../db_fixture/database_fixture.hpp"
 
-using namespace steem::chain;
-using namespace steem::protocol;
+using namespace dpay::chain;
+using namespace dpay::protocol;
 
 BOOST_FIXTURE_TEST_SUITE( json_rpc, json_rpc_database_fixture )
 

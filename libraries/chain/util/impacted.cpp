@@ -1,13 +1,13 @@
-#include <steem/protocol/authority.hpp>
+#include <dpay/protocol/authority.hpp>
 
-#include <steem/chain/util/impacted.hpp>
+#include <dpay/chain/util/impacted.hpp>
 
 #include <fc/utility.hpp>
 
-namespace steem { namespace app {
+namespace dpay { namespace app {
 
 using namespace fc;
-using namespace steem::protocol;
+using namespace dpay::protocol;
 
 // TODO:  Review all of these, especially no-ops
 struct get_impacted_account_visitor

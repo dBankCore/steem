@@ -1,17 +1,17 @@
 #pragma once
 
 #include <appbase/application.hpp>
-#include <steem/chain/database.hpp>
+#include <dpay/chain/database.hpp>
 #include <fc/io/json.hpp>
 #include <fc/smart_ref_impl.hpp>
 
-#include <steem/plugins/debug_node/debug_node_plugin.hpp>
+#include <dpay/plugins/debug_node/debug_node_plugin.hpp>
 
-#include <steem/utilities/key_conversion.hpp>
+#include <dpay/utilities/key_conversion.hpp>
 
-#include <steem/plugins/block_api/block_api_plugin.hpp>
-#include <steem/plugins/condenser_api/condenser_api_legacy_asset.hpp>
-#include <steem/plugins/database_api/database_api_plugin.hpp>
+#include <dpay/plugins/block_api/block_api_plugin.hpp>
+#include <dpay/plugins/condenser_api/condenser_api_legacy_asset.hpp>
+#include <dpay/plugins/database_api/database_api_plugin.hpp>
 
 #include <fc/network/http/connection.hpp>
 #include <fc/network/ip.hpp>
@@ -21,13 +21,13 @@
 
 #define INITIAL_TEST_SUPPLY (10000000000ll)
 
-extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
+extern uint32_t ( DPAY_TESTING_GENESIS_TIMESTAMP );
 
 #define PUSH_TX \
-   steem::chain::test::_push_transaction
+   dpay::chain::test::_push_transaction
 
 #define PUSH_BLOCK \
-   steem::chain::test::_push_block
+   dpay::chain::test::_push_block
 
 // See below
 #define REQUIRE_OP_VALIDATION_SUCCESS( op, field, value ) \
@@ -46,7 +46,7 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
    db.push_transaction( trx, ~0 ); \
 }
 
-/*#define STEEM_REQUIRE_THROW( expr, exc_type )          \
+/*#define DPAY_REQUIRE_THROW( expr, exc_type )          \
 {                                                         \
    std::string req_throw_info = fc::json::to_string(      \
       fc::mutable_variant_object()                        \
@@ -56,18 +56,18 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
       ("exc_type", #exc_type)                             \
       );                                                  \
    if( fc::enable_record_assert_trip )                    \
-      std::cout << "STEEM_REQUIRE_THROW begin "        \
+      std::cout << "DPAY_REQUIRE_THROW begin "        \
          << req_throw_info << std::endl;                  \
    BOOST_REQUIRE_THROW( expr, exc_type );                 \
    if( fc::enable_record_assert_trip )                    \
-      std::cout << "STEEM_REQUIRE_THROW end "          \
+      std::cout << "DPAY_REQUIRE_THROW end "          \
          << req_throw_info << std::endl;                  \
 }*/
 
-#define STEEM_REQUIRE_THROW( expr, exc_type )          \
+#define DPAY_REQUIRE_THROW( expr, exc_type )          \
    BOOST_REQUIRE_THROW( expr, exc_type );
 
-#define STEEM_CHECK_THROW( expr, exc_type )            \
+#define DPAY_CHECK_THROW( expr, exc_type )            \
 {                                                         \
    std::string req_throw_info = fc::json::to_string(      \
       fc::mutable_variant_object()                        \
@@ -77,11 +77,11 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
       ("exc_type", #exc_type)                             \
       );                                                  \
    if( fc::enable_record_assert_trip )                    \
-      std::cout << "STEEM_CHECK_THROW begin "          \
+      std::cout << "DPAY_CHECK_THROW begin "          \
          << req_throw_info << std::endl;                  \
    BOOST_CHECK_THROW( expr, exc_type );                   \
    if( fc::enable_record_assert_trip )                    \
-      std::cout << "STEEM_CHECK_THROW end "            \
+      std::cout << "DPAY_CHECK_THROW end "            \
          << req_throw_info << std::endl;                  \
 }
 
@@ -89,7 +89,7 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
 { \
    const auto temp = op.field; \
    op.field = value; \
-   STEEM_REQUIRE_THROW( op.validate(), exc_type ); \
+   DPAY_REQUIRE_THROW( op.validate(), exc_type ); \
    op.field = temp; \
 }
 #define REQUIRE_OP_VALIDATION_FAILURE( op, field, value ) \
@@ -101,7 +101,7 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
    op.field = value; \
    trx.operations.back() = op; \
    op.field = bak; \
-   STEEM_REQUIRE_THROW(db.push_transaction(trx, ~0), exc_type); \
+   DPAY_REQUIRE_THROW(db.push_transaction(trx, ~0), exc_type); \
 }
 
 #define REQUIRE_THROW_WITH_VALUE( op, field, value ) \
@@ -138,7 +138,7 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
    asset_symbol_type name ## _symbol = name_to_asset_symbol( #name , decimal_places );
 
 #define ASSET( s ) \
-   steem::plugins::condenser_api::legacy_asset::from_string( s ).to_asset()
+   dpay::plugins::condenser_api::legacy_asset::from_string( s ).to_asset()
 
 #define FUND( account_name, amount ) \
    fund( account_name, amount ); \
@@ -153,7 +153,7 @@ extern uint32_t ( STEEM_TESTING_GENESIS_TIMESTAMP );
 
 #define OP2TX(OP,TX,KEY) \
 TX.operations.push_back( OP ); \
-TX.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION ); \
+TX.set_expiration( db->head_block_time() + DPAY_MAX_TIME_UNTIL_EXPIRATION ); \
 TX.sign( KEY, db->get_chain_id() );
 
 #define PUSH_OP(OP,KEY) \
@@ -175,12 +175,12 @@ TX.sign( KEY, db->get_chain_id() );
 { \
    signed_transaction tx; \
    OP2TX(OP,tx,KEY) \
-   STEEM_REQUIRE_THROW( db->push_transaction( tx, 0 ), EXCEPTION ); \
+   DPAY_REQUIRE_THROW( db->push_transaction( tx, 0 ), EXCEPTION ); \
 }
 
-namespace steem { namespace chain {
+namespace dpay { namespace chain {
 
-using namespace steem::protocol;
+using namespace dpay::protocol;
 
 struct database_fixture {
    // the reason we use an app is to exercise the indexes of built-in
@@ -191,7 +191,7 @@ struct database_fixture {
    account_id_type committee_account;
    fc::ecc::private_key private_key = fc::ecc::private_key::generate();
    fc::ecc::private_key init_account_priv_key = fc::ecc::private_key::regenerate( fc::sha256::hash( string( "init_key" ) ) );
-   string debug_key = steem::utilities::key_to_wif( init_account_priv_key );
+   string debug_key = dpay::utilities::key_to_wif( init_account_priv_key );
    public_key_type init_account_pub_key = init_account_priv_key.get_public_key();
    uint32_t default_skip = 0 | database::skip_undo_history_check | database::skip_authority_check;
 
@@ -287,7 +287,7 @@ struct live_database_fixture : public database_fixture
    fc::path _chain_dir;
 };
 
-#ifdef STEEM_ENABLE_SMT
+#ifdef DPAY_ENABLE_SMT
 template< typename T >
 struct t_smt_database_fixture : public T
 {
@@ -317,7 +317,7 @@ using smt_database_fixture_for_plugin = t_smt_database_fixture< database_fixture
 struct json_rpc_database_fixture : public database_fixture
 {
    private:
-      steem::plugins::json_rpc::json_rpc_plugin* rpc_plugin;
+      dpay::plugins::json_rpc::json_rpc_plugin* rpc_plugin;
 
       fc::variant get_answer( std::string& request );
       void review_answer( fc::variant& answer, int64_t code, bool is_warning, bool is_fail, fc::optional< fc::variant > id );
