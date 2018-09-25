@@ -45,7 +45,7 @@
 
 #define DPAY_BLOCKCHAIN_VERSION              ( version(0, 20, 2) )
 
-#define DPAY_INIT_PUBLIC_KEY_STR             "DWB71hoefovfw8xjGiLpxEDBfc2iDJpAVkbR99PZaiLSR8JiYmp6V"
+#define DPAY_INIT_PUBLIC_KEY_STR             "DWB5BykoEiBofELY5ocVrbjwj48PJybpG6ZCHxLaY7fzEKP8BwXsQ"
 #define DPAY_CHAIN_ID                        (fc::sha256::hash("dpay"))
 #define DPAY_ADDRESS_PREFIX                  "DWB"
 
