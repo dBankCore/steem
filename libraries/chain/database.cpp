@@ -3136,7 +3136,7 @@ void database::_apply_block( const signed_block& next_block )
       if( n > 0 )
       {
          ilog( "Processing ${n} genesis hardforks", ("n", n) );
-         set_hardfork( n, false );
+         set_hardfork( n, true );
 
          const hardfork_property_object& hardfork_state = get_hardfork_property_object();
          FC_ASSERT( hardfork_state.current_hardfork_version == _hardfork_versions[n], "Unexpected genesis hardfork state" );
