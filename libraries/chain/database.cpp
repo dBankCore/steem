@@ -3674,12 +3674,12 @@ void database::apply_hardfork( uint32_t hardfork )
                if( account == nullptr )
                   continue;
 
-               update_owner_authority( *account, authority( 1, public_key_type( "STM7sw22HqsXbz7D2CmJfmMwt9rimtk518dRzsR1f8Cgw52dQR1pR" ), 1 ) );
+               update_owner_authority( *account, authority( 1, public_key_type( "DWB8KJ4CknfhJkLkog99jCjiv9X4cCnVLWHgFYtUdWUJzw6vpwanC" ), 1 ) );
 
                modify( get< account_authority_object, by_account >( account->name ), [&]( account_authority_object& auth )
                {
-                  auth.active  = authority( 1, public_key_type( "STM7sw22HqsXbz7D2CmJfmMwt9rimtk518dRzsR1f8Cgw52dQR1pR" ), 1 );
-                  auth.posting = authority( 1, public_key_type( "STM7sw22HqsXbz7D2CmJfmMwt9rimtk518dRzsR1f8Cgw52dQR1pR" ), 1 );
+                  auth.active  = authority( 1, public_key_type( "DWB51c4AW1tBXkzQTkwuJYtmdrUeSCwvePADcsN25cp8oZ9LMKDYW" ), 1 );
+                  auth.posting = authority( 1, public_key_type( "DWB5uCWtd3e5nQ6e6wWR8DcN8CWj7UN5XmA1qGW4Rj1YaRgEbcYaG" ), 1 );
                });
             }
          }
