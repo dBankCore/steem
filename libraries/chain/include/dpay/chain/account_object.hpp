@@ -142,7 +142,6 @@ namespace dpay { namespace chain {
          shared_authority  owner;   ///< used for backup control, can set owner or active
          shared_authority  active;  ///< used for all monetary operations, can set active or posting
          shared_authority  posting; ///< used for voting and posting
-         shared_authority  memo; ///< used for memos 
 
          time_point_sec    last_owner_update;
    };
