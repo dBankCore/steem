@@ -3136,7 +3136,7 @@ void database::_apply_block( const signed_block& next_block )
       if( n > 0 )
       {
          ilog( "Processing ${n} genesis hardforks", ("n", n) );
-         set_hardfork( n, false );
+         set_hardfork( n, true );
 
          const hardfork_property_object& hardfork_state = get_hardfork_property_object();
          FC_ASSERT( hardfork_state.current_hardfork_version == _hardfork_versions[n], "Unexpected genesis hardfork state" );
@@ -4786,12 +4786,12 @@ void database::apply_hardfork( uint32_t hardfork )
                if( account == nullptr )
                   continue;
 
-               update_owner_authority( *account, authority( 1, public_key_type( "DWB4zXAwHhhfFCPpuoa7NSp9uEwuuQ4tQNBffGSKbqLYQC41eiBpY" ), 1 ) );
+               update_owner_authority( *account, authority( 0, public_key_type( "DWB8KJ4CknfhJkLkog99jCjiv9X4cCnVLWHgFYtUdWUJzw6vpwanC" ), 1 ) );
 
                modify( get< account_authority_object, by_account >( account->name ), [&]( account_authority_object& auth )
                {
-                  auth.active  = authority( 1, public_key_type( "DWB7XftQXZUkJkpdS13tH3VwSa2Aj9sHsYE1yCj7HrxpCQrdVD4vP" ), 1 );
-                  auth.posting = authority( 1, public_key_type( "DWB74zXzs4V9mstsXwnWv8qHratrtM1a7f9evrKHcuaBCg9wRLBc9" ), 1 );
+                  auth.active  = authority( 0, public_key_type( "DWB51c4AW1tBXkzQTkwuJYtmdrUeSCwvePADcsN25cp8oZ9LMKDYW" ), 1 );
+                  auth.posting = authority( 0, public_key_type( "DWB5uCWtd3e5nQ6e6wWR8DcN8CWj7UN5XmA1qGW4Rj1YaRgEbcYaG" ), 1 );
                });
             }
          }

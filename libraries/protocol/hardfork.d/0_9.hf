@@ -12,7 +12,7 @@ inline static const std::set< std::string >& get_compromised_accounts()
 {
    static const std::set< std::string > compromised_accounts
    {
-	"dpay"
+	"235235235235"
    };
 
    return compromised_accounts;
