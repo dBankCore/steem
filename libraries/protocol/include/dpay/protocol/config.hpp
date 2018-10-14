@@ -36,7 +36,7 @@
 #define DPAY_OWNER_UPDATE_LIMIT                          fc::seconds(0)
 #define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 1
 
-#define DPAY_INIT_SUPPLY                     (int64_t( 250 ) * int64_t( 1000000 ) * int64_t( 1000 ))
+#define DPAY_INIT_SUPPLY                     (int64_t( 500 ) * int64_t( 1000000 ) * int64_t( 1000 ))
 
 /// Allows to limit number of total produced blocks.
 #define TESTNET_BLOCK_LIMIT                   (3000000)
