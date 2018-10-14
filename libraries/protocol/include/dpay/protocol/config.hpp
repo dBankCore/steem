@@ -49,8 +49,8 @@
 #define DPAY_CHAIN_ID                        (fc::sha256::hash("dpay"))
 #define DPAY_ADDRESS_PREFIX                  "DWB"
 
-#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1458835200))
-#define DPAY_MINING_TIME                     (fc::time_point_sec(1458838800))
+#define DPAY_GENESIS_TIME                    (fc::time_point_sec(1539496185))
+#define DPAY_MINING_TIME                     (fc::time_point_sec(1539496185))
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF12 (60*60*24)    /// 1 day
 #define DPAY_CASHOUT_WINDOW_SECONDS_PRE_HF17 (60*60*12)    /// 12 hours
 #define DPAY_CASHOUT_WINDOW_SECONDS          (60*60*24*7)  /// 7 days
@@ -60,7 +60,7 @@
 #define DPAY_UPVOTE_LOCKOUT_SECONDS          (60*60*12)    /// 12 hours
 #define DPAY_UPVOTE_LOCKOUT_HF17             (fc::hours(12))
 
-#define DPAY_MIN_ACCOUNT_CREATION_FEE           5
+#define DPAY_MIN_ACCOUNT_CREATION_FEE           1
 #define DPAY_MAX_ACCOUNT_CREATION_FEE           int64_t(1000000000)
 
 #define DPAY_OWNER_AUTH_RECOVERY_PERIOD                  fc::days(30)
@@ -68,7 +68,7 @@
 #define DPAY_OWNER_UPDATE_LIMIT                          fc::minutes(60)
 #define DPAY_OWNER_AUTH_HISTORY_TRACKING_START_BLOCK_NUM 3186477
 
-#define DPAY_INIT_SUPPLY                     int64_t(0)
+#define DPAY_INIT_SUPPLY                     (int64_t( 500 ) * int64_t( 1000000 ) * int64_t( 1000 ))
 
 #endif
 
@@ -85,8 +85,8 @@
 #define DPAY_START_MINER_VOTING_BLOCK        (DPAY_BLOCKS_PER_DAY * 30)
 
 #define DPAY_INIT_MINER_NAME                 "whitehorse"
-#define DPAY_NUM_INIT_MINERS                 1
-#define DPAY_INIT_TIME                       (fc::time_point_sec());
+#define DPAY_NUM_INIT_MINERS                 21
+#define DPAY_INIT_TIME                       (fc::time_point_sec(1539496185));
 
 #define DPAY_MAX_WITNESSES                   21
 
