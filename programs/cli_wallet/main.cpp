@@ -71,16 +71,18 @@ int main( int argc, char** argv )
       boost::program_options::options_description opts;
          opts.add_options()
          ("help,h", "Print this help message and exit.")
-         ("server-rpc-endpoint,s", bpo::value<string>()->implicit_value("ws://127.0.0.1:1776"), "Server websocket RPC endpoint")
+         ("server-rpc-endpoint,s", bpo::value<string>()->implicit_value("ws://127.0.0.1:8090"), "Server websocket RPC endpoint")
          ("cert-authority,a", bpo::value<string>()->default_value("_default"), "Trusted CA bundle file for connecting to wss:// TLS server")
-         ("rpc-endpoint,r", bpo::value<string>()->implicit_value("127.0.0.1:1777"), "Endpoint for wallet websocket RPC to listen on")
-         ("rpc-tls-endpoint,t", bpo::value<string>()->implicit_value("127.0.0.1:1777"), "Endpoint for wallet websocket TLS RPC to listen on")
+         ("rpc-endpoint,r", bpo::value<string>()->implicit_value("127.0.0.1:8091"), "Endpoint for wallet websocket RPC to listen on")
+         ("rpc-tls-endpoint,t", bpo::value<string>()->implicit_value("127.0.0.1:8092"), "Endpoint for wallet websocket TLS RPC to listen on")
          ("rpc-tls-certificate,c", bpo::value<string>()->implicit_value("server.pem"), "PEM certificate for wallet websocket TLS RPC")
-         ("rpc-http-endpoint,H", bpo::value<string>()->implicit_value("127.0.0.1:1777"), "Endpoint for wallet HTTP RPC to listen on")
+         ("rpc-http-endpoint,H", bpo::value<string>()->implicit_value("127.0.0.1:8093"), "Endpoint for wallet HTTP RPC to listen on")
          ("daemon,d", "Run the wallet in daemon mode" )
          ("rpc-http-allowip", bpo::value<vector<string>>()->multitoken(), "Allows only specified IPs to connect to the HTTP endpoint" )
          ("wallet-file,w", bpo::value<string>()->implicit_value("wallet.json"), "wallet to load")
+#ifdef IS_TEST_NET
          ("chain-id", bpo::value< std::string >()->default_value( DPAY_CHAIN_ID ), "chain ID to connect to")
+#endif
          ;
       vector<string> allowed_ips;
 
@@ -100,6 +102,7 @@ int main( int argc, char** argv )
 
       dpay::protocol::chain_id_type _dpay_chain_id;
 
+#ifdef IS_TEST_NET
       if( options.count("chain-id") )
       {
          auto chain_id_str = options.at("chain-id").as< std::string >();
@@ -113,7 +116,7 @@ int main( int argc, char** argv )
             FC_ASSERT( false, "Could not parse chain_id as hex string. Chain ID String: ${s}", ("s", chain_id_str) );
          }
       }
-
+#endif
 
       fc::path data_dir;
       fc::logging_config cfg;

@@ -184,7 +184,7 @@ namespace dpay { namespace protocol {
    { try {
       validate_account_name( from );
       validate_account_name( to );
-      FC_ASSERT( amount.symbol != VESTS_SYMBOL, "transferring of BEX Power (STMP) is not allowed." );
+      FC_ASSERT( amount.symbol != VESTS_SYMBOL, "transferring of BEX Power (BP) is not allowed." );
       FC_ASSERT( amount.amount > 0, "Cannot transfer a negative amount (aka: stealing)" );
       FC_ASSERT( memo.size() < DPAY_MAX_MEMO_SIZE, "Memo is too large" );
       FC_ASSERT( fc::is_utf8( memo ), "Memo is not UTF8" );
@@ -661,9 +661,9 @@ namespace dpay { namespace protocol {
    void claim_reward_balance_operation::validate()const
    {
       validate_account_name( account );
-      FC_ASSERT( is_asset_type( reward_dpay, DPAY_SYMBOL ), "Reward BEX must be BEX" );
-      FC_ASSERT( is_asset_type( reward_bbd, BBD_SYMBOL ), "Reward BEX must be BBD" );
-      FC_ASSERT( is_asset_type( reward_vests, VESTS_SYMBOL ), "Reward BEX must be VESTS" );
+      FC_ASSERT( is_asset_type( reward_dpay, DPAY_SYMBOL ), "dPay Reward must be BEX" );
+      FC_ASSERT( is_asset_type( reward_bbd, BBD_SYMBOL ), "dPay Reward must be BBD" );
+      FC_ASSERT( is_asset_type( reward_vests, VESTS_SYMBOL ), "dPay Reward must be VESTS" );
       FC_ASSERT( reward_dpay.amount >= 0, "Cannot claim a negative amount" );
       FC_ASSERT( reward_bbd.amount >= 0, "Cannot claim a negative amount" );
       FC_ASSERT( reward_vests.amount >= 0, "Cannot claim a negative amount" );

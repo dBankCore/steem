@@ -115,6 +115,7 @@ namespace dpay { namespace protocol {
 
    /** Allows to store all SMT tokens being allowed to use during voting process.
     *  Maps asset symbol (SMT) to the vote info.
+    *  @see SMT spec for details: https://github.com/dpays/smt-whitepaper/blob/master/smt-manual/manual.md
     */
    struct allowed_vote_assets
    {
@@ -781,7 +782,7 @@ namespace dpay { namespace protocol {
     *
     * Users not in the ACTIVE witness set should not have to worry about their
     * key getting compromised and being used to produced multiple blocks so
-    * the attacker can report it and steel their vesting BEX.
+    * the attacker can report it and steel their vesting dpay.
     *
     * The result of the operation is to transfer the full VESTING BEX balance
     * of the block producer to the reporter.

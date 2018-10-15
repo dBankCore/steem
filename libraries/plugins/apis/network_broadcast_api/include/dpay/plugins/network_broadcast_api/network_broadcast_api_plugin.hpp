@@ -2,6 +2,7 @@
 #include <dpay/plugins/json_rpc/json_rpc_plugin.hpp>
 #include <dpay/plugins/chain/chain_plugin.hpp>
 #include <dpay/plugins/p2p/p2p_plugin.hpp>
+#include <dpay/plugins/rc/rc_plugin.hpp>
 
 #include <appbase/application.hpp>
 
@@ -16,6 +17,7 @@ class network_broadcast_api_plugin : public appbase::plugin< network_broadcast_a
 public:
    APPBASE_PLUGIN_REQUIRES(
       (dpay::plugins::json_rpc::json_rpc_plugin)
+      (dpay::plugins::rc::rc_plugin)
       (dpay::plugins::chain::chain_plugin)
       (dpay::plugins::p2p::p2p_plugin)
    )

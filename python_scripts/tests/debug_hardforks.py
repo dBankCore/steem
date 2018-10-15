@@ -10,7 +10,7 @@ from time import sleep
 
 # local imports
 from dpaydebugnode import DebugNode
-from dpaypyapi.dpaynoderpc import DPayNodeRPC
+from dpayapi.dpaynoderpc import DPayNodeRPC
 
 WAITING = True
 
@@ -67,7 +67,7 @@ def main( ):
 
 
 def run_dpayd_tests( debug_node ):
-   from dpaypyapi.dpaynoderpc import DPayNodeRPC
+   from dpayapi.dpaynoderpc import DPayNodeRPC
 
    try:
       print( 'Replaying blocks...', )

@@ -150,7 +150,7 @@ exec chpst -udpayd \
     $DPAYD \
         --webserver-ws-endpoint=127.0.0.1:8091 \
         --webserver-http-endpoint=127.0.0.1:8091 \
-        --p2p-endpoint=0.0.0.0:6620 \
+        --p2p-endpoint=0.0.0.0:2001 \
         --data-dir=$HOME \
         $ARGS \
         $DPAYD_EXTRA_OPTS \

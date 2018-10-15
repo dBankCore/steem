@@ -28,8 +28,8 @@ PY_SCRIPT_DIR=../../api_tests
 REPLAY_SCRIPT=run_replay.sh
 NODE_SCRIPT=open_node.sh
 NODE_ADDRESS=0.0.0.0
-TEST_PORT=1776
-REF_PORT=1777
+TEST_PORT=8090
+REF_PORT=8091
 TEST_NODE=$NODE_ADDRESS:$TEST_PORT
 REF_NODE=$NODE_ADDRESS:$REF_PORT
 TEST_NODE_OPT=--webserver-http-endpoint=$TEST_NODE
@@ -63,7 +63,7 @@ function run_test {
    rm -rf $WDIR
    mkdir -p $1
    pushd $PY_SCRIPT_DIR
-
+   
    echo Running python3 $1 $JOBS http://$TEST_NODE http://$REF_NODE $WDIR
    python3 $1 $JOBS http://$TEST_NODE http://$REF_NODE 50 $WDIR
    [ $? -ne 0 ] && echo test $1 FAILED && EXIT_CODE=-1

@@ -230,7 +230,7 @@ import sys
 
 def main(argv):
     parser = argparse.ArgumentParser()
-    parser.add_argument("provider", help="Name of plugin provider (dPay for plugins developed by dPay Labs)")
+    parser.add_argument("provider", help="Name of plugin provider (dpay for plugins developed by dPay)")
     parser.add_argument("name", help="Name of plugin to create")
     args = parser.parse_args(argv[1:])
     ctx = {

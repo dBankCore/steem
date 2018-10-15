@@ -10,8 +10,6 @@
 
 #include <dpay/chain/util/reward.hpp>
 
-#include <dpay/plugins/witness/witness_objects.hpp>
-
 #include <fc/macros.hpp>
 #include <fc/crypto/digest.hpp>
 

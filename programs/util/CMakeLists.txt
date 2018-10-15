@@ -43,6 +43,19 @@ install( TARGETS
    ARCHIVE DESTINATION lib
 )
 
+add_executable( serialize_set_properties serialize_set_properties.cpp )
+
+target_link_libraries( serialize_set_properties
+                       PRIVATE dpay_chain dpay_protocol dpay_utilities fc ${CMAKE_DL_LIBS} ${PLATFORM_SPECIFIC_LIBS} )
+
+install( TARGETS
+   serialize_set_properties
+
+   RUNTIME DESTINATION bin
+   LIBRARY DESTINATION lib
+   ARCHIVE DESTINATION lib
+)
+
 add_executable( inflation_model inflation_model.cpp )
 target_link_libraries( inflation_model
                        PRIVATE dpay_chain dpay_protocol fc ${CMAKE_DL_LIBS} ${PLATFORM_SPECIFIC_LIBS} )

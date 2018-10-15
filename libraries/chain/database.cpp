@@ -1034,7 +1034,7 @@ void database::clear_pending()
 void database::push_virtual_operation( const operation& op )
 {
    FC_ASSERT( is_virtual_operation( op ) );
-   operation_notification note(op);
+   operation_notification note = create_operation_notification( op );
    ++_current_virtual_op;
    note.virtual_op = _current_virtual_op;
    notify_pre_apply_operation( note );
@@ -1044,7 +1044,7 @@ void database::push_virtual_operation( const operation& op )
 void database::pre_push_virtual_operation( const operation& op )
 {
    FC_ASSERT( is_virtual_operation( op ) );
-   operation_notification note(op);
+   operation_notification note = create_operation_notification( op );
    ++_current_virtual_op;
    note.virtual_op = _current_virtual_op;
    notify_pre_apply_operation( note );
@@ -1053,18 +1053,13 @@ void database::pre_push_virtual_operation( const operation& op )
 void database::post_push_virtual_operation( const operation& op )
 {
    FC_ASSERT( is_virtual_operation( op ) );
-   operation_notification note(op);
+   operation_notification note = create_operation_notification( op );
    note.virtual_op = _current_virtual_op;
    notify_post_apply_operation( note );
 }
 
-void database::notify_pre_apply_operation( operation_notification& note )
+void database::notify_pre_apply_operation( const operation_notification& note )
 {
-   note.trx_id       = _current_trx_id;
-   note.block        = _current_block_num;
-   note.trx_in_block = _current_trx_in_block;
-   note.op_in_trx    = _current_op_in_trx;
-
    DPAY_TRY_NOTIFY( _pre_apply_operation_signal, note )
 }
 
@@ -1177,8 +1172,6 @@ uint32_t database::get_slot_at_time(fc::time_point_sec when)const
 
 /**
  *  Converts BEX into bbd and adds it to to_account while reducing the BEX supply
- *  Converts BEX into bbd and adds it to to_account while reducing the BEX supply
- *  by BEX and increasing the bbd supply by the specified amount.
  *  by BEX and increasing the bbd supply by the specified amount.
  */
 std::pair< asset, asset > database::create_bbd( const account_object& to_account, asset dpay, bool to_reward_balance )
@@ -1312,6 +1305,7 @@ asset create_vesting2( database& db, const account_object& to_account, asset liq
             db.modify( to_account, [&]( account_object& a )
             {
                util::manabar_params params( util::get_effective_vesting_shares( a ), DPAY_VOTING_MANA_REGENERATION_SECONDS );
+FC_TODO( "Set skip_cap_regen=true without breaking consensus" );
                a.voting_manabar.regenerate_mana( params, db.head_block_time() );
                a.voting_manabar.use_mana( -new_vesting.amount.value );
             });
@@ -1344,7 +1338,6 @@ asset create_vesting2( database& db, const account_object& to_account, asset liq
 
 /**
  * @param to_account - the account to receive the new vesting shares
- * @param liquid     - BEX or liquid SMT to be converted to vesting shares
  * @param liquid     - BEX or liquid SMT to be converted to vesting shares
  */
 asset database::create_vesting( const account_object& to_account, asset liquid, bool to_reward_balance )
@@ -1935,7 +1928,6 @@ share_type database::cashout_comment_helper( util::comment_reward_context& ctx, 
 
                   vop.bbd_payout   = bbd_payout.first; // BBD portion
                   vop.dpay_payout = bbd_payout.second; // BEX portion
-                  vop.dpay_payout = bbd_payout.second; // BEX portion
                }
 
                create_vesting2( *this, get_account( b.account ), asset( benefactor_vesting_dpay, DPAY_SYMBOL ), has_hardfork( DPAY_HARDFORK_0_17__659 ),
@@ -2479,7 +2471,6 @@ share_type database::pay_reward_funds( share_type reward )
 
       used_rewards += r;
 
-      // Sanity check to ensure we aren't printing more BEX than has been allocated through inflation
       // Sanity check to ensure we aren't printing more BEX than has been allocated through inflation
       FC_ASSERT( used_rewards <= reward );
    }
@@ -3388,8 +3379,16 @@ try {
 #endif
             if( has_hardfork( DPAY_HARDFORK_0_14__230 ) )
             {
+               // This block limits the effective median price to force BBD to remain at or
+               // below 10% of the combined market cap of BEX and BBD.
+               //
+               // For example, if we have 500 BEX and 100 BBD, the price is limited to
+               // 900 BBD / 500 BEX which works out to be $1.80.  At this price, 500 BEX
+               // would be valued at 500 * $1.80 = $900.  100 BBD is by definition always $100,
+               // so the combined market cap is $900 + $100 = $1000.
+
                const auto& gpo = get_dynamic_global_properties();
-               price min_price( asset( 9 * gpo.current_bbd_supply.amount, BBD_SYMBOL ), gpo.current_supply ); // This price limits BBD to 10% market cap
+               price min_price( asset( 9 * gpo.current_bbd_supply.amount, BBD_SYMBOL ), gpo.current_supply );
 
                if( min_price > fho.current_median_history )
                   fho.current_median_history = min_price;
@@ -3493,7 +3492,7 @@ void database::_apply_transaction(const signed_transaction& trx)
 
 void database::apply_operation(const operation& op)
 {
-   operation_notification note(op);
+   operation_notification note = create_operation_notification( op );
    notify_pre_apply_operation( note );
 
    if( _benchmark_dumper.is_enabled() )
@@ -4156,6 +4155,7 @@ void database::clear_expired_delegations()
          if( has_hardfork( DPAY_HARDFORK_0_20__2539 ) )
          {
             util::manabar_params params( util::get_effective_vesting_shares( a ), DPAY_VOTING_MANA_REGENERATION_SECONDS );
+FC_TODO( "Set skip_cap_regen=true without breaking consensus" );
             a.voting_manabar.regenerate_mana( params, head_block_time() );
             a.voting_manabar.use_mana( -itr->vesting_shares.amount.value );
          }
@@ -4232,7 +4232,6 @@ void database::modify_balance( const account_object& a, const asset& delta, bool
             if( check_balance )
             {
                FC_ASSERT( acnt.balance.amount.value >= 0, "Insufficient BEX funds" );
-               FC_ASSERT( acnt.balance.amount.value >= 0, "Insufficient BEX funds" );
             }
             break;
          case DPAY_ASSET_NUM_BBD:
@@ -4293,7 +4292,6 @@ void database::modify_reward_balance( const account_object& a, const asset& valu
                acnt.reward_dpay_balance += value_delta;
                if( check_balance )
                {
-                  FC_ASSERT( acnt.reward_dpay_balance.amount.value >= 0, "Insufficient reward BEX funds" );
                   FC_ASSERT( acnt.reward_dpay_balance.amount.value >= 0, "Insufficient reward BEX funds" );
                }
             }
@@ -4423,7 +4421,6 @@ void database::adjust_savings_balance( const account_object& a, const asset& del
             acnt.savings_balance += delta;
             if( check_balance )
             {
-               FC_ASSERT( acnt.savings_balance.amount.value >= 0, "Insufficient savings BEX funds" );
                FC_ASSERT( acnt.savings_balance.amount.value >= 0, "Insufficient savings BEX funds" );
             }
             break;
@@ -4786,12 +4783,12 @@ void database::apply_hardfork( uint32_t hardfork )
                if( account == nullptr )
                   continue;
 
-               update_owner_authority( *account, authority( 1, public_key_type( "DWB4zXAwHhhfFCPpuoa7NSp9uEwuuQ4tQNBffGSKbqLYQC41eiBpY" ), 1 ) );
+               update_owner_authority( *account, authority( 1, public_key_type( "STM7sw22HqsXbz7D2CmJfmMwt9rimtk518dRzsR1f8Cgw52dQR1pR" ), 1 ) );
 
                modify( get< account_authority_object, by_account >( account->name ), [&]( account_authority_object& auth )
                {
-                  auth.active  = authority( 1, public_key_type( "DWB7XftQXZUkJkpdS13tH3VwSa2Aj9sHsYE1yCj7HrxpCQrdVD4vP" ), 1 );
-                  auth.posting = authority( 1, public_key_type( "DWB74zXzs4V9mstsXwnWv8qHratrtM1a7f9evrKHcuaBCg9wRLBc9" ), 1 );
+                  auth.active  = authority( 1, public_key_type( "STM7sw22HqsXbz7D2CmJfmMwt9rimtk518dRzsR1f8Cgw52dQR1pR" ), 1 );
+                  auth.posting = authority( 1, public_key_type( "STM7sw22HqsXbz7D2CmJfmMwt9rimtk518dRzsR1f8Cgw52dQR1pR" ), 1 );
                });
             }
          }
@@ -5130,7 +5127,6 @@ void database::validate_invariants()const
             total_bbd += itr->pending_fee;
          else
             FC_ASSERT( false, "found escrow pending fee that is not BBD or BEX" );
-            FC_ASSERT( false, "found escrow pending fee that is not BBD or BEX" );
       }
 
       const auto& savings_withdraw_idx = get_index< savings_withdraw_index >().indices().get< by_id >();
@@ -5142,7 +5138,6 @@ void database::validate_invariants()const
          else if( itr->amount.symbol == BBD_SYMBOL )
             total_bbd += itr->amount;
          else
-            FC_ASSERT( false, "found savings withdraw that is not BBD or BEX" );
             FC_ASSERT( false, "found savings withdraw that is not BBD or BEX" );
       }
 

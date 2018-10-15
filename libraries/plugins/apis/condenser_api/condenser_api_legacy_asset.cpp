@@ -88,9 +88,9 @@ std::string asset_num_to_string( uint32_t asset_num )
    {
 #ifdef IS_TEST_NET
       case DPAY_ASSET_NUM_DPAY:
-         return "BET";
+         return "TESTS";
       case DPAY_ASSET_NUM_BBD:
-         return "BBD";
+         return "TBD";
 #else
       case DPAY_ASSET_NUM_DPAY:
          return "BEX";

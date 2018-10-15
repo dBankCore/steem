@@ -11,7 +11,7 @@ from tempfile import TemporaryDirectory
 from threading import Lock
 from time import sleep
 
-from dpaypyapi.dpaynoderpc import DPayNodeRPC
+from dpayapi.dpaynoderpc import DPayNodeRPC
 
 class DebugNode( object ):
    """ Wraps the dpayd debug node plugin for easier automated testing of the dPay Network"""
@@ -23,7 +23,7 @@ class DebugNode( object ):
       While in the context of 'with' the debug node will continue to run.
       Upon exit of 'with' the debug will exit and clean up temporary files.
       This class also contains methods to allow basic manipulation of the blockchain.
-      For all other requests, the python-dpay library should be used.
+      For all other requests, the dpay-python library should be used.
 
       args:
          dpayd -- The string path to the location of the dpayd binary
@@ -52,7 +52,7 @@ class DebugNode( object ):
 
       self._data_dir = Path( data_dir )
       if( not self._data_dir.exists() ):
-         raise ValueError( 'data_dir either does not exist or is not a properly constructed dpay data directory' )
+         raise ValueError( 'data_dir either does not exist or is not a properly constructed dPay data directory' )
       if( not self._data_dir.is_dir() ):
          raise ValueError( 'data_dir is not a directory' )
 
@@ -137,7 +137,7 @@ class DebugNode( object ):
 
    def _get_config( self ):
       return "# no seed-node in config file or command line\n" \
-          + "p2p-endpoint = 127.0.0.1:6620       # bind to localhost to prevent remote p2p nodes from connecting to us\n" \
+          + "p2p-endpoint = 127.0.0.1:2001       # bind to localhost to prevent remote p2p nodes from connecting to us\n" \
           + "rpc-endpoint = 127.0.0.1:8095       # bind to localhost to secure RPC API access\n" \
           + "enable-plugin = witness debug_node " + " ".join( self.plugins ) + "\n" \
           + "public-api = database_api login_api debug_node_api " + " ".join( self.apis ) + "\n"

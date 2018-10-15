@@ -59,7 +59,7 @@ def parse_arguments(src_default):
                 else:
                     setattr(args, flag_name, directory)
 
-    parser = MyParser(description="Helper function to call cmake with appropriate configuration to build dPay.")
+    parser = MyParser(description="Helper function to call cmake with appropriate configuration to build dpay.")
     parser.add_argument("--sys-root", metavar="SYS_ROOT", type=convert_to_dir, default=argparse.SUPPRESS,
                         help="Root directory to search within for libraries and header files (can alternatively specify with SYS_ROOT environment variable)")
     parser.add_argument("--boost-dir", metavar="BOOST_ROOT", type=convert_to_dir, default=argparse.SUPPRESS,

@@ -24,7 +24,7 @@ Please do a keyword search to see if there is already an existing issue before o
 
 ## dSite.io vs. dPay Blockchain
 
-This issue tracker is only intended to track issues for the dPay blockchain. If the issue is with the dSite.io website, please open an issue in the [dSite.io Repository](https://github.com/dsite).
+This issue tracker is only intended to track issues for the dPay blockchain. If the issue is with the dSite.io website, please open an issue in the [dSite.io Repository](https://github.com/dsites/dsite-frontend).
 
 ## Pull Requests
 

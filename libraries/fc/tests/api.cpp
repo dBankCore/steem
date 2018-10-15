@@ -66,14 +66,14 @@ int main( int argc, char** argv )
                c->set_session_data( wsc );
           });
 
-      server.listen( 1776 );
+      server.listen( 8090 );
       server.start_accept();
 
       for( uint32_t i = 0; i < 5000; ++i )
       {
-         try {
+         try { 
             fc::http::websocket_client client;
-            auto con  = client.connect( "ws://localhost:1776" );
+            auto con  = client.connect( "ws://localhost:8090" );
             auto apic = std::make_shared<websocket_api_connection>(*con);
             auto remote_login_api = apic->get_remote_api<login_api>();
             auto remote_calc = remote_login_api->get_calc();
@@ -85,13 +85,13 @@ int main( int argc, char** argv )
          }
       }
       wlog( "exit scope" );
-   }
+   } 
    catch( const fc::exception& e )
    {
       edump((e.to_detail_string()));
    }
    wlog( "returning now..." );
-
+   
    return 0;
 
    some_calculator calc;

@@ -128,11 +128,11 @@ BOOST_AUTO_TEST_CASE( smt_create_apply )
       // Throw due to insufficient balance of BBD/TBD.
       FAIL_WITH_OP(op, alice_private_key, fc::assert_exception);
 
-      // Now fund with BBD, and set fee with BEX.
+      // Now fund with BBD, and set fee with dpay.
       convert( "alice", asset( test_amount, DPAY_SYMBOL ) );
       // Declare fee in BEX though alice has none.
       op.smt_creation_fee = asset( test_amount, DPAY_SYMBOL );
-      // Throw due to insufficient balance of BEX.
+      // Throw due to insufficient balance of dpay.
       FAIL_WITH_OP(op, alice_private_key, fc::assert_exception);
 
       // Push valid operation.
@@ -158,7 +158,7 @@ BOOST_AUTO_TEST_CASE( smt_create_apply )
       op.symbol = bob_symbol;
       op.precision = op.symbol.decimals();
 
-      // Check too low fee in BEX.
+      // Check too low fee in dpay.
       FUND( "bob", too_low_fee_amount );
       op.smt_creation_fee = asset( too_low_fee_amount, DPAY_SYMBOL );
       FAIL_WITH_OP(op, bob_private_key, fc::assert_exception);
@@ -862,8 +862,8 @@ BOOST_AUTO_TEST_CASE( asset_symbol_vesting_methods )
       BOOST_TEST_MESSAGE( "Test asset_symbol vesting methods" );
 
       asset_symbol_type DPay = DPAY_SYMBOL;
-      FC_ASSERT( DPay.is_vesting() == false );
-      FC_ASSERT( DPay.get_paired_symbol() == VESTS_SYMBOL );
+      FC_ASSERT( dpay.is_vesting() == false );
+      FC_ASSERT( dpay.get_paired_symbol() == VESTS_SYMBOL );
 
       asset_symbol_type Vests = VESTS_SYMBOL;
       FC_ASSERT( Vests.is_vesting() );

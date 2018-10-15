@@ -572,7 +572,7 @@ void p2p_plugin::plugin_initialize(const boost::program_options::variables_map& 
    if( options.count( "p2p-endpoint" ) )
       my->endpoint = fc::ip::endpoint::from_string( options.at( "p2p-endpoint" ).as< string >() );
 
-   my->user_agent = "dPay Reference Implementation";
+   my->user_agent = "dPay Node";
 
    if( options.count( "p2p-max-connections" ) )
       my->max_connections = options.at( "p2p-max-connections" ).as< uint32_t >();

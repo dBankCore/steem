@@ -7,7 +7,7 @@ popd () { command popd "$@" > /dev/null; }
 if [ $# -ne 5 ]
 then
    echo Usage: node_kind dpayd_path node_options work_path port
-   echo Example: reference ~/dpay/dpay/build/programs/dpayd/dpayd --webserver-http-endpoint=127.0.0.1:1776 ~/working 1776
+   echo Example: reference ~/dpay/dpay/build/programs/dpayd/dpayd --webserver-http-endpoint=127.0.0.1:8090 ~/working 8090
    exit -1
 fi
 

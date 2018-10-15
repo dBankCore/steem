@@ -13,8 +13,8 @@
 
 #define DPAY_INIT_PRIVATE_KEY                (fc::ecc::private_key::regenerate(fc::sha256::hash(std::string("init_key"))))
 #define DPAY_INIT_PUBLIC_KEY_STR             (std::string( dpay::protocol::public_key_type(DPAY_INIT_PRIVATE_KEY.get_public_key()) ))
-#define DPAY_CHAIN_ID (fc::sha256::hash("dpaytest"))
-#define DPAY_ADDRESS_PREFIX                  "DWT"
+#define DPAY_CHAIN_ID (fc::sha256::hash("testnet"))
+#define DPAY_ADDRESS_PREFIX                  "TST"
 
 #define DPAY_GENESIS_TIME                    (fc::time_point_sec(1451606400))
 #define DPAY_MINING_TIME                     (fc::time_point_sec(1451606400))
@@ -43,10 +43,10 @@
 
 #else // IS LIVE DPAY NETWORK
 
-#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 20, 2) )
+#define DPAY_BLOCKCHAIN_VERSION              ( version(0, 20, 5) )
 
 #define DPAY_INIT_PUBLIC_KEY_STR             "DWB5BykoEiBofELY5ocVrbjwj48PJybpG6ZCHxLaY7fzEKP8BwXsQ"
-#define DPAY_CHAIN_ID                        (fc::sha256::hash("dpay"))
+#define DPAY_CHAIN_ID (fc::sha256::hash("dpay"))
 #define DPAY_ADDRESS_PREFIX                  "DWB"
 
 #define DPAY_GENESIS_TIME                    (fc::time_point_sec(1458835200))
@@ -84,8 +84,8 @@
 #define DPAY_START_VESTING_BLOCK             (DPAY_BLOCKS_PER_DAY * 7)
 #define DPAY_START_MINER_VOTING_BLOCK        (DPAY_BLOCKS_PER_DAY * 30)
 
-#define DPAY_INIT_MINER_NAME                 "dpay"
-#define DPAY_NUM_INIT_MINERS                 1
+#define DPAY_INIT_MINER_NAME                 "whitehorse"
+#define DPAY_NUM_INIT_MINERS                 21
 #define DPAY_INIT_TIME                       (fc::time_point_sec());
 
 #define DPAY_MAX_WITNESSES                   21
@@ -98,7 +98,7 @@
 #define DPAY_MAX_MINER_WITNESSES_HF17        0
 #define DPAY_MAX_RUNNER_WITNESSES_HF17       1
 
-#define DPAY_HARDFORK_REQUIRED_WITNESSES     1 // 17 of the 21 dpos witnesses (20 elected and 1 virtual time) required for hardfork. This guarantees 75% participation on all subsequent rounds.
+#define DPAY_HARDFORK_REQUIRED_WITNESSES     17 // 17 of the 21 dpos witnesses (20 elected and 1 virtual time) required for hardfork. This guarantees 75% participation on all subsequent rounds.
 #define DPAY_MAX_TIME_UNTIL_EXPIRATION       (60*60) // seconds,  aka: 1 hour
 #define DPAY_MAX_MEMO_SIZE                   2048
 #define DPAY_MAX_PROXY_RECURSION_DEPTH       4

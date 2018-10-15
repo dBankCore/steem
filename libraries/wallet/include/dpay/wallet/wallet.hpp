@@ -60,7 +60,7 @@ struct wallet_data
 {
    vector<char>              cipher_keys; /** encrypted keys */
 
-   string                    ws_server = "ws://localhost:1776";
+   string                    ws_server = "ws://localhost:8090";
    string                    ws_user;
    string                    ws_password;
 };
@@ -800,7 +800,7 @@ class wallet_api
        *
        * @param from The account the VESTS are withdrawn from
        * @param vesting_shares The amount of VESTS to withdraw over the next two years. Each week (amount/104) shares are
-       *    withdrawn and deposited back as BEX. i.e. "10.000000 VESTS"
+       *    withdrawn and deposited back as dpay. i.e. "10.000000 VESTS"
        * @param broadcast true if you wish to broadcast the transaction
        */
       condenser_api::legacy_signed_transaction withdraw_vesting(
@@ -813,11 +813,11 @@ class wallet_api
        * based on the specified weights.
        *
        * @param from The account the VESTS are withdrawn from.
-       * @param to   The account receiving either VESTS or BEX.
+       * @param to   The account receiving either VESTS or dpay.
        * @param percent The percent of the withdraw to go to the 'to' account. This is denoted in hundreths of a percent.
        *    i.e. 100 is 1% and 10000 is 100%. This value must be between 1 and 100000
        * @param auto_vest Set to true if the from account should receive the VESTS as VESTS, or false if it should receive
-       *    them as BEX.
+       *    them as dpay.
        * @param broadcast true if you wish to broadcast the transaction.
        */
       condenser_api::legacy_signed_transaction set_withdraw_vesting_route(
@@ -842,7 +842,7 @@ class wallet_api
 
       /**
        * A witness can public a price feed for the BEX:BBD market. The median price feed is used
-       * to process conversion requests from BBD to BEX.
+       * to process conversion requests from BBD to dpay.
        *
        * @param witness The witness publishing the price feed
        * @param exchange_rate The desired exchange rate

@@ -307,7 +307,7 @@ void initialize_account_object( account_object& acc, const account_name_type& na
    }
    else
    {
-      acc.recovery_account = "dpay";
+      acc.recovery_account = "whitehorse";
    }
 }
 
@@ -2724,7 +2724,7 @@ void claim_reward_balance_evaluator::do_apply( const claim_reward_balance_operat
 {
    const auto& acnt = _db.get_account( op.account );
 
-   FC_ASSERT( op.reward_dpay <= acnt.reward_dpay_balance, "Cannot claim that much BEX. Claim: ${c} Actual: ${a}",
+   FC_ASSERT( op.reward_dpay <= acnt.reward_dpay_balance, "Cannot claim that much dpay. Claim: ${c} Actual: ${a}",
       ("c", op.reward_dpay)("a", acnt.reward_dpay_balance) );
    FC_ASSERT( op.reward_bbd <= acnt.reward_bbd_balance, "Cannot claim that much BBD. Claim: ${c} Actual: ${a}",
       ("c", op.reward_bbd)("a", acnt.reward_bbd_balance) );
@@ -2826,7 +2826,7 @@ void claim_reward_balance2_evaluator::do_apply( const claim_reward_balance2_oper
          else if( token.symbol == DPAY_SYMBOL || token.symbol == BBD_SYMBOL )
          {
             FC_ASSERT( is_asset_type( token, DPAY_SYMBOL ) == false || token <= a->reward_dpay_balance,
-                       "Cannot claim that much BEX. Claim: ${c} Actual: ${a}", ("c", token)("a", a->reward_dpay_balance) );
+                       "Cannot claim that much dpay. Claim: ${c} Actual: ${a}", ("c", token)("a", a->reward_dpay_balance) );
             FC_ASSERT( is_asset_type( token, BBD_SYMBOL ) == false || token <= a->reward_bbd_balance,
                        "Cannot claim that much BBD. Claim: ${c} Actual: ${a}", ("c", token)("a", a->reward_bbd_balance) );
             _db.adjust_reward_balance( *a, -token );
