@@ -1,4 +1,4 @@
-# Introducing dPay (Madison Release) - 0.20.5
+# Introducing dPay (Madison Release) - 0.20.5 (Pre-Genesis)
 
 dPay is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" social consensus algorithm for token allocation.
 
